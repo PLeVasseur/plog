@@ -4,4 +4,4 @@ For [uProtocol](https://github.com/eclipse-uprotocol) we have a component in the
 
 ## uStreamer's role in uProtocol
 
-![uStreamer role in uProtocol](/004-writing-zenoh-plugin-assets/ustreamer-role.png "uStreamer role in uProtocol")
+![uStreamer role in uProtocol](004-writing-zenoh-plugin-assets/ustreamer-role.png "uStreamer role in uProtocol")
