@@ -1,4 +1,4 @@
-# Pete LeVasseur's Blog (plog)
+# Pete LeVasseur's Blog [plog]
 
 Hey there, I'm Pete 👋
 
