@@ -16,3 +16,5 @@ Feel free to check out my [contributions](https://github.com/PLeVasseur)!
 
 [Rust and C++ (vsomeip) Interop](articles/002-interop-cpp-rust.md)
 
+[Rust and Java (Java UPClient) Interop](articles/003-interop-java-rust.md)
+
