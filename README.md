@@ -13,4 +13,5 @@ Feel free to check out my [contributions](https://github.com/PLeVasseur)!
 ## Articles
 
 [Writing a Zenoh Plugin](articles/004-writing-zenoh-plugin.md)
+[Rust and C++ (vsomeip) Interop](articles/002-interop-cpp-rust.md)
 
