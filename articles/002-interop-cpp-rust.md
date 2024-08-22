@@ -47,7 +47,7 @@ The two parallel paths had more-or-less resulted in a complete show-stopper to t
 
 ### Open-Sourcing of the GM C++ uStreamer
 
-I was asked to take a look through the GM C++ uStreamer and vsomeip transport by Steven to vet it for inclusion into the open source Eclipse uProtocol project.
+I was asked to take a look through the GM C++ uStreamer and vsomeip transport to vet it for inclusion into the open source Eclipse uProtocol project.
 
 The challenges I saw were multiple:
 
