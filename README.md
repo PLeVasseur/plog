@@ -12,9 +12,11 @@ Feel free to check out my [contributions](https://github.com/PLeVasseur)!
 
 ## Articles
 
-[Writing a Zenoh Plugin](articles/004-writing-zenoh-plugin.md)
+[Using Rust with Java Binder](articles/011-rust-android-binder-aosp.md)
+
+[Rust and Java (Java UPClient) Interop](articles/003-interop-java-rust.md)
 
 [Rust and C++ (vsomeip) Interop](articles/002-interop-cpp-rust.md)
 
-[Rust and Java (Java UPClient) Interop](articles/003-interop-java-rust.md)
+[Writing a Zenoh Plugin](articles/004-writing-zenoh-plugin.md)
 
