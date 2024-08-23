@@ -12,6 +12,8 @@ Feel free to check out my [contributions](https://github.com/PLeVasseur)!
 
 ## Articles
 
+[Using Rust Atomics for Consistency under High Contention](articles/012-rust-atomics-generate-uuids.md)
+
 [Using Rust with Java Binder](articles/011-rust-android-binder-aosp.md)
 
 [Rust and Java (Java UPClient) Interop](articles/003-interop-java-rust.md)
