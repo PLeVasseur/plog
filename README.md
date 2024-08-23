@@ -12,6 +12,8 @@ Feel free to check out my [contributions](https://github.com/PLeVasseur)!
 
 ## Articles
 
+[Writing Aync Rust for the uProtocol uStreamer](articles/010-writing-async-rust.md)
+
 [Simplifying Rust API Design](articles/013-rust-simplify-api-design.md)
 
 [Using Rust Atomics for Consistency under High Contention](articles/012-rust-atomics-generate-uuids.md)
