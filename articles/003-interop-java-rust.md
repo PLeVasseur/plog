@@ -248,6 +248,161 @@ Later, when the Java `UPClient`'s registered `UListener` which matches the `UUri
   2. with the `u64` hash we are then able to look up the stored Rust `UListener` [here](https://github.com/PLeVasseur/up-client-android-rust/blob/1dcfee3c0a6b4feeda9c8b858e20e8d7069d82f3/src/utransport.rs#L80-L81)
   3. we are then able to call the Rust `UListener`'s `on_receive()` function in order to act on the received `UMessage` which was as we recall received on the Java `UPClient`
 
+### Digging deeper into how we call Java methods from Rust
+
+I'll touch on a few examples to familiarize us with how this looks. Feel free to check out the code for even more.
+
+#### Constructing a `UListenerNativeBridge`
+
+> 2. Create a [`UListenerNativeBridge`](https://github.com/PLeVasseur/up-android-example/blob/b86e447bad58d6932f78a9a1e74e1914aa77a53f/service/src/main/java/org/eclipse/uprotocol/streamer/service/UListenerNativeBridge.java#L6), passing in the hash `u64` so that later when the Java [`UListener::onReceive()`](https://github.com/eclipse-uprotocol/up-java/blob/8828840e8e7a5fdda847294633c6ac7c7b369cf0/src/main/java/org/eclipse/uprotocol/transport/UListener.java#L29) callback is pinged by the `UPClient` on a matching `UUri` [here](https://github.com/PLeVasseur/up-client-android-rust/blob/1dcfee3c0a6b4feeda9c8b858e20e8d7069d82f3/src/utransport.rs#L162-L192)
+
+Before we get proper to the `UListenerNativeBridge` usage, we need to [first](https://github.com/PLeVasseur/up-client-android-rust/blob/1dcfee3c0a6b4feeda9c8b858e20e8d7069d82f3/src/utransport.rs#L110C1-L114C56) grab the [`JavaVM`](https://docs.rs/jni/latest/jni/struct.JavaVM.html) we've stored and attach a [`JNIEnv`](https://docs.rs/jni/latest/jni/struct.JavaVM.html#method.attach_current_thread) so that we can do Java Stuff™️
+
+```rust
+        // Get JNIEnv for the current thread
+        let mut env = self
+            .vm
+            .attach_current_thread()
+            .expect("Failed to attach current thread");
+```
+
+For the record, this could be done more efficiently by having a thread dedicated to owning the `JNIEnv` attached to it, and it's a bit inefficient to constantly have the `JavaVM` constantly being attached upon each call to `register_listener()`.
+
+It was at this point that I realized I would be _unable_ to store a reference to the Java `UListenerNativeBridge` class and would, instead have to dynamically [load the class](https://github.com/PLeVasseur/up-client-android-rust/blob/1dcfee3c0a6b4feeda9c8b858e20e8d7069d82f3/src/utransport.rs#L125-L131) using Java's [`ClassLoader`](https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html) which in Rust uses [`JNIEnv::find_class()`](https://docs.rs/jni/latest/jni/struct.JNIEnv.html#method.find_class).
+
+```rust
+        let Ok(listener_class) =
+            // PELE: We plug in the fully qualified class name, which includes the entire path of which package the
+            //   class belongs to. This can be verbose!
+            env.find_class("org/eclipse/uprotocol/streamer/service/UListenerNativeBridge")
+        else {
+            // PELE: Note that we can use Rust's let Ok(foo) = baz() else { /* must diverge */ } construct
+            //   here to leave the happy path very cleanly unindented without getting into indentation pyramid
+
+            // PELE: Here we see the very nice facilities of the `jni` crate which allows us to, if we had an
+            //   exception thrown we're now able to obtain the exception description, clear it, and then return
+            //   a Rust `Error` type
+            error!("Failed to find UListenerNativeBridge class");
+            env.exception_describe().unwrap();
+            env.exception_clear().unwrap();
+            return Err(UStatus::fail_with_code(UCode::INTERNAL, "Class not found"));
+```
+
+Then [here](https://github.com/PLeVasseur/up-client-android-rust/blob/1dcfee3c0a6b4feeda9c8b858e20e8d7069d82f3/src/utransport.rs#L162-L169) we are constructing a Java `UListenerNativeBridge` object from within Rust based on the class we just loaded. Several things are going on that we'll break down, check the `PELE` comments:
+
+```rust
+        let Ok(listener_obj) =
+            // PELE: We have passed in the `UListenerNativeBridge` class from Java in the `listener_class` reference
+
+            // PELE: We use the reference to the listener class with the `JNIEnv` to create a new instance of that object
+            //  Note the kinda wild syntax for this (but it works!):
+            //    * we use "(J)V" to indicate that we're passing a Java `jlong`, for more details you can check
+            //      the spec for JNI:
+            //        * https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/types.html
+            //    * we create a `JValue::Long` from the `hash` `u64` and then get a reference to it to pass in
+            env.new_object(listener_class, "(J)V", &[JValue::Long(hash as jlong)])
+        else {
+            error!("Failed to create a new instance of UListenerBridge class");
+            env.exception_describe().unwrap();
+            env.exception_clear().unwrap();
+            return Err(UStatus::fail_with_code(UCode::INTERNAL, "Class not found"));
+        };
+```
+
+#### Converting a Rust `UUri` Protobuf struct into a Java `UUri` object
+
+> 3. Convert the Rust `UUri` object into a Java `UUri` object [here](https://github.com/PLeVasseur/up-client-android-rust/blob/1dcfee3c0a6b4feeda9c8b858e20e8d7069d82f3/src/utransport.rs#L201-L288)
+
+We need to convert the Rust `UUri` Protobuf struct into a Java `UUri` object in order to correctly call `UPClient::registerListener()`, as that accepts a Java `UUri` object.
+
+After looking for more general solutions, I settled on _a solution_, but maybe not the best solution, of serializing Rust `UUri` Protobuf struct into a bag of bytes, passing this into Java and then on the Java side deseralizing into a Java `UUri` object.
+
+[Here](https://github.com/PLeVasseur/up-client-android-rust/blob/1dcfee3c0a6b4feeda9c8b858e20e8d7069d82f3/src/utransport.rs#L201-L212) we first serialize the Rust `UUri` struct held in `topic` to a `Vec<u8>`, using the [`protobuf`](https://crates.io/crates/protobuf) crate:
+
+```rust
+        let Ok(uuri_bytes) = topic.write_to_bytes() else {
+            error!("Failed to serialize UUri to bytes");
+            return Err(UStatus::fail_with_code(
+                UCode::INTERNAL,
+                "Failed to obtain UUri bytes",
+            )); // Replace UStatus::Error with appropriate error handling
+        };
+```
+
+We [then](https://github.com/PLeVasseur/up-client-android-rust/blob/1dcfee3c0a6b4feeda9c8b858e20e8d7069d82f3/src/utransport.rs#L213-L220) need to use the `jni` crate to convert this Rust `Vec<u8>` of bytes into a `JByteArray` that Java can interact with. (Note that here we don't properly handle the returning `Result`, it's proof of concept code, oops)
+
+```rust
+        let byte_array = env
+            .byte_array_from_slice(&uuri_bytes)
+            .expect("Couldn't create jbyteArray from Rust Vec<u8>");
+```
+
+We [load](https://github.com/PLeVasseur/up-client-android-rust/blob/1dcfee3c0a6b4feeda9c8b858e20e8d7069d82f3/src/utransport.rs#L222-L230) the Java `NativeBridge` class, which has a static method to convert a bag of bytes into a Java `UUri` object:
+
+```rust
+        let native_bridge_class = Arc::new(
+            env.find_class("org/eclipse/uprotocol/streamer/service/NativeBridge")
+                .expect("Couldn't find the Helper class"),
+        );
+```
+
+We [convert](https://github.com/PLeVasseur/up-client-android-rust/blob/1dcfee3c0a6b4feeda9c8b858e20e8d7069d82f3/src/utransport.rs#L232) the earlier `byte_array` into a `JValue::Object` so that we can pass this to our Java `NativeBridge::deserializeToUUri()` static method:
+
+```rust
+        let jvalue_byte_array = JValue::Object(&*byte_array);
+```
+
+We can then [call](https://github.com/PLeVasseur/up-client-android-rust/blob/1dcfee3c0a6b4feeda9c8b858e20e8d7069d82f3/src/utransport.rs#L234-L251) the `NativeBridge::deserializeToUUri()` static method:
+
+```rust
+        // PELE: We here again use the `JNIEnv` to call a static method
+        let Ok(uuri_obj) = env.call_static_method(
+            // PELE: This is the class we loaded earlier
+            &*native_bridge_class,
+            // PELE: This is the static method on the class
+            "deserializeToUUri",
+            // PELE: Another JNI type that we just have to be able to understand, check reference above for the details
+            //   * [B
+            //     * B -> a `jbyte`, i.e. an unsigned 8 bit integer
+            //     * the preceding [ -> signifies that this is an array
+            //   * `CLASS_URI` holds the fully-qualified class name
+            //   * the () wrapping -> indcates this is a return type, so we should get a Java `UUri` object reference
+            //     returned to us
+            //   * format!() -> a Rust macro to format a string and substitute in the value of a variable within {}
+            format!("([B){CLASS_UURI}"),  
+            // PELE: A reference to the JValue::Object holding the byte_array
+            &[jvalue_byte_array],
+        ) else {
+            // ... ommitting similar handling of exceptions as above ...
+        };
+```
+
+We then need to [unpack](https://github.com/PLeVasseur/up-client-android-rust/blob/1dcfee3c0a6b4feeda9c8b858e20e8d7069d82f3/src/utransport.rs#L253-L265) the return value of the Java `UUri`. `JNIEnv::call_static_method()` returns us a `Result<JValueOwned>` from which we need to attempt to retrieve a `JObject` by calling [`JValueGen::l()`](https://docs.rs/jni/latest/jni/objects/enum.JValueGen.html#method.l).
+
+```rust
+        // PELE: Here again, knowing the JNI type system helps
+        //   * l -> jobject
+        let Ok(uuri_obj) = uuri_obj.l() else {
+            trace!(
+                "{}:{} Failed when converting uuri_obj to a JObject",
+                UPCLIENTANDROID_TAG,
+                UPANDROIDCLIENT_FN_REGISTER_LISTENER_TAG
+            );
+            env.exception_describe().unwrap();
+            env.exception_clear().unwrap();
+            return Err(UStatus::fail_with_code(
+                UCode::INTERNAL,
+                "Failed when converting uuri_obj to a JObject",
+            )); // Replace UStatus::Error with appropriate error handling
+        };
+```
+
+Eliding some details, we are then able later to use this `uuri_obj` to [form the arguments](https://github.com/PLeVasseur/up-client-android-rust/blob/1dcfee3c0a6b4feeda9c8b858e20e8d7069d82f3/src/utransport.rs#L290) we call `UPClient::registerListener()` with:
+
+```rust
+        let args = [JValue::Object(&uuri_obj), JValue::Object(&listener_obj)];
+```
+
 ## Experiments
 
 I performed an experiment involving writing a rudimentary additional unit test for `up-client-android-java` which sent a message to the `UUri` matching the `dummy_uuri` and was able to see the text printed to the terminal which was set to do so within the `DummyListener` implementation.
