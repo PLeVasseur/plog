@@ -297,6 +297,17 @@ At this point we could then call functions shown in the `IUBus.aidl`, e.g. `regi
 
 I performed some very rudimentary tests to ensure that I was able to, from Rust, call functions on the `IUBus` trait object and receive status messages back from the UBus service, indicating that we were successful!
 
+## Upstreaming the change
+
+I opened a [PR](https://github.com/Kernel-SU/binder_rs/pull/7) on the `binder_rs` repo to upstream the additional features added:
+
+* support for `UnstructuredParcelable`s
+* support for converting a Java `IBinder` to a strongly-typed Rust trait object representing the proxy object
+
+The PR appears to not have gotten noticed though. I tried to get in touch via email too.
+
+Due to a pivot we made in how to integrate the uStreamer with the Android VM, this became non-critical, so I haven't had to fork the project.
+
 ## On to the next
 
 I began to sketch in a rough draft of what such a [`up-client-android-rust`](https://github.com/PLeVasseur/up-client-android-rust/blob/feature/ustreamer-integration-check/up-client-android-rust/src/lib.rs) might look like, then got some feedback from [Mikhail Petrov](https://github.com/mishap4) I may be better off using a `up-transport-android-java` `UPClient` directly, as this would already handle service drops without my having to now handle this in the Rust code. His ideas gave rise to [the next approach](003-interop-java-rust.md) for integrating the uStreamer into the Android VM.
