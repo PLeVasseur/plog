@@ -281,5 +281,12 @@ Here we ensure that the record we have of `all_uuids` matches the expected lengt
 
 With this approach we were able to ensure that developers of uEntities in Rust could guarantee they follow spec, by _preventing the issue entirely_ via construction.
 
+## The next uProtocol UUID spec
+
 There was further discussion later initiated by [Greg Medding](https://github.com/gregmedd) in an [issue](https://github.com/eclipse-uprotocol/up-spec/issues/170) over moving to a UUIDv7 which will not have `unix_ts_ms`, `counter`, nor a fixed `rand_b` per uEntity, but simply generate a pseudo-random number per UUID we generate. In the end we did choose UUIDv7 for a number of good reasons outlined by Greg in the issue.
+
+I agreed with him on two key points:
+
+* We already have the [source UUri](https://github.com/eclipse-uprotocol/up-spec/blob/da5ca97d3a7541d2fcd52ed010bc3bcca92e46cb/up-core-api/uprotocol/v1/uattributes.proto#L37) which would identify the sender, so there's no real need for the `rand_b` portion to uniquely identify a uEntity sender.
+* uProtocol did not have message sequencing guarantees in the spec. Adding message sequencing guarantees _does_ come with trade-offs in other parts of the design. Those sequence guarantees we can leave to the users of uProtocol to ensure in their application, if it's of importance to them.
 
