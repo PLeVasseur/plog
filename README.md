@@ -12,6 +12,8 @@ Feel free to check out my [contributions](https://github.com/PLeVasseur)!
 
 ## Articles
 
+[Guardrails around Valid `UUri` Protobuf Serialization](articles/014-rust-protobuf-api-guardrails.md)
+
 [Writing Aync Rust for the uProtocol uStreamer](articles/010-writing-async-rust.md)
 
 [Simplifying Rust API Design](articles/013-rust-simplify-api-design.md)
