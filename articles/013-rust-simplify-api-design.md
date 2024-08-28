@@ -412,5 +412,13 @@ Eventually my PR drifted out of date a little bit and it made more sense for [CY
 
 Sagar was able to now have a more unified API when writing and integrating a `UTransport` trait implementation [over sockets](https://github.com/eclipse-uprotocol/up-transport-socket/tree/main/rust) they need when exercising the `up-rust` crate.
 
+## Collaboration on open source and cross-pollination
+
+One thing I really like about the [`up-cpp`](https://github.com/eclipse-uprotocol/up-cpp) design that [Greg Medding](https://github.com/gregmedd) came up with is their concept of a [`Connection`]() which allows the entity registering a callback with their uP-L1 Transport implementation to drop their end of the `Connection` in order to _disallow_ the calling of the callback and an implicit unregistration.
+
+Writing this article has been great, because it gave me a chance to reflect back on the design choice I made and consider if it would be better to instead pass in a [`std::sync::Weak`](https://doc.rust-lang.org/stable/std/sync/struct.Weak.html) instead of a `std::sync::Arc`. If we passed in a `Weak<dyn UTransport>` to `UTransport::register_listener()`, then anytime we'd attempt to call that `Uistener::on_receive()` we'd have to first call [`Weak::upgrade()`](https://doc.rust-lang.org/stable/std/sync/struct.Weak.html#impl-Weak%3CT,+A%3E-2) in order to safely check if the reference count is non-zero before converting to an `Arc<dyn UTransport>`, which would give all the same benefits.
+
+I opened up [an issue](https://github.com/eclipse-uprotocol/up-rust/issues/200) on `up-rust` for further discussion with the other contributors, feel free to check it out.
+
 And that's a wrap! Thanks for reading.
 
