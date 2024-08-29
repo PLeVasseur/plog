@@ -1,4 +1,4 @@
-# Writing Aync Rust for the uProtocol uStreamer
+# Writing Async Rust for the uProtocol uStreamer
 
 In [Eclipse uProtocol](https://github.com/eclipse-uprotocol) for the [Rust uStreamer](https://github.com/eclipse-uprotocol/up-streamer-rust) we needed to use some level of multi-threading or async in order to be given a UMessage from one uP-L1 Transport library and then send out over another.
 
@@ -27,6 +27,12 @@ ustreamer.add_forwarding_rule(foo_transport_builder, bar_transport_builder);
 ```
 
 Where essentially in addition to the various `up-transport-foo-rust` crates developed on top of the underlying protocol, e.g. [Zenoh](https://zenoh.io/) or [SOME/IP](https://some-ip.com/), we would have had to for each one write a `FooTransportBuilder` which knew how to build a `UPTransportFoo` based on configuration options.
+
+### Diagram
+
+The following is an .svg, so feel free to open in a new tab to zoom in and poke around. I'll be going into these details in a little bit in the next section.
+
+![uStreamer internals when uTransport not thread-safe](010-writing-async-rust-assets/up-streamer-internals-previous.svg "uStreamer internals when uTransport not thread-safe")
 
 #### Rust's safety guarantees
 
