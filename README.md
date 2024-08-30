@@ -12,6 +12,8 @@ Feel free to check out my [contributions](https://github.com/PLeVasseur)!
 
 ## Articles
 
+[Creating a Pool of Callbacks from Rust to C++ with Proc Macros](articles/016-rust-cpp-proc-macro.md)
+
 [Rust Async Pattern For Resource Protection](articles/015-rust-async-resource-protection.md)
 
 [Guardrails around Valid `UUri` Protobuf Serialization](articles/014-rust-protobuf-api-guardrails.md)
