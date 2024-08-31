@@ -12,6 +12,8 @@ Feel free to check out my [contributions](https://github.com/PLeVasseur)!
 
 ## Articles
 
+[Gracefully Winding Down a C++ Library's Resources From Rust](articles/018-gracefully-cpp-interop-drop-impl.md)
+
 [Managing a Pool of `extern "C" fn`s](articles/017-manage-extern-c-fn-pool.md)
 
 [Creating a Pool of Callbacks from Rust to C++ with Proc Macros](articles/016-rust-cpp-proc-macro.md)
