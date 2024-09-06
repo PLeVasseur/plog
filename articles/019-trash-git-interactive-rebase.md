@@ -1,4 +1,4 @@
-# Trashy commits + interactive rebase = great git history
+# Trashy Commits + Interactive Rebase = Great Git History
 
 It feels like there's some "step function" changes I've had in productivity in the last couple of years, some of which came easier than others. I was thinking about this while watching one of [Theo](https://t3.gg/)'s videos a week or two ago in which he explained how his experience with git allowed him to fearlessly make changes in his coding assignments in school, since he'd always have the commit history on the remote.
 

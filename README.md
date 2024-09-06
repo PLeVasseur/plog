@@ -20,6 +20,8 @@ Email: Pete LEVASSEUR AT GMAIL.COM (the caps are the email address!)
 
 ## Articles
 
+[Trashy Commits + Interactive Rebase = Great Git History](articles/019-trash-git-interactive-rebase.md)
+
 [Gracefully Winding Down a C++ Library's Resources From Rust (with an Async Twist)](articles/018-gracefully-cpp-interop-drop-impl.md)
 
 [Managing a Pool of `extern "C" fn`s](articles/017-manage-extern-c-fn-pool.md)
