@@ -1,4 +1,4 @@
-# Gracefully Winding Down a C++ Library's Resources From Rust
+# Gracefully Winding Down a C++ Library's Resources From Rust (with an Async Twist)
 
 In [Eclipse uProtocol](https://github.com/eclipse-uprotocol) we built our [uP-L1 Transport](https://github.com/eclipse-uprotocol/up-spec/tree/main/up-l1) library over SOME/IP on top of the [COVESA vsomeip](https://github.com/COVESA/vsomeip) C++ library: [`up-transport-vsomeip-rust`](https://github.com/eclipse-uprotocol/up-transport-vsomeip-rust).
 
@@ -7,6 +7,8 @@ The goal here being to be able to speak from high compute devices to mechatronic
 From the [`up-transport-vsomeip`](https://github.com/eclipse-uprotocol/up-transport-vsomeip-rust/tree/main/up-transport-vsomeip) crate we call into the [`vsomeip-sys`](https://github.com/eclipse-uprotocol/up-transport-vsomeip-rust/tree/main/vsomeip-sys) crate in order to interact with the C++ vsomeip library. When we do so we spin up vsomeip `application` instances and register message handlers with `application`s to react to in-coming message.
 
 Rather than using the default Rust `Drop` impl, which would be sufficient if we had all our resources been managed within Rust, I needed to implement the `Drop` trait for `UPTransportVsomeip` to properly unregister all message handlers and wind down the vsomeip `application`s.
+
+There's a further twist introduced here related to our use of `tokio`, the most commonly used Rust async framework and runtime. Because we wanted the ability to let users customize the `tokio::runtime::Runtime`, we need to not implement this as a `lazy_static`, but instead carefully control the bringup and shutdown of the `Runtime`. There's a few wrinkles introduced by doing so that we'll get to.
 
 ## The vsomeip `application`
 
@@ -200,7 +202,7 @@ So within the function we `block_in_place()` and within that closure then use th
 
 ## So that's it!
 
-We impl'ed `Drop` for `UPTransportVsomeip` in order to properly unregister the message handler functions from the `application`s and then shut them down.
+We impl'ed `Drop` for `UPTransportVsomeip` in order to properly unregister the message handler functions from the `application`s and then shut them down. As can be seen, this is complicated a fair bit by the need to also wind down `tokio`'s `Runtime` from within the `Drop` impl.
 
 I can imagine perhaps a cleaner way by, rather than exposing the vsomeip `application` and its APIs directly into Rust, it may be possible to instead write a safe wrapper over top of it so that all registered message handlers are released and the `application` shut down. I'll leave those improvements till another day.
 
