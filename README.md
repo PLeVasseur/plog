@@ -20,7 +20,7 @@ Email: Pete LEVASSEUR AT GMAIL.COM (the caps are the email address!)
 
 ## Articles
 
-[Gracefully Winding Down a C++ Library's Resources From Rust](articles/018-gracefully-cpp-interop-drop-impl.md)
+[Gracefully Winding Down a C++ Library's Resources From Rust (with an Async Twist)](articles/018-gracefully-cpp-interop-drop-impl.md)
 
 [Managing a Pool of `extern "C" fn`s](articles/017-manage-extern-c-fn-pool.md)
 
