@@ -16,7 +16,7 @@ Or my [resume](Pete-LeVasseur-Resume.pdf)!
 
 Email: Pete LEVASSEUR AT GMAIL.COM (the caps are the email address!)
 
-[LinkedIn](https://www.linkedin.com/in/peter-levasseur-0219b1b2/)
+[LinkedIn](https://www.linkedin.com/in/pete-levasseur/)
 
 [Twitter](https://x.com/AwkwardMap?t=3gQJc6upN1L_apm15mJYsQ)
 
