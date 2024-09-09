@@ -10,13 +10,15 @@ Most recently I lead a team at General Motors on the open source [Eclipse uProto
 
 Feel free to check out my [contributions](https://github.com/PLeVasseur)!
 
+Or my [resume](Pete-LeVasseur-Resume.pdf)!
+
 ## Contact
 
 Email: Pete LEVASSEUR AT GMAIL.COM (the caps are the email address!)
 
-[Twitter](https://x.com/AwkwardMap?t=3gQJc6upN1L_apm15mJYsQ)
-
 [LinkedIn](https://www.linkedin.com/in/peter-levasseur-0219b1b2/)
+
+[Twitter](https://x.com/AwkwardMap?t=3gQJc6upN1L_apm15mJYsQ)
 
 ## Articles
 
