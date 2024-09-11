@@ -21,7 +21,21 @@ So I wanted to write the integration test mock in an async framework agnostic wa
 
 ### Requirements
 
-I needed the ability to essentially have a way to "broadcast" data out so that multiple recipients could receive it in order to mock the [uP-L1 Transport]() spec which is reflected in `up-rust`'s [`UTransport`]() trait. By doing so I could then plug this mocked transport into `up-streamer`'s [`Endpoint`]() and then be able to test the various flows.
+I needed have a way to "broadcast" data out so that multiple recipients could receive it in order to mock the [uP-L1 Transport](https://github.com/eclipse-uprotocol/up-spec/tree/main/up-l1#transport--session-layer-up-l1) spec which is reflected in `up-rust`'s [`UTransport`](https://github.com/eclipse-uprotocol/up-rust/blob/main/src/utransport.rs#L74) trait. By doing so I could then plug this mocked transport into `up-streamer`'s [`Endpoint`](https://github.com/eclipse-uprotocol/up-streamer-rust/blob/4c233b72075f5e25b3ac149f6f5e597c329803fd/up-streamer/src/endpoint.rs#L90) and then be able to test the various flows of the generic [`UStreamer`](https://github.com/eclipse-uprotocol/up-streamer-rust/blob/4c233b72075f5e25b3ac149f6f5e597c329803fd/up-streamer/src/ustreamer.rs#L548).
+
+### Finding the right crate
+
+I first tried searching for terms like "async agnostic channel crate" and ended up finding and trying to use [`async-channel`](https://crates.io/crates/async-channel), but I had missed an important note:
+
+> An async multi-producer multi-consumer channel, where each message can be received by only one of all existing consumers.
+
+Luckily, trying out new crates is a very easy and fast thing to do, so after that twenty minute or so diversion, I found the [`async-broadcast`](https://crates.io/crates/async-broadcast) crate which very clearly outlines:
+
+> This crate is similar to async-channel in that they both provide an MPMC channel but the main difference being that in async-channel, each message sent on the channel is only received by one of the receivers. async-broadcast on the other hand, delivers each message to every receiver (IOW broadcast) by cloning it for each receiver.
+
+### Implementation
+
+TODO: Describe how I implemented [`UPClientFoo`](https://github.com/eclipse-uprotocol/up-streamer-rust/blob/4c233b72075f5e25b3ac149f6f5e597c329803fd/utils/integration-test-utils/src/up_client_foo.rs#L31)
 
 ## Async ecosystem glue-ability
 
