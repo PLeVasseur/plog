@@ -1,5 +1,7 @@
 # Pete LeVasseur's Blog [plog]
 
+![Pete LeVasseur](pete.png "Pete LeVasseur")
+
 Hey there, I'm Pete 👋
 
 I'm an engineer that loves to learn new things and grow teams.
@@ -11,6 +13,10 @@ Most recently I lead a team at General Motors on the open source [Eclipse uProto
 Feel free to check out my [contributions](https://github.com/PLeVasseur)!
 
 Or my [resume](Pete-LeVasseur-Resume.pdf)!
+
+## Oxidation Partners
+
+I run a Rust consultancy that can support you on your journey to safer software! Feel free to reach out below.
 
 ## Contact
 
