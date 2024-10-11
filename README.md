@@ -14,6 +14,12 @@ Feel free to check out my [contributions](https://github.com/PLeVasseur)!
 
 Or my [resume](Pete-LeVasseur-Resume.pdf)!
 
+## Rust Safety-Critical Consortium
+
+I serve as chair for the [Coding Guidelines Subcommittee](https://github.com/rustfoundation/safety-critical-rust-consortium/tree/main/subcommittee/coding-guidelines) of the [Rust Safety-Critical Consortium](https://github.com/rustfoundation/safety-critical-rust-consortium).
+
+The announcement by the Rust Foundation is [here](https://foundation.rust-lang.org/news/announcing-the-safety-critical-rust-consortium/).
+
 ## Oxidation Partners
 
 I run a Rust consultancy that can support you on your journey to safer software! Feel free to reach out below.
