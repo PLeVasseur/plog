@@ -1,6 +1,6 @@
 # The Benefits of Committing
 
-About a year ago a project I had been working on at General Motors for six years was cancelled. This time lead to a lot of soul-searching on what I believed in and wanted to do next. I was able to find something new within GM I could hitch my wagon to -- [Eclipse uProtocol]() -- as a place I could develop Rust software in an open source environment. Ultimately that project too was more-or-less let go of when myself and many others which worked on Eclipse uProtocol were caught up in a restructuring in August of 2024.
+About a year ago a project I had been working on at General Motors for six years was cancelled. This time lead to a lot of soul-searching on what I believed in and wanted to do next. I was able to find something new within GM I could hitch my wagon to -- [Eclipse uProtocol](https://github.com/eclipse-uprotocol) -- as a place I could develop Rust software in an open source environment. Ultimately that project too was more-or-less let go of when myself and many others which worked on Eclipse uProtocol were caught up in a restructuring in August of 2024.
 
 Those are stories for another time, however! Today I'd like to go over some of the benefits we can see when fully committing to seeing a product through to delivery over a time span measured in years.
 
@@ -68,9 +68,9 @@ While this was painful, this was also a learning experience. I got to see my man
 
 After riding out the experience for six years on a revolutionary product which became more of an evolutionary addition to an automated driving system, I didn't see much innovation possible within this group I had worked alongside for years.
 
-I had been learning and writing Rust off and on for about six years at this point, so I decided to push for its value proposition within the automated driving domain. While I succeeded in proving to myself that there's a place for Rust in that domain, I didn't convince others due to some very specific point points around Rust's linear algebra library story.
+I had been learning and writing Rust off and on for about six years at this point, so I decided to push for its value proposition within the automated driving domain. While I succeeded in proving to myself that there's a place for Rust in that domain, I didn't convince others due to some very specific points around Rust's linear algebra library story.
 
-Thanks to the advice by a long-time friend and colleague at General Motors, I found out about the Eclipse uProtocol project where Rust was being actively welcomed as a contribution from the community. I decided to pivot from automated driving to a bit lower in the stack to communications and systems software and have very much enjoyed my time in the world of Eclipse uProtocol. Feel free to check out if Eclipse uProtocol can serve your needs for more reusable software in an open source Software Defined Vehicle stack.
+Thanks to the advice by a long-time friend and colleague at General Motors, I found out about the Eclipse uProtocol project where Rust was being actively welcomed as a contribution from the community. I decided to pivot from automated driving to a bit lower in the stack to communications and systems software and have very much enjoyed my time in the world of Eclipse uProtocol. Feel free to check out if [Eclipse uProtocol](https://github.com/eclipse-uprotocol) can serve your needs for more reusable software in an open source Software Defined Vehicle stack.
 
 Thanks for taking the time to read! 👋
 
