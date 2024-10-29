@@ -8,7 +8,7 @@ I'm an engineer that loves to learn new things and grow teams.
 
 I've got a decade plus in the embedded and AV space, working on real-time software in C++ and Rust.
 
-Most recently I lead a team at General Motors on the open source [Eclipse uProtocol](https://github.com/eclipse-uprotocol) effort to create an open standard for Software Defined Vehicle middleware. I was primarily responsible for building out key infrastructural pieces in [Rust](https://www.rust-lang.org/) like the [uStreamer](https://github.com/PLeVasseur/up-streamer-rust) for bridging between differing underlying protocols, e.g. [SOME/IP](https://github.com/eclipse-uprotocol/up-transport-vsomeip-rust), [Zenoh](https://github.com/eclipse-uprotocol/up-transport-zenoh-rust), and so on.
+Most recently I lead a team at General Motors on the open source [Eclipse uProtocol](https://github.com/eclipse-uprotocol) effort to create an open standard for Software Defined Vehicle middleware. I was primarily responsible for building out key infrastructural pieces in [Rust](https://www.rust-lang.org/) like the [uStreamer](https://github.com/eclipse-uprotocol/up-streamer-rust) for bridging between differing underlying protocols, e.g. [SOME/IP](https://github.com/eclipse-uprotocol/up-transport-vsomeip-rust), [Zenoh](https://github.com/eclipse-uprotocol/up-transport-zenoh-rust), and so on.
 
 Feel free to check out my [contributions](https://github.com/PLeVasseur)!
 
@@ -33,6 +33,8 @@ Email: Pete LEVASSEUR AT GMAIL.COM (the caps are the email address!)
 [Twitter](https://x.com/AwkwardMap?t=3gQJc6upN1L_apm15mJYsQ)
 
 ## Articles
+
+[The Benefits of Committing](articles/020-benefits-of-committing.md)
 
 [Trashy Commits + Interactive Rebase = Great Git History](articles/019-trash-git-interactive-rebase.md)
 
