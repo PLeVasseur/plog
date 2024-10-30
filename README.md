@@ -32,6 +32,12 @@ Email: Pete LEVASSEUR AT GMAIL.COM (the caps are the email address!)
 
 [Twitter](https://x.com/AwkwardMap?t=3gQJc6upN1L_apm15mJYsQ)
 
+## Media
+
+[uProto-what? - GOSIM Beijing 2024](<./media/uProto-what - GOSIM Beijing 2024.pdf>) given in a [talk](https://china2024.gosim.org/speakers/pete-levasseur) at GOSIM 2024 held in Beijing.
+
+An [interview](https://blogs.eclipse.org/post/diana-kupfer/%E2%80%9Cit-really-helps-have-welcoming-and-engaging-community%E2%80%9D) I had with the Eclipse Software Defined Vehicle work group on the future of open source in Automotive.
+
 ## Articles
 
 [The Benefits of Committing](articles/020-benefits-of-committing.md)
