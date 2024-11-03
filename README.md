@@ -34,7 +34,7 @@ Email: Pete LEVASSEUR AT GMAIL.COM (the caps are the email address!)
 
 ## Media
 
-Interview about Eclipse uProtocol on the [Rustacean Station podcast](https://rustacean-station.org/episode/pete-levasseur/).
+Interview about Eclipse uProtocol on [The Rustacean Station Podcast](https://rustacean-station.org/episode/pete-levasseur/).
 
 An [interview](https://blogs.eclipse.org/post/diana-kupfer/%E2%80%9Cit-really-helps-have-welcoming-and-engaging-community%E2%80%9D) I had with the Eclipse Software Defined Vehicle work group on the future of open source in Automotive.
 
