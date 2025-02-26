@@ -38,7 +38,11 @@ Interview about Eclipse uProtocol on [The Rustacean Station Podcast](https://rus
 
 An [interview](https://blogs.eclipse.org/post/diana-kupfer/%E2%80%9Cit-really-helps-have-welcoming-and-engaging-community%E2%80%9D) I had with the Eclipse Software Defined Vehicle work group on the future of open source in Automotive.
 
-[uProto-what? - GOSIM Beijing 2024](<./media/uProto-what - GOSIM Beijing 2024.pdf>) given in a [talk](https://china2024.gosim.org/speakers/pete-levasseur) at GOSIM 2024 held in Beijing.
+[uProto-what? - GOSIM Beijing 2024](<./media/uProto-what - GOSIM Beijing 2024.pdf>) given in a [talk](https://china2024.gosim.org/speakers/pete-levasseur) at GOSIM 2024 held in Beijing. [Video](https://youtu.be/YWcsv_9kNDU?si=AUfRi3pPM7dtsV9T) now available.
+
+[My Open Source Story (so far!)](<./media/My Open Source Story (so far!).pdf>) given in a talk for students of the [software engineering in automotive and mobility ecosystems](https://seame.space/) program at [42lisboa](https://www.42lisboa.com/).
+
+[Self-Referential Structs in Rust](<./media/Self-Referential Structs in Rust.pdf>) delivered at the [Eclipse SDV](https://sdv.eclipse.org/) Technical Alignment meeting to highlight how Rust and its ecosystem enables memory-safe self-referential structs.
 
 ## Articles
 
