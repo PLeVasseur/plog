@@ -44,6 +44,8 @@ An [interview](https://blogs.eclipse.org/post/diana-kupfer/%E2%80%9Cit-really-he
 
 [Self-Referential Structs in Rust](<./media/Self-Referential Structs in Rust.pdf>) delivered at the [Eclipse SDV](https://sdv.eclipse.org/) Technical Alignment meeting to highlight how Rust and its ecosystem enables memory-safe self-referential structs.
 
+[Rust in Automotive: Shifting Left and Shifting into Gear](<./media/Rust in Automotive - Shift Left - Detroit Rust 2025.pdf>) given in a talk at Detroit Rust. [Video](https://www.youtube.com/watch?v=OhYewUhR5yE) now available.
+
 ## Articles
 
 [The Benefits of Committing](articles/020-benefits-of-committing.md)
