@@ -46,6 +46,8 @@ An [interview](https://blogs.eclipse.org/post/diana-kupfer/%E2%80%9Cit-really-he
 
 [Rust in Automotive: Shifting Left and Shifting into Gear](<./media/Rust in Automotive - Shift Left - Detroit Rust 2025.pdf>) given in a talk at Detroit Rust. [Video](https://www.youtube.com/watch?v=OhYewUhR5yE) now available.
 
+A side quest being [interviewed](https://video.tv-tokyo.co.jp/you_nippon/episode/00126091.html) on 『YOUは何しに日本へ?』. Chatted about 爆笑問題's radio program [カーボーイ](https://radiko.jp/r_seasons/1015) being funny enough to learn Japanese.
+
 ## Articles
 
 [The Benefits of Committing](articles/020-benefits-of-committing.md)
