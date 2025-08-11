@@ -37,11 +37,21 @@ Anki is free on all major desktop platforms: Windows, MacOS, Linux. It's also fr
 
 Anki is what I always used, so frankly I'm less knowledgable, but some people also seem to really like [SuperMemo](https://www.supermemo.com/en). SuperMemo is actually what the antimoon folks [used](https://www.antimoon.com/how/tomandsm.htm) back in the 90's when learning English. However, given that Anki is [open source](https://github.com/ankitects/anki) while SuperMemo has a [long history](https://supermemo.guru/wiki/Open_source_SuperMemo) of community efforts to open source it, I'd recommend starting with Anki.
 
-If you're just interested in how they work, you can stop here. If you'd like to learn more about some practical ways to apply them for learning languages and other concepts, read on!
-
-## My personal usage of spaced-repetition systems (SRS)
+## Effectiveness from personal experience
 
 ### Learning Japanese
+
+Was I effective using Anki along with immersion learning? I'd say so. Not that tests are perfect for finding out ability but: I didn't studied once and passed the [Japanese Language Proficiency Test N1](https://www.jlpt.jp/e/about/levelsummary.html) after about 3 years of very active study and 5 years in total.
+
+### Learning a new engineering concept
+
+Was I effective in learning a new engineering concept using SRS? Fair to say so I think. After doing both for about three months I was able to negotiate an offer with another company for a ~20% raise in base salary.
+
+If you're just interested in how they work, you can stop here and general usefulness. If you'd like to learn more about some practical ways to apply them for learning languages and other concepts, read on!
+
+## Ways to use spaced-repetition systems (SRS) based on personal experience
+
+### Language learning (Japanese for my case)
 
 I used SRS for about four years while learning Japanese for two main purposes:
 
@@ -67,7 +77,7 @@ There are many potential ways do these, but I always used the class "sentence" c
 
 I learned of the above method through the AJATT community.
 
-### Learning Kalman filters
+### Learning an engineering concept (Kalman filters)
 
 A number of years back I needed to learn more about how Kalman filters worked while working on Automoated Driving systems. I had a background in Computer Science, but not in how these worked.
 
@@ -92,9 +102,15 @@ The neat thing about this style of Anki card is that you could have more that on
 
 #### Figure occlusion cards
 
-I would take figures explaining concepts in KBFP and use the [Image Occlusion Enhanced
-](https://ankiweb.net/shared/info/1374772155) Anki plugin to hide certain parts of figures I wanted to be testedon.
+I would take screenshot figures explaining concepts in KBFP and use the [Image Occlusion Enhanced
+](https://ankiweb.net/shared/info/1374772155) Anki plugin to hide certain parts of figures I wanted to be tested on when making cards.
 
+![How image occlusion plugin works](021-power-of-spaced-repetition/image-occlusion-example.png "How image occlusion plugin works")
 
+The neat thing about using the Image Occlusion Enhanced plugin like this is that for a given figure it's possible to generate many cards to solidify knowledge and also have it be in context.h
 
-The neat thing about using the Image Occlusion Enhanced plugin like this is that for a given figure it's possible to generate many cards to solidify knowledge and also have it be in context.
+## Conclusion
+
+Thanks for reading if you got this far. It's not an exageration to say that Spaced-Repetition Systems (SRS) have changed my life for the better and enriched it in ways that go far beyond this article.
+
+I'm happy if even a handful of people read it, give it a try, and see its usefulness.
