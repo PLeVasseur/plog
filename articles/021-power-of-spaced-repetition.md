@@ -25,7 +25,21 @@ A key aspect is the daily review session for cards in your SRS deck:
 
 ![How to use an SRS in daily reviews](021-power-of-spaced-repetition/spaced-repetition-systems-plog.svg "How to use an SRS in daily reviews")
 
-## My usage personally of spaced-repetition systems (SRS)
+## Spaced-repetition system (SRS) software
+
+### Anki
+
+I'm a big fan of [Anki](https://apps.ankiweb.net/) for how to do SRS in-practice. It's been around for a long time, seen lots of fixes and updates (a newer SRS algorithm landed a while back) and is very extensible to fit anyone's needs.
+
+Anki is free on all major desktop platforms: Windows, MacOS, Linux. It's also free on Android, but for iOS you pay a one-time charge to use it (but well worth it to add cards and review on the go in my opinion).
+
+### Others
+
+Anki is what I always used, so frankly I'm less knowledgable, but some people also seem to really like [SuperMemo](https://www.supermemo.com/en). SuperMemo is actually what the antimoon folks [used](https://www.antimoon.com/how/tomandsm.htm) back in the 90's when learning English. However, given that Anki is [open source](https://github.com/ankitects/anki) while SuperMemo has a [long history](https://supermemo.guru/wiki/Open_source_SuperMemo) of community efforts to open source it, I'd recommend starting with Anki.
+
+If you're just interested in how they work, you can stop here. If you'd like to learn more about some practical ways to apply them for learning languages and other concepts, read on!
+
+## My personal usage of spaced-repetition systems (SRS)
 
 ### Learning Japanese
 
@@ -35,3 +49,52 @@ I used SRS for about four years while learning Japanese for two main purposes:
 * learning real-world Japanese sentences
 
 This was coupled with learning Japanese via an immersion-learning approach similar to what's laid out in [Refold](https://refold.la/simplified/) (no affiliation, it's just a solid roadmap).
+
+#### Japanese Kanji
+
+I used the methodology described in James Heisig's book [Remembering the Kanji: Volume 1](https://www.amazon.com/Remembering-Kanji-Complete-Japanese-Characters/dp/0824835921/). The front of the card is the kanji character and the back is the _single_ meaning in your native language you're associating and the mnemonic chosen to help remember it. (Japanese kanji can have many meanings, but for our purposes we pick just one.)
+
+After 200 kanji or so, Heisig leaves you to figure out your own mnemonics. If you'd like to not do that [kanji koohii](https://kanji.koohii.com/) is a great resource where there's more than 15 years of folks uploading their mnemonics they came up with.
+
+I learned of the above method and resources through the AJATT community.
+
+#### Japanese real-world sentences
+
+There are many potential ways do these, but I always used the class "sentence" cards where the front is a real-world native Japanese sentence and the back is dictionary definitions of new words:
+
+* when starting out, your best attempt at an English translation (LLMs these days do a decent job), with Japanese-to-English translations of new words
+* after 1000 or so sentences, no longer having an English translation and switching to use a monolingual Japanese dictionary
+
+I learned of the above method through the AJATT community.
+
+### Learning Kalman filters
+
+A number of years back I needed to learn more about how Kalman filters worked while working on Automoated Driving systems. I had a background in Computer Science, but not in how these worked.
+
+I used [Kalman and Bayesian Filters in Python](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python) (KBFP) as my resource for learning more about them. KBFP was super helpful as the book is structured as a [Jupyter Notebook](https://jupyter.org/), with interactive plots and figures you can manipulate to make the concepts stick.
+
+Along with reading through KBFP, I started to use my SRS to make cards of a few varieties.
+
+#### Cloze deletion cards
+
+I would make [cloze deletion](https://docs.ankiweb.net/editing.html#cloze-deletion) cards based on definitions and surrounding text from KBFP. Pulling from the link in the previous sentence:
+
+> Cloze deletion is the process of hiding one or more words in a sentence. For example, if you have the sentence:
+> ```
+> Canberra was founded in 1913.
+> ```
+> …​and you create a cloze deletion on “1913”, then the sentence would become:
+> ```
+> Canberra was founded in [...].
+> ```
+
+The neat thing about this style of Anki card is that you could have more that one clozure and you could generate many cards from a single entry to solidify knowledge.
+
+#### Figure occlusion cards
+
+I would take figures explaining concepts in KBFP and use the [Image Occlusion Enhanced
+](https://ankiweb.net/shared/info/1374772155) Anki plugin to hide certain parts of figures I wanted to be testedon.
+
+
+
+The neat thing about using the Image Occlusion Enhanced plugin like this is that for a given figure it's possible to generate many cards to solidify knowledge and also have it be in context.
