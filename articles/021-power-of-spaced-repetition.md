@@ -2,15 +2,15 @@
 
 I had great success using a spaced-repetition system (SRS) and I'd love to share more about how they work and how to get started.
 
-These spaced-repetition systems are well-known in some pockets of the immersion language learning community, particular among Japanese language learners. They have been popularized fairly widely 2008 or so in that space, originating from the All-Japanese All the Time (AJATT) community (unfortunately gone dormant).
+These spaced-repetition systems are well-known in some pockets of the immersion language learning community, particularly among Japanese language learners. They have been popularized fairly widely 2008 or so in that space, originating from the All-Japanese All the Time (AJATT) community (unfortunately gone dormant).
 
-I've SRS for both learning Japanese and picking up some engineering concepts I needed to learn for a new area.
+I've used SRS for both learning Japanese and picking up some engineering concepts I needed to learn for a new area.
 
-But first! Onto how spaced-repetion systems (SRS) work.
+But first! Onto how spaced-repetition systems (SRS) work.
 
 ## How spaced-repetition systems (SRS) work
 
-The AJATT community was started by Khatzumoto where he outlined the method of using SRS for learning the ~2000 or so general purpose use Japanese Kanji and for learning real-world Japanese sentences. Khatzumoto actually picked this methodology up from the excellent article written by a website written by some folks that learned English to an excellent level.
+The AJATT community was started by Khatzumoto where he outlined the method of using SRS for learning the ~2000 or so general purpose Japanese Kanji and for learning real-world Japanese sentences. Khatzumoto actually picked this methodology up from the excellent article written by a website written by some folks that learned English to an excellent level.
 
 The [series of articles on antimoon](https://www.antimoon.com/how/srs.htm) are so complete I'd rather not reproduce them in their entirety! So I'll keep it fairly simple below and encourage you to read further on antimoon for more details.
 
@@ -64,7 +64,7 @@ This was coupled with learning Japanese via an immersion-learning approach simil
 
 I used the methodology described in James Heisig's book [Remembering the Kanji: Volume 1](https://www.amazon.com/Remembering-Kanji-Complete-Japanese-Characters/dp/0824835921/). The front of the card is the kanji character and the back is the _single_ meaning in your native language you're associating and the mnemonic chosen to help remember it. (Japanese kanji can have many meanings, but for our purposes we pick just one.)
 
-After 200 kanji or so, Heisig leaves you to figure out your own mnemonics. If you'd like to not do that [kanji koohii](https://kanji.koohii.com/) is a great resource where there's more than 15 years of folks uploading their mnemonics they came up with.
+After 200 kanji or so, Heisig leaves you to figure out your own mnemonics. If you'd like to not do that, [kanji koohii](https://kanji.koohii.com/) is a great resource where there's more than 15 years of folks uploading their mnemonics they came up with.
 
 I learned of the above method and resources through the AJATT community.
 
@@ -79,7 +79,7 @@ I learned of the above method through the AJATT community.
 
 ### Learning an engineering concept (Kalman filters)
 
-A number of years back I needed to learn more about how Kalman filters worked while working on Automoated Driving systems. I had a background in Computer Science, but not in how these worked.
+A number of years back I needed to learn more about how Kalman filters worked while working on Automated Driving systems. I had a background in Computer Science, but not in how these worked.
 
 I used [Kalman and Bayesian Filters in Python](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python) (KBFP) as my resource for learning more about them. KBFP was super helpful as the book is structured as a [Jupyter Notebook](https://jupyter.org/), with interactive plots and figures you can manipulate to make the concepts stick.
 
@@ -111,6 +111,6 @@ The neat thing about using the Image Occlusion Enhanced plugin like this is that
 
 ## Conclusion
 
-Thanks for reading if you got this far. It's not an exageration to say that Spaced-Repetition Systems (SRS) have changed my life for the better and enriched it in ways that go far beyond this article.
+Thanks for reading if you got this far. It's not an exaggeration to say that Spaced-Repetition Systems (SRS) have changed my life for the better and enriched it in ways that go far beyond this article.
 
 I'm happy if even a handful of people read it, give it a try, and see its usefulness.
