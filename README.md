@@ -50,6 +50,8 @@ A side quest being [interviewed](https://video.tv-tokyo.co.jp/you_nippon/episode
 
 ## Articles
 
+[The Power of Spaced-Repetition Systems (SRS)](articles/021-power-of-spaced-repetition.md)
+
 [The Benefits of Committing](articles/020-benefits-of-committing.md)
 
 [Trashy Commits + Interactive Rebase = Great Git History](articles/019-trash-git-interactive-rebase.md)
