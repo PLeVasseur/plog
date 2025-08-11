@@ -1,4 +1,4 @@
-# The Power of Spaced-Repetion Systems for Learning and Retaining Knowledge
+# The Power of Spaced-Repetition Systems for Learning and Retaining Knowledge
 
 I had great success using a spaced-repetition system (SRS) and I'd love to share more about how they work and how to get started.
 
