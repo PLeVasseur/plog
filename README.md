@@ -59,6 +59,8 @@ A side quest being [interviewed](https://video.tv-tokyo.co.jp/you_nippon/episode
 
 ## Articles
 
+[Using Spaced-Repitiion Systems (SRS) for Learning the FLS Glossary](articles/022-srs-for-fls-glossary.md)
+
 [The Power of Spaced-Repetition Systems (SRS)](articles/021-power-of-spaced-repetition.md)
 
 [The Benefits of Committing](articles/020-benefits-of-committing.md)
