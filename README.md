@@ -6,29 +6,38 @@ Hey there, I'm Pete 👋
 
 I'm an engineer that loves to learn new things and grow teams.
 
-I've got a decade plus in the embedded and AV space, working on real-time software in C++ and Rust.
+I've got a decade plus in the embedded and automated driving / ADAS space, working on real-time software in C++ and Rust.
 
-Most recently I lead a team at General Motors on the open source [Eclipse uProtocol](https://github.com/eclipse-uprotocol) effort to create an open standard for Software Defined Vehicle middleware. I was primarily responsible for building out key infrastructural pieces in [Rust](https://www.rust-lang.org/) like the [uStreamer](https://github.com/eclipse-uprotocol/up-streamer-rust) for bridging between differing underlying protocols, e.g. [SOME/IP](https://github.com/eclipse-uprotocol/up-transport-vsomeip-rust), [Zenoh](https://github.com/eclipse-uprotocol/up-transport-zenoh-rust), and so on.
+Most recently I guide the efforts at [Woven by Toyota](https://woven.toyota/en/)
+to expand the ability to use the Rust programming language everywhere on vehicle
+that it's currently possible to use the C and C++ programming languages. Put
+concretely, this takes the shape of understanding relevant standards such as
+ISO 26262 and working to fill gaps between here-and-now and higher levels
+of safety-criticality: ASIL B+.
 
 Feel free to check out my [contributions](https://github.com/PLeVasseur)!
 
 Or my [resume](Pete-LeVasseur-Resume.pdf)!
 
-## Rust Safety-Critical Consortium
+## Safety-Critical Rust Consortium
 
-I serve as chair for the [Coding Guidelines Subcommittee](https://github.com/rustfoundation/safety-critical-rust-consortium/tree/main/subcommittee/coding-guidelines) of the [Rust Safety-Critical Consortium](https://github.com/rustfoundation/safety-critical-rust-consortium).
+I serve as lead of the of the [Rust Safety-Critical Consortium](https://github.com/rustfoundation/safety-critical-rust-consortium) and chair for the [Coding Guidelines Subcommittee](https://github.com/rustfoundation/safety-critical-rust-consortium/tree/main/subcommittee/coding-guidelines).
 
 The announcement by the Rust Foundation is [here](https://foundation.rust-lang.org/news/announcing-the-safety-critical-rust-consortium/).
 
-## Oxidation Partners
+## Rust Project
 
-I run a Rust consultancy that can support you on your journey to safer software! Feel free to reach out below.
+- Team Lead @ [FLS Team (t-fls)](https://rust-lang.org/governance/teams/lang/#team-fls)
+- Team Co-lead @ [Content Team (t-content)](https://rust-lang.org/governance/teams/launching-pad/#team-content)
+- Member @ [Vision Doc Team](https://rust-lang.org/governance/teams/launching-pad/#team-project-vision-doc-2025)
 
 ## Contact
 
 Email: Pete LEVASSEUR AT GMAIL.COM (the caps are the email address!)
 
 [LinkedIn](https://www.linkedin.com/in/pete-levasseur/)
+
+[Bluesky](https://bsky.app/profile/awkwardmap.bsky.social)
 
 [Twitter](https://x.com/AwkwardMap?t=3gQJc6upN1L_apm15mJYsQ)
 
