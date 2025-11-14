@@ -1,4 +1,4 @@
-# Using Spaced-Repitiion Systems (SRS) for Learning the FLS Glossary
+# Using Spaced-Repetition Systems (SRS) for Learning the FLS Glossary
 
 tl;dr:
 - I'm the team lead of the newly formed [FLS Team] in the Rust Project
