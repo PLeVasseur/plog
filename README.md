@@ -57,6 +57,8 @@ An [interview](https://blogs.eclipse.org/post/diana-kupfer/%E2%80%9Cit-really-he
 
 A side quest being [interviewed](https://video.tv-tokyo.co.jp/you_nippon/episode/00126091.html) on 『YOUは何しに日本へ?』. Chatted about 爆笑問題's radio program [カーボーイ](https://radiko.jp/r_seasons/1015) being funny enough to learn Japanese.
 
+Presented at [HAL4SDV](https://www.hal4sdv.eu/) about Rust's usage and current landscape for safety-critical when it comes to Automotive. [Slides](<./media/Rust-for-Automotive_-_Presented-at-HAL4SDV_-_December-2,-2025.pdf>) are available.
+
 ## Articles
 
 [Using Spaced-Repetition Systems (SRS) for Learning the FLS Glossary](articles/022-srs-for-fls-glossary.md)
