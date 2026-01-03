@@ -1,0 +1,87 @@
+---
+---
+
+@import "minima";
+
+// GitHub-style syntax highlighting (light mode)
+.highlight {
+  background: #f6f8fa;
+  border-radius: 6px;
+  
+  .c, .c1, .cm { color: #6a737d; } // Comments
+  .k, .kd, .kn, .kp, .kr, .kt { color: #d73a49; } // Keywords
+  .n, .na, .nb, .nc, .nd, .ne, .nf, .ni, .nl, .nn, .no, .nt, .nv { color: #24292e; } // Names
+  .s, .s1, .s2, .sb, .sc, .sd, .se, .sh, .si, .sr, .ss, .sx { color: #032f62; } // Strings
+  .m, .mf, .mh, .mi, .mo, .il { color: #005cc5; } // Numbers
+  .o, .ow { color: #d73a49; } // Operators
+  .p { color: #24292e; } // Punctuation
+  .gi { color: #22863a; background-color: #f0fff4; } // Git inserted
+  .gd { color: #b31d28; background-color: #ffeef0; } // Git deleted
+  .gh { color: #005cc5; font-weight: bold; } // Git header
+  .bp { color: #005cc5; } // Built-in pseudo
+  .nc { color: #6f42c1; } // Class name
+  .nf { color: #6f42c1; } // Function name
+}
+
+// Dark mode syntax highlighting
+@media (prefers-color-scheme: dark) {
+  .highlight {
+    background: #161b22;
+    
+    .c, .c1, .cm { color: #8b949e; } // Comments
+    .k, .kd, .kn, .kp, .kr, .kt { color: #ff7b72; } // Keywords
+    .n, .na, .nb, .nc, .nd, .ne, .nf, .ni, .nl, .nn, .no, .nt, .nv { color: #c9d1d9; } // Names
+    .s, .s1, .s2, .sb, .sc, .sd, .se, .sh, .si, .sr, .ss, .sx { color: #a5d6ff; } // Strings
+    .m, .mf, .mh, .mi, .mo, .il { color: #79c0ff; } // Numbers
+    .o, .ow { color: #ff7b72; } // Operators
+    .p { color: #c9d1d9; } // Punctuation
+    .gi { color: #aff5b4; background-color: #033a16; } // Git inserted
+    .gd { color: #ffdcd7; background-color: #67060c; } // Git deleted
+    .gh { color: #79c0ff; font-weight: bold; } // Git header
+    .bp { color: #79c0ff; } // Built-in pseudo
+    .nc { color: #d2a8ff; } // Class name
+    .nf { color: #d2a8ff; } // Function name
+  }
+}
+
+// Article list styling
+.article-list {
+  list-style: none;
+  padding-left: 0;
+  
+  li {
+    margin-bottom: 0.75rem;
+  }
+  
+  .article-date {
+    color: #586069;
+    font-size: 0.9em;
+    
+    @media (prefers-color-scheme: dark) {
+      color: #8b949e;
+    }
+  }
+}
+
+// Back link styling
+.back-link {
+  margin-bottom: 1.5rem;
+  font-size: 0.9em;
+  
+  a {
+    color: #586069;
+    
+    @media (prefers-color-scheme: dark) {
+      color: #8b949e;
+    }
+    
+    &:hover {
+      color: #0366d6;
+    }
+  }
+}
+
+// Article metadata
+.post-meta {
+  margin-bottom: 1.5rem;
+}

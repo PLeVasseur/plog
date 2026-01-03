@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Using Rust with Java Binder"
+date: 2024-08-22
+---
+
 # Writing Rust for Android that communicates over Binder
 
 As I recounted in an [earlier article](003-interop-java-rust.md), there were some fluctuations early on in how we would integrate the [Rust uStreamer](https://github.com/eclipse-uprotocol/up-streamer-rust) with uEntities running in the Android VM in [Eclipse uProtocol](https://github.com/eclipse-uprotocol).

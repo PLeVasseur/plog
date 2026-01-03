@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Using Rust Atomics for Consistency under High Contention"
+date: 2024-08-23
+---
+
 # Generating Unique uProtocol UUIDs under Thread Contention using Rust Atomics and the Singleton Pattern
 
 In a previous release of the [Eclipse uProtocol](https://github.com/eclipse-uprotocol), [1.5.7](https://github.com/eclipse-uprotocol/up-spec/tree/v1.5.7), we used a [UUIDv8](https://en.wikipedia.org/wiki/Universally_unique_identifier#:~:text=A%20Universally%20Unique%20Identifier%20(UUID,Acronym)) which looked like this:

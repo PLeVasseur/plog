@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Gracefully Winding Down a C++ Library's Resources From Rust (with an Async Twist)"
+date: 2024-08-30
+---
+
 # Gracefully Winding Down a C++ Library's Resources From Rust (with an Async Twist)
 
 In [Eclipse uProtocol](https://github.com/eclipse-uprotocol) we built our [uP-L1 Transport](https://github.com/eclipse-uprotocol/up-spec/tree/main/up-l1) library over SOME/IP on top of the [COVESA vsomeip](https://github.com/COVESA/vsomeip) C++ library: [`up-transport-vsomeip-rust`](https://github.com/eclipse-uprotocol/up-transport-vsomeip-rust).

@@ -1,3 +1,9 @@
+---
+layout: post
+title: "The Power of Spaced-Repetition Systems (SRS)"
+date: 2025-08-11
+---
+
 # The Power of Spaced-Repetition Systems for Learning and Retaining Knowledge
 
 I had great success using a spaced-repetition system (SRS) and I'd love to share more about how they work and how to get started.

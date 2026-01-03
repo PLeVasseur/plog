@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Writing Async Rust for the uProtocol uStreamer"
+date: 2024-08-23
+---
+
 # Writing Async Rust for the uProtocol uStreamer
 
 In [Eclipse uProtocol](https://github.com/eclipse-uprotocol) for the [Rust uStreamer](https://github.com/eclipse-uprotocol/up-streamer-rust) we needed to use some level of multi-threading or async in order to be given a UMessage from one uP-L1 Transport library and then send out over another.

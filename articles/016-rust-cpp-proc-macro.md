@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Creating a Pool of Callbacks from Rust to C++ with Proc Macros"
+date: 2024-08-30
+---
+
 # Creating a Pool of Callbacks from Rust to C++ with Proc Macros
 
 In [Eclipse uProtocol](https://github.com/eclipse-uprotocol) we had a need to build on top of the [vsomeip](https://github.com/COVESA/vsomeip) C++ library in order to communicate between high-compute devices and mechatronics devices (think e.g. brake controllers, IMUs). I went over some of the high level details in [this article](002-interop-cpp-rust.md).

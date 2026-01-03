@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Simplifying Rust API Design"
+date: 2024-08-23
+---
+
 # Simplifying Rust API Design for uProtocol uP-L1 Transport trait
 
 In [Eclipse uProtocol](https://github.com/eclipse-uprotocol) there are three layers to the protocol:
