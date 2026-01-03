@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Rust and C++ (vsomeip) Interop"
+date: 2024-08-21
+---
+
 # Interop between C++ vsomeip library and Rust for building uProtocol uTransport
 
 For [uProtocol](https://github.com/eclipse-uprotocol), our Software Defined Vehicle middleware, it was important to be able to incorporate and integrate with mechatronics devices (think brake controllers, IMUs, and so on). There are many mechatronics devices using Classic AUTOSAR frameworks that are updated very infrequently, but serve vital functions within a vehicle. These are hardened controllers which must conform to up to [ASIL-D](https://en.wikipedia.org/wiki/Automotive_Safety_Integrity_Level) standards (the highest level) for safety reasons.

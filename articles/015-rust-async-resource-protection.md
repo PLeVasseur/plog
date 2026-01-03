@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Rust Async Pattern For Resource Protection"
+date: 2024-08-28
+---
+
 # Rust Async Pattern For Resource Protection using Channels and Enums
 
 A pattern that's quite useful in Rust when doing asynchronous programming with a resource which should only be accessed by one thread is to use Rust channels and enums for communication with that dedicated thread.

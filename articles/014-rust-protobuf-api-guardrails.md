@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Guardrails around Valid UUri Protobuf Serialization"
+date: 2024-08-27
+---
+
 # Implementing Guardrails around `up-rust` UUri Protobuf Serialization
 
 In uProtocol we use [`UUri`](https://github.com/eclipse-uprotocol/up-spec/blob/main/basics/uri.adoc)s, [encoded](https://github.com/eclipse-uprotocol/up-spec/blob/da5ca97d3a7541d2fcd52ed010bc3bcca92e46cb/up-core-api/uprotocol/v1/uri.proto#L25) in Protobuf .proto files to describe the source and sink for messages.

@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Rust and Java (Java UPClient) Interop"
+date: 2024-08-21
+---
+
 # Interop between Java and Rust for uProtocol uStreamer
 
 I really enjoy working on projects where there's a chance to make a large impact and try to bring additional thoughts towards efficiency, safety, and robustness. Those are the same sorts of projects that tend to be early stage under rapid change and growth.

@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Managing a Pool of extern \"C\" fns"
+date: 2024-08-30
+---
+
 # Managing a Pool of `extern "C" fn`s
 
 This article continues on from [the previous one](016-rust-cpp-proc-macro.md) which details how we wrote the procedural macro used to generate the `extern "C" fn`s used as callbacks we pass to the C++ [vsomeip](https://github.com/COVESA/vsomeip) library. In [Eclipse uProtocol](https://github.com/eclipse-uprotocol) we are building on top of vsomeip in order to enable communication over SOME/IP to mechatronics devices (think e.g. brake controllers or IMUs).

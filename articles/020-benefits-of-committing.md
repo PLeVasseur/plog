@@ -1,3 +1,9 @@
+---
+layout: post
+title: "The Benefits of Committing"
+date: 2024-10-28
+---
+
 # The Benefits of Committing
 
 About a year ago a project I had been working on at General Motors for six years was cancelled. This time lead to a lot of soul-searching on what I believed in and wanted to do next. I was able to find something new within GM I could hitch my wagon to -- [Eclipse uProtocol](https://github.com/eclipse-uprotocol) -- as a place I could develop Rust software in an open source environment. Ultimately that project too was more-or-less let go of when myself and many others which worked on Eclipse uProtocol were caught up in a restructuring in August of 2024.

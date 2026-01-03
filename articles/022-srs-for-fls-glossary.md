@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Using Spaced-Repetition Systems (SRS) for Learning the FLS Glossary"
+date: 2025-11-13
+---
+
 # Using Spaced-Repetition Systems (SRS) for Learning the FLS Glossary
 
 tl;dr:

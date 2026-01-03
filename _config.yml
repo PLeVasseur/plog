@@ -1,0 +1,42 @@
+# Site settings
+title: plog
+description: Pete LeVasseur's Blog - Engineering, Rust, Automotive, and more
+url: "https://petelevasseur.com"
+baseurl: ""
+
+# Theme
+theme: minima
+
+# Minima theme settings
+minima:
+  skin: auto  # auto switches between light/dark based on system preference
+  date_format: "%b %-d, %Y"
+
+# Header navigation links
+header_pages:
+  - index.md
+  - articles/index.md
+  - media/index.md
+
+# Exclude from processing
+exclude:
+  - _plans
+  - README.md
+  - LICENSE
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+
+# Permalink structure - default preserves .html extension for URL compatibility
+
+# Markdown processor
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    default_lang: rust
+
+# Plugins (GitHub Pages compatible)
+plugins:
+  - jekyll-seo-tag
