@@ -8,6 +8,7 @@ All articles, newest first.
 
 | Date | Article |
 |------|---------|
+| Jan 2026 | [Curiosity: How I Moved from Senior to Staff Engineer](/articles/023-senior-to-staff.html) |
 | Nov 2025 | [Using Spaced-Repetition Systems (SRS) for Learning the FLS Glossary](/articles/022-srs-for-fls-glossary.html) |
 | Aug 2025 | [The Power of Spaced-Repetition Systems (SRS)](/articles/021-power-of-spaced-repetition.html) |
 | Oct 2024 | [The Benefits of Committing](/articles/020-benefits-of-committing.html) |
