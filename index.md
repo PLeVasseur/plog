@@ -46,11 +46,11 @@ Email: Pete LEVASSEUR AT GMAIL.COM (the caps are the email address!)
 
 ## Recent Articles
 
+- [Curiosity: How I Moved from Senior to Staff Engineer](/articles/023-senior-to-staff.html) - Jan 2026
 - [Using Spaced-Repetition Systems (SRS) for Learning the FLS Glossary](/articles/022-srs-for-fls-glossary.html) - Nov 2025
 - [The Power of Spaced-Repetition Systems (SRS)](/articles/021-power-of-spaced-repetition.html) - Aug 2025
 - [The Benefits of Committing](/articles/020-benefits-of-committing.html) - Oct 2024
 - [Trashy Commits + Interactive Rebase = Great Git History](/articles/019-trash-git-interactive-rebase.html) - Sep 2024
-- [Gracefully Winding Down a C++ Library's Resources From Rust (with an Async Twist)](/articles/018-gracefully-cpp-interop-drop-impl.html) - Aug 2024
 
 [View all articles &rarr;](/articles/)
 
