@@ -46,13 +46,13 @@ Email: Pete LEVASSEUR AT GMAIL.COM (the caps are the email address!)
 
 ## Recent Articles
 
-- [Curiosity: How I Moved from Senior to Staff Engineer](/articles/023-senior-to-staff.html) - Jan 2026
-- [Using Spaced-Repetition Systems (SRS) for Learning the FLS Glossary](/articles/022-srs-for-fls-glossary.html) - Nov 2025
-- [The Power of Spaced-Repetition Systems (SRS)](/articles/021-power-of-spaced-repetition.html) - Aug 2025
-- [The Benefits of Committing](/articles/020-benefits-of-committing.html) - Oct 2024
-- [Trashy Commits + Interactive Rebase = Great Git History](/articles/019-trash-git-interactive-rebase.html) - Sep 2024
+- [Curiosity: How I Moved from Senior to Staff Engineer](articles/023-senior-to-staff.html) - Jan 2026
+- [Using Spaced-Repetition Systems (SRS) for Learning the FLS Glossary](articles/022-srs-for-fls-glossary.html) - Nov 2025
+- [The Power of Spaced-Repetition Systems (SRS)](articles/021-power-of-spaced-repetition.html) - Aug 2025
+- [The Benefits of Committing](articles/020-benefits-of-committing.html) - Oct 2024
+- [Trashy Commits + Interactive Rebase = Great Git History](articles/019-trash-git-interactive-rebase.html) - Sep 2024
 
-[View all articles &rarr;](/articles/)
+[View all articles &rarr;](articles/index.html)
 
 ## Recent Media
 
@@ -60,4 +60,4 @@ Email: Pete LEVASSEUR AT GMAIL.COM (the caps are the email address!)
 - [Rust in Automotive: Shifting Left and Shifting into Gear](media/Rust%20in%20Automotive%20-%20Shift%20Left%20-%20Detroit%20Rust%202025.pdf) - Detroit Rust, Jul 2025
 - [Self-Referential Structs in Rust](media/Self-Referential%20Structs%20in%20Rust.pdf) - Eclipse SDV, Feb 2025
 
-[View all media &rarr;](/media/)
+[View all media &rarr;](media/index.html)

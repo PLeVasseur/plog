@@ -1,16 +1,15 @@
 ---
 layout: default
 ---
-<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+<article class="post-sheet prose post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
     <div class="back-link">
-      <a href="/articles/">&larr; Back to Articles</a>
+      <a href="../articles/index.html">&larr; Back to all articles</a>
     </div>
-    <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
     <p class="post-meta">
       <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
-        {{ page.date | date: "%B %-d, %Y" }}
+        {{ page.date | date: site.minima.date_format | default: "%b %-d, %Y" }}
       </time>
     </p>
   </header>
