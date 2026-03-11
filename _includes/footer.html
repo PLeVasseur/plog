@@ -1,0 +1,7 @@
+{% capture path_prefix %}{% include path-prefix.html %}{% endcapture %}{% assign path_prefix = path_prefix | strip %}
+<footer class="site-footer">
+  <div class="wrapper site-footer-inner">
+    <p>&copy; {{ site.time | date: '%Y' }} Pete LeVasseur</p>
+    <p><a href="{{ path_prefix }}articles/index.html">Articles</a> &middot; <a href="{{ path_prefix }}media/index.html">Media</a> &middot; <a href="https://github.com/PLeVasseur">GitHub</a></p>
+  </div>
+</footer>

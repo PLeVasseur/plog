@@ -1,0 +1,8 @@
+{% capture path_prefix %}{% include path-prefix.html %}{% endcapture %}{% assign path_prefix = path_prefix | strip %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="{{ path_prefix }}pete.png">
+{%- seo -%}
+<link rel="stylesheet" href="{{ path_prefix }}assets/main.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script defer src="{{ path_prefix }}assets/js/plog-header.js"></script>

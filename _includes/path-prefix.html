@@ -1,0 +1,1 @@
+{% assign depth = page.path | split: '/' | size | minus: 1 %}{% if depth < 0 %}{% assign depth = 0 %}{% endif %}{% for _item in (1..depth) %}../{% endfor %}

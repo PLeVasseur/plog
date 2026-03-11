@@ -1,0 +1,31 @@
+{% assign current_url = page.url | default: '/' %}
+{% capture path_prefix %}{% include path-prefix.html %}{% endcapture %}{% assign path_prefix = path_prefix | strip %}
+<header class="site-masthead" data-plog-header>
+  <div class="wrapper header-shell">
+    <div class="site-brand-row">
+      <a class="site-brand" href="{{ path_prefix }}index.html">
+        <span class="site-title">{{ site.title | default: 'plog' | escape }}</span>
+      </a>
+
+      <div class="header-d20" id="plogD20Widget">
+        <div
+          id="plogD20Stage"
+          class="d20-stage"
+          tabindex="0"
+          role="button"
+          aria-label="Interactive d20. Drag to rotate. Use the roll button or press Enter to roll."
+          title="drag to rotate"
+        ></div>
+
+        <button id="d20RollButton" class="d20-roll-btn" type="button">roll d20</button>
+        <span id="d20Announce" class="visually-hidden" aria-live="polite"></span>
+      </div>
+    </div>
+
+    <nav class="site-links" aria-label="Primary">
+      <a href="{{ path_prefix }}index.html"{% if current_url == '/' %} class="is-active"{% endif %}>Home</a>
+      <a href="{{ path_prefix }}articles/index.html"{% if current_url == '/articles/' or current_url contains '/articles/' %} class="is-active"{% endif %}>Articles</a>
+      <a href="{{ path_prefix }}media/index.html"{% if current_url == '/media/' or current_url contains '/media/' %} class="is-active"{% endif %}>Media</a>
+    </nav>
+  </div>
+</header>
