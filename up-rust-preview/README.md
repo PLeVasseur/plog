@@ -1,7 +1,7 @@
 This directory is a rendered rustdoc snapshot, committed verbatim.
 
 Source: the proposed `native-frame-model` branch of up-rust
-(`8658f274aa40f99483a427c84807d565590468c1`) with its companion up-spec
+(`b6b99c6d1b1720495d97a2e178d0af86da89fe6d`) with its companion up-spec
 change (`f0e9b17aba2bbe3c9fcbfdd07bfec7f30612d4cf`), rendered with the
 docs.rs-style pinned nightly, all features, offline and deterministic.
 It is a preview of proposed work, not released documentation, and will

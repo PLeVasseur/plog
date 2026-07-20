@@ -33,7 +33,7 @@ optional open payload-encoding identity fields on `UAttributes`, so
 new payload encodings no longer require editing a closed enum.
 
 Provenance: the preview is rendered from branch `native-frame-model`
-(up-rust `8658f274`) with its up-spec companion (`f0e9b17`),
+(up-rust `b6b99c6d`) with its up-spec companion (`f0e9b17`),
 docs.rs-style pinned-nightly, all features, deterministic build. It
 carries a banner and `noindex` on every page and will come down once
 the PRs resolve. Validation behind it, for the curious: per-commit
