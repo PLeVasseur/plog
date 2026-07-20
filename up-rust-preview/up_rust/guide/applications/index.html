@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="en"><head><meta name="robots" content="noindex"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Writing an application"><title>up_rust::guide::applications - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0ce1a80b.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="up_rust" data-themes="" data-resource-suffix="" data-rustdoc-version="1.89.0-nightly (414482f6a 2025-05-13)" data-channel="nightly" data-search-js="search-f7877310.js" data-settings-js="settings-5514c975.js" ><script src="../../../static.files/storage-4e99c027.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-7ef8a74a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-32bb7600.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><div style="position:sticky;top:0;z-index:9999;background:#8a6d1a;color:#fff;padding:6px 14px;font:13px sans-serif;text-align:center;">Preview of the <strong>proposed</strong> up-rust <code style="color:#fff">native-frame-model</code> branch (up-rust <code style="color:#fff">8658f274</code>, up-spec <code style="color:#fff">f0e9b17</code>) &mdash; not released documentation. <a style="color:#ffe9a8" href="https://github.com/PLeVasseur/up-rust/tree/native-frame-model">branch</a> &middot; <a style="color:#ffe9a8" href="https://petelevasseur.com/">write-up</a></div><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../up_rust/index.html">up_rust</a><span class="version">0.10.0-SNAPSHOT</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module applications</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#writing-an-application" title="Writing an application">Writing an application</a><ul><li><a href="#addresses-in-one-box" title="Addresses in one box">Addresses in one box</a></li><li><a href="#when-things-fail" title="When things fail">When things fail</a></li><li><a href="#where-a-real-transport-comes-from" title="Where a real transport comes from">Where a real transport comes from</a></li></ul></li></ul><h3><a href="#modules">Module Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In up_<wbr>rust::<wbr>guide</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">up_rust</a>::<wbr><a href="../index.html">guide</a></div><h1>Module <span>applications</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/up_rust/lib.rs.html#334">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="writing-an-application"><a class="doc-anchor" href="#writing-an-application">§</a>Writing an application</h2>
+<p>Applications talk uProtocol through one of <strong>two layers</strong>, and knowing
+which one you’re on is the whole orientation:</p>
+<ul>
+<li><strong><a href="communication/index.html" title="mod up_rust::guide::applications::communication">The Communication Layer</a></strong>
+(up-L2, feature <code>communication</code>) — role traits: <code>Publisher</code>,
+<code>Subscriber</code>, <code>Notifier</code>, <code>RpcClient</code>, <code>RpcServer</code>. <strong>This is the
+recommended starting point.</strong> Start here unless you have a reason not to.</li>
+<li><strong><a href="transport/index.html" title="mod up_rust::guide::applications::transport">The Transport Layer</a></strong>
+(up-L1, no features) — build <a href="../../struct.UMessage.html" title="struct up_rust::UMessage"><code>UMessage</code></a>s yourself
+and hand them to a <a href="../../trait.UTransport.html" title="trait up_rust::UTransport"><code>UTransport</code></a>. The floor the
+roles stand on; yours directly when you need minimal dependencies,
+custom filters, or the zero-copy payload path.</li>
+</ul>
+<p>Thirty seconds to first message, on the communication layer:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::sync::Arc;
+<span class="kw">use </span>up_rust::local_transport::LocalTransport;
+<span class="kw">use </span>up_rust::{StaticUriProvider, UPayloadFormat};
+<span class="kw">use </span>up_rust::communication::{CallOptions, Publisher, SimplePublisher, UPayload};
+
+<span class="attr">#[tokio::main]
+</span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt; {
+    <span class="kw">let </span>transport = Arc::new(LocalTransport::default());
+    <span class="kw">let </span>me = Arc::new(StaticUriProvider::new(<span class="string">"my-vehicle"</span>, <span class="number">0x1_0001</span>, <span class="number">1</span>)<span class="question-mark">?</span>);
+
+    SimplePublisher::new(transport, me)
+        .publish(<span class="number">0x8001</span>, CallOptions::for_publish(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+                 <span class="prelude-val">Some</span>(UPayload::new(<span class="string">"92.5"</span>, UPayloadFormat::Text)))
+        .<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="comment">// Delivered to every subscriber of my-vehicle/0x1_0001/1/0x8001.
+    </span><span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+<p>Everything below applies to both layers.</p>
+<h3 id="addresses-in-one-box"><a class="doc-anchor" href="#addresses-in-one-box">§</a>Addresses in one box</h3>
+<p>Every example below uses <a href="../../struct.UUri.html" title="struct up_rust::UUri"><code>UUri</code></a> literals; here is what
+they mean, once:</p>
+<div class="example-wrap"><pre class="language-text"><code>UUri::try_from_parts(&quot;my-vehicle&quot;, 0x1_0001, 1, 0x8001)
+                      authority    entity   ver resource</code></pre></div>
+<ul>
+<li><strong>authority</strong> — which device/domain the uEntity lives on.</li>
+<li><strong>entity id</strong> — which uEntity (a u32; deployments assign these).</li>
+<li><strong>major version</strong> — the uEntity’s API major version.</li>
+<li><strong>resource id</strong> — <em>what</em> within the uEntity: <code>0x0000</code> is the uEntity
+itself (the address RPC responses return to), low ids (<code>0x0001..</code>)
+are RPC <strong>methods</strong>, and ids from <strong><code>0x8000</code> up are topics</strong> a
+uEntity publishes. That is why the publish examples use <code>0x8001</code> and
+the RPC endpoint uses <code>0x00A1</code>.</li>
+</ul>
+<h3 id="when-things-fail"><a class="doc-anchor" href="#when-things-fail">§</a>When things fail</h3>
+<p>Every operation returns a code you can act on. Transport-level errors
+arrive as <a href="../../struct.UStatus.html" title="struct up_rust::UStatus"><code>UStatus</code></a> carrying a <a href="../../enum.UCode.html" title="enum up_rust::UCode"><code>UCode</code></a>:
+<code>Unavailable</code> (link down — retry with backoff), <code>AlreadyExists</code>
+(duplicate listener registration), <code>InvalidArgument</code> (a filter or
+message the transport cannot express), <code>PermissionDenied</code>. The roles
+wrap these: publishing fails with <code>PubSubError</code>, RPC with
+<code>ServiceInvocationError</code> — whose <code>CommStatus</code> variant means <em>the remote
+service</em> answered with a failure code, distinct from the transport
+failing to deliver. Timeouts surface as <code>CommStatus(DeadlineExceeded)</code>
+when the <code>ttl</code> you passed in <code>CallOptions</code> expires.</p>
+<h3 id="where-a-real-transport-comes-from"><a class="doc-anchor" href="#where-a-real-transport-comes-from">§</a>Where a real transport comes from</h3>
+<p>The examples use <code>LocalTransport</code> so they can run anywhere. In a
+deployment, you construct one of the transport crates at startup —
+<code>up-transport-zenoh-rust</code>, <code>up-transport-mqtt5-rust</code>,
+<code>up-transport-vsomeip-rust</code>, and so on — configure it, wrap it in an
+<code>Arc</code>, and hand that same <code>Arc</code> to every role. Application code stays
+identical: everything above takes <code>&amp;dyn UTransport</code> or a generic, which
+is the point of the protocol.</p>
+<p>For which trait is which, see the <a href="../trait_map/index.html" title="mod up_rust::guide::trait_map">trait map</a>.</p>
+</div></details><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><dl class="item-table"><dt><a class="mod" href="communication/index.html" title="mod up_rust::guide::applications::communication">communication</a></dt><dd>The Communication Layer (up-L2)</dd><dt><a class="mod" href="transport/index.html" title="mod up_rust::guide::applications::transport">transport</a></dt><dd>The Transport Layer (up-L1)</dd></dl></section></div></main></body></html>

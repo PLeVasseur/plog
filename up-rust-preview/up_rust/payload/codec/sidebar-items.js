@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["PayloadLayout","ProtobufAnyPayload","ProtobufPayload","RawBytes"],"trait":["BytePayloadCodec","DecodePayload","EncodePayload","PayloadCodec","PayloadFormat","ReadDecodePayload"]};

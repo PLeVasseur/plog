@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Ars548Detection","Ars548DetectionList","BenchHeader","CameraBayerFrame","CameraCarlaBgraFrame","CameraIntrinsics","CanClassicFrame","CanFdFrame","LidarPointCloudFrame","Pose3d","Quaternionf","Roi","SignalSample","SomeIpSignalBatch","StreamChunk","Vector3f"]};

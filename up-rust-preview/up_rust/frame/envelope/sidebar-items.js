@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["NATIVE_ENVELOPE_HEADER_LEN","NATIVE_ENVELOPE_MAGIC","NATIVE_ENVELOPE_VERSION"],"enum":["UFrameWireError"],"struct":["NativeUFrameEnvelope","ProtobufUMessageFrame"],"trait":["UFrameWireFormat"]};

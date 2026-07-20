@@ -1,0 +1,416 @@
+<!DOCTYPE html><html lang="en"><head><meta name="robots" content="noindex"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="A builder for creating `UMessage`s."><title>UMessageBuilder in up_rust - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-0ce1a80b.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="up_rust" data-themes="" data-resource-suffix="" data-rustdoc-version="1.89.0-nightly (414482f6a 2025-05-13)" data-channel="nightly" data-search-js="search-f7877310.js" data-settings-js="settings-5514c975.js" ><script src="../static.files/storage-4e99c027.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-7ef8a74a.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-32bb7600.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc struct"><div style="position:sticky;top:0;z-index:9999;background:#8a6d1a;color:#fff;padding:6px 14px;font:13px sans-serif;text-align:center;">Preview of the <strong>proposed</strong> up-rust <code style="color:#fff">native-frame-model</code> branch (up-rust <code style="color:#fff">8658f274</code>, up-spec <code style="color:#fff">f0e9b17</code>) &mdash; not released documentation. <a style="color:#ffe9a8" href="https://github.com/PLeVasseur/up-rust/tree/native-frame-model">branch</a> &middot; <a style="color:#ffe9a8" href="https://petelevasseur.com/">write-up</a></div><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../up_rust/index.html">up_rust</a><span class="version">0.10.0-SNAPSHOT</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">UMessage<wbr>Builder</a></h2><h3><a href="#implementations">Methods</a></h3><ul class="block method"><li><a href="#method.build" title="build">build</a></li><li><a href="#method.build_with_payload" title="build_with_payload">build_with_payload</a></li><li><a href="#method.build_with_payload_encoding" title="build_with_payload_encoding">build_with_payload_encoding</a></li><li><a href="#method.build_with_protobuf_payload" title="build_with_protobuf_payload">build_with_protobuf_payload</a></li><li><a href="#method.build_with_wrapped_protobuf_payload" title="build_with_wrapped_protobuf_payload">build_with_wrapped_protobuf_payload</a></li><li><a href="#method.notification" title="notification">notification</a></li><li><a href="#method.publish" title="publish">publish</a></li><li><a href="#method.request" title="request">request</a></li><li><a href="#method.response" title="response">response</a></li><li><a href="#method.response_for_request" title="response_for_request">response_for_request</a></li><li><a href="#method.with_comm_status" title="with_comm_status">with_comm_status</a></li><li><a href="#method.with_message_id" title="with_message_id">with_message_id</a></li><li><a href="#method.with_permission_level" title="with_permission_level">with_permission_level</a></li><li><a href="#method.with_priority" title="with_priority">with_priority</a></li><li><a href="#method.with_token" title="with_token">with_token</a></li><li><a href="#method.with_traceparent" title="with_traceparent">with_traceparent</a></li><li><a href="#method.with_ttl" title="with_ttl">with_ttl</a></li></ul><h3><a href="#trait-implementations">Trait Implementations</a></h3><ul class="block trait-implementation"><li><a href="#impl-Debug-for-UMessageBuilder%3CS%3E" title="Debug">Debug</a></li></ul><h3><a href="#synthetic-implementations">Auto Trait Implementations</a></h3><ul class="block synthetic-implementation"><li><a href="#impl-Freeze-for-UMessageBuilder%3CS%3E" title="!Freeze">!Freeze</a></li><li><a href="#impl-RefUnwindSafe-for-UMessageBuilder%3CS%3E" title="!RefUnwindSafe">!RefUnwindSafe</a></li><li><a href="#impl-Sync-for-UMessageBuilder%3CS%3E" title="!Sync">!Sync</a></li><li><a href="#impl-UnwindSafe-for-UMessageBuilder%3CS%3E" title="!UnwindSafe">!UnwindSafe</a></li><li><a href="#impl-Send-for-UMessageBuilder%3CS%3E" title="Send">Send</a></li><li><a href="#impl-Unpin-for-UMessageBuilder%3CS%3E" title="Unpin">Unpin</a></li></ul><h3><a href="#blanket-implementations">Blanket Implementations</a></h3><ul class="block blanket-implementation"><li><a href="#impl-Any-for-T" title="Any">Any</a></li><li><a href="#impl-Any-for-T-1" title="Any">Any</a></li><li><a href="#impl-Borrow%3CT%3E-for-T" title="Borrow&#60;T&#62;">Borrow&#60;T&#62;</a></li><li><a href="#impl-BorrowMut%3CT%3E-for-T" title="BorrowMut&#60;T&#62;">BorrowMut&#60;T&#62;</a></li><li><a href="#impl-From%3CT%3E-for-T" title="From&#60;T&#62;">From&#60;T&#62;</a></li><li><a href="#impl-Instrument-for-T" title="Instrument">Instrument</a></li><li><a href="#impl-Into%3CU%3E-for-T" title="Into&#60;U&#62;">Into&#60;U&#62;</a></li><li><a href="#impl-Same-for-T" title="Same">Same</a></li><li><a href="#impl-TryFrom%3CU%3E-for-T" title="TryFrom&#60;U&#62;">TryFrom&#60;U&#62;</a></li><li><a href="#impl-TryInto%3CU%3E-for-T" title="TryInto&#60;U&#62;">TryInto&#60;U&#62;</a></li><li><a href="#impl-UWithNativePrefixWire-for-TCore" title="UWithNativePrefixWire">UWithNativePrefixWire</a></li><li><a href="#impl-WithSubscriber-for-T" title="WithSubscriber">WithSubscriber</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate up_<wbr>rust</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="index.html">up_rust</a></div><h1>Struct <span class="struct">UMessageBuilder</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/up_rust/umessage/umessagebuilder.rs.html#113-116">Source</a> </span></div><pre class="rust item-decl"><code>pub struct UMessageBuilder&lt;S: <a class="trait" href="trait.BuilderState.html" title="trait up_rust::BuilderState">BuilderState</a>&gt; { <span class="comment">/* private fields */</span> }</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>A builder for creating <a href="struct.UMessage.html" title="struct up_rust::UMessage"><code>UMessage</code></a>s.</p>
+<p>Messages are used by uEntities to inform other entities about the occurrence of events
+and/or to invoke service operations provided by other entities.</p>
+<p>For each type of message there is a dedicated builder which ensures that only attributes
+relevant to that message type are set.</p>
+</div></details><h2 id="implementations" class="section-header">Implementations<a href="#implementations" class="anchor">§</a></h2><div id="implementations-list"><details class="toggle implementors-toggle" open><summary><section id="impl-UMessageBuilder%3CInitialBuilderState%3E" class="impl"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#124-421">Source</a><a href="#impl-UMessageBuilder%3CInitialBuilderState%3E" class="anchor">§</a><h3 class="code-header">impl <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;InitialBuilderState&gt;</h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.publish" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#150-169">Source</a><h4 class="code-header">pub fn <a href="#method.publish" class="fn">publish</a>(topic: <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>) -&gt; <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;<a class="struct" href="struct.PublishBuilderState.html" title="struct up_rust::PublishBuilderState">PublishBuilderState</a>&gt;</h4></section></summary><div class="docblock"><p>Gets a builder for creating <em>publish</em> messages.</p>
+<p>A publish message is used to notify all interested consumers of an event that has occurred.
+Consumers usually indicate their interest by <em>subscribing</em> to a particular topic.</p>
+<h5 id="arguments"><a class="doc-anchor" href="#arguments">§</a>Arguments</h5>
+<ul>
+<li><code>topic</code> - The topic to publish the message to.</li>
+</ul>
+<h5 id="examples"><a class="doc-anchor" href="#examples">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+
+<span class="kw">let </span>topic = UUri::try_from(<span class="string">"//my-vehicle/4210/1/B24D"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>message = UMessageBuilder::publish(topic.clone())
+                   .build_with_payload(<span class="string">"closed"</span>, UPayloadFormat::Text)<span class="question-mark">?</span>;
+<span class="macro">assert_eq!</span>(message.type_(), UMessageType::Publish);
+<span class="macro">assert!</span>(message.priority().is_none());
+<span class="macro">assert_eq!</span>(message.source(), <span class="kw-2">&amp;</span>topic);</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.notification" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#198-220">Source</a><h4 class="code-header">pub fn <a href="#method.notification" class="fn">notification</a>(
+    origin: <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    destination: <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+) -&gt; <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;<a class="struct" href="struct.NotificationBuilderState.html" title="struct up_rust::NotificationBuilderState">NotificationBuilderState</a>&gt;</h4></section></summary><div class="docblock"><p>Gets a builder for creating <em>notification</em> messages.</p>
+<p>A notification is used to inform a specific consumer about an event that has occurred.</p>
+<h5 id="arguments-1"><a class="doc-anchor" href="#arguments-1">§</a>Arguments</h5>
+<ul>
+<li><code>origin</code> - The component that the notification originates from.</li>
+<li><code>destination</code> - The URI identifying the destination to send the notification to.</li>
+</ul>
+<h5 id="examples-1"><a class="doc-anchor" href="#examples-1">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+
+<span class="kw">let </span>origin = UUri::try_from(<span class="string">"//my-vehicle/4210/5/F20B"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>destination = UUri::try_from(<span class="string">"//my-cloud/CCDD/2/0"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>message = UMessageBuilder::notification(origin.clone(), destination.clone())
+                   .build_with_payload(<span class="string">"unexpected movement"</span>, UPayloadFormat::Text)<span class="question-mark">?</span>;
+<span class="macro">assert_eq!</span>(message.type_(), UMessageType::Notification);
+<span class="macro">assert!</span>(message.priority().is_none());
+<span class="macro">assert_eq!</span>(message.source(), <span class="kw-2">&amp;</span>origin);
+<span class="macro">assert_eq!</span>(message.sink_unchecked(), <span class="kw-2">&amp;</span>destination);</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.request" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#255-281">Source</a><h4 class="code-header">pub fn <a href="#method.request" class="fn">request</a>(
+    method_to_invoke: <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    reply_to_address: <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    ttl: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,
+) -&gt; <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;<a class="struct" href="struct.RequestBuilderState.html" title="struct up_rust::RequestBuilderState">RequestBuilderState</a>&gt;</h4></section></summary><div class="docblock"><p>Gets a builder for creating RPC <em>request</em> messages.</p>
+<p>A request message is used to invoke a service’s method with some input data, expecting
+the service to reply with a response message which is correlated by means of the <code>request_id</code>.</p>
+<p>The builder will be initialized with <a href="enum.UPriority.html#variant.CS4" title="variant up_rust::UPriority::CS4"><code>UPriority::CS4</code></a>.</p>
+<h5 id="arguments-2"><a class="doc-anchor" href="#arguments-2">§</a>Arguments</h5>
+<ul>
+<li><code>method_to_invoke</code> - The URI identifying the method to invoke.</li>
+<li><code>reply_to_address</code> - The URI that the sender of the request expects the response message at.</li>
+<li><code>ttl</code> - The number of milliseconds after which the request should no longer be processed
+by the target service. The value is capped at <a href="https://doc.rust-lang.org/nightly/std/primitive.i32.html#associatedconstant.MAX" title="associated constant i32::MAX"><code>i32::MAX</code></a>.</li>
+</ul>
+<h5 id="examples-2"><a class="doc-anchor" href="#examples-2">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+
+<span class="kw">let </span>method_to_invoke = UUri::try_from(<span class="string">"//my-vehicle/4210/5/64AB"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>reply_to_address = UUri::try_from(<span class="string">"//my-cloud/BA4C/1/0"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>message = UMessageBuilder::request(method_to_invoke.clone(), reply_to_address.clone(), <span class="number">5000</span>)
+                   .build_with_payload(<span class="string">"lock"</span>, UPayloadFormat::Text)<span class="question-mark">?</span>;
+<span class="macro">assert_eq!</span>(message.type_(), UMessageType::Request);
+<span class="macro">assert_eq!</span>(message.priority_unchecked(), UPriority::CS4);
+<span class="macro">assert_eq!</span>(message.source(), <span class="kw-2">&amp;</span>reply_to_address);
+<span class="macro">assert_eq!</span>(message.sink_unchecked(), <span class="kw-2">&amp;</span>method_to_invoke);
+<span class="macro">assert_eq!</span>(message.ttl_unchecked(), <span class="number">5000</span>);</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.response" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#319-345">Source</a><h4 class="code-header">pub fn <a href="#method.response" class="fn">response</a>(
+    reply_to_address: <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    request_id: <a class="struct" href="struct.UUID.html" title="struct up_rust::UUID">UUID</a>,
+    invoked_method: <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+) -&gt; <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;<a class="struct" href="struct.ResponseBuilderState.html" title="struct up_rust::ResponseBuilderState">ResponseBuilderState</a>&gt;</h4></section></summary><div class="docblock"><p>Gets a builder for creating RPC <em>response</em> messages.</p>
+<p>A response message is used to send the outcome of processing a request message
+to the original sender of the request message.</p>
+<p>The builder will be initialized with <a href="enum.UPriority.html#variant.CS4" title="variant up_rust::UPriority::CS4"><code>UPriority::CS4</code></a>.</p>
+<h5 id="arguments-3"><a class="doc-anchor" href="#arguments-3">§</a>Arguments</h5>
+<ul>
+<li><code>reply_to_address</code> - The URI that the sender of the request expects to receive the response message at.</li>
+<li><code>request_id</code> - The identifier of the request that this is the response to.</li>
+<li><code>invoked_method</code> - The URI identifying the method that has been invoked and which the created message is
+the outcome of.</li>
+</ul>
+<h5 id="examples-3"><a class="doc-anchor" href="#examples-3">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUID, UUri};
+
+<span class="kw">let </span>invoked_method = UUri::try_from(<span class="string">"//my-vehicle/4210/5/64AB"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>reply_to_address = UUri::try_from(<span class="string">"//my-cloud/BA4C/1/0"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>request_id = UUID::build();
+<span class="comment">// a service implementation would normally use
+// `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+</span><span class="kw">let </span>message = UMessageBuilder::response(reply_to_address.clone(), request_id.clone(), invoked_method.clone())
+                   .build()<span class="question-mark">?</span>;
+<span class="macro">assert_eq!</span>(message.type_(), UMessageType::Response);
+<span class="macro">assert_eq!</span>(message.priority_unchecked(), UPriority::CS4);
+<span class="macro">assert_eq!</span>(message.source(), <span class="kw-2">&amp;</span>invoked_method);
+<span class="macro">assert_eq!</span>(message.sink_unchecked(), <span class="kw-2">&amp;</span>reply_to_address);
+<span class="macro">assert_eq!</span>(message.request_id_unchecked(), <span class="kw-2">&amp;</span>request_id);</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.response_for_request" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#389-420">Source</a><h4 class="code-header">pub fn <a href="#method.response_for_request" class="fn">response_for_request</a>(
+    request_attributes: &amp;<a class="struct" href="struct.UAttributes.html" title="struct up_rust::UAttributes">UAttributes</a>,
+) -&gt; <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;<a class="struct" href="struct.ResponseBuilderState.html" title="struct up_rust::ResponseBuilderState">ResponseBuilderState</a>&gt;</h4></section></summary><div class="docblock"><p>Gets a builder for creating an RPC <em>response</em> message in reply to a <em>request</em>.</p>
+<p>A response message is used to send the outcome of processing a request message
+to the original sender of the request message.</p>
+<p>The builder will be initialized with values from the given request attributes.</p>
+<h5 id="arguments-4"><a class="doc-anchor" href="#arguments-4">§</a>Arguments</h5>
+<ul>
+<li><code>request_attributes</code> - The attributes from the request message. The response message
+builder will be initialized with the corresponding attribute values.</li>
+</ul>
+<h5 id="panics"><a class="doc-anchor" href="#panics">§</a>Panics</h5>
+<p>if the given attributes do not represent a request message.</p>
+<h5 id="examples-4"><a class="doc-anchor" href="#examples-4">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUID, UUri};
+
+<span class="kw">let </span>method_to_invoke = UUri::try_from(<span class="string">"//my-vehicle/4210/5/64AB"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>reply_to_address = UUri::try_from(<span class="string">"//my-cloud/BA4C/1/0"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>request_message_id = UUID::build();
+<span class="kw">let </span>request_message = UMessageBuilder::request(method_to_invoke.clone(), reply_to_address.clone(), <span class="number">5000</span>)
+                          .with_message_id(request_message_id.clone()) <span class="comment">// normally not needed, used only for asserts below
+                          </span>.build_with_payload(<span class="string">"lock"</span>, UPayloadFormat::Text)<span class="question-mark">?</span>;
+
+<span class="kw">let </span>response_message = UMessageBuilder::response_for_request(request_message.attributes())
+                          .with_priority(UPriority::CS5)
+                          .build()<span class="question-mark">?</span>;
+<span class="macro">assert_eq!</span>(response_message.type_(), UMessageType::Response);
+<span class="macro">assert_eq!</span>(response_message.priority_unchecked(), UPriority::CS5);
+<span class="macro">assert_eq!</span>(response_message.source(), <span class="kw-2">&amp;</span>method_to_invoke);
+<span class="macro">assert_eq!</span>(response_message.sink_unchecked(), <span class="kw-2">&amp;</span>reply_to_address);
+<span class="macro">assert_eq!</span>(response_message.request_id_unchecked(), <span class="kw-2">&amp;</span>request_message_id);
+<span class="macro">assert_eq!</span>(response_message.ttl_unchecked(), <span class="number">5000</span>);</code></pre></div>
+</div></details></div></details><details class="toggle implementors-toggle" open><summary><section id="impl-UMessageBuilder%3CS%3E" class="impl"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#423-836">Source</a><a href="#impl-UMessageBuilder%3CS%3E" class="anchor">§</a><h3 class="code-header">impl&lt;S: <a class="trait" href="trait.BuilderState.html" title="trait up_rust::BuilderState">BuilderState</a>&gt; <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;S&gt;</h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.with_message_id" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#460-463">Source</a><h4 class="code-header">pub fn <a href="#method.with_message_id" class="fn">with_message_id</a>(&amp;mut self, message_id: <a class="struct" href="struct.UUID.html" title="struct up_rust::UUID">UUID</a>) -&gt; &amp;mut Self</h4></section></summary><div class="docblock"><p>Sets the message’s identifier.</p>
+<p>Every message must have an identifier. However, if this function is not used, an
+identifier will be generated for the message when one of the <code>build</code> functions is called.</p>
+<p>This method is mainly useful for implementing tests that include assertions on the message ID.</p>
+<h5 id="arguments-5"><a class="doc-anchor" href="#arguments-5">§</a>Arguments</h5>
+<ul>
+<li><code>message_id</code> - The identifier to use.</li>
+</ul>
+<h5 id="returns"><a class="doc-anchor" href="#returns">§</a>Returns</h5>
+<p>The builder.</p>
+<h5 id="examples-5"><a class="doc-anchor" href="#examples-5">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUID, UUri};
+
+<span class="kw">let </span>topic = UUri::try_from(<span class="string">"//my-vehicle/4210/1/B24D"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span><span class="kw-2">mut </span>builder = UMessageBuilder::publish(topic);
+<span class="kw">let </span>message_one = builder
+                    .with_message_id(UUID::build())
+                    .build_with_payload(<span class="string">"closed"</span>, UPayloadFormat::Text)<span class="question-mark">?</span>;
+<span class="kw">let </span>message_two = builder
+                    <span class="comment">// use new message ID but retain all other attributes
+                    </span>.with_message_id(UUID::build())
+                    .build_with_payload(<span class="string">"open"</span>, UPayloadFormat::Text)<span class="question-mark">?</span>;
+<span class="macro">assert_ne!</span>(message_one.id(), message_two.id());
+<span class="macro">assert_eq!</span>(message_one.source(), message_two.source());
+<span class="macro">assert_eq!</span>(message_one.payload_format_unchecked(), message_two.payload_format_unchecked());</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.with_priority" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#493-502">Source</a><h4 class="code-header">pub fn <a href="#method.with_priority" class="fn">with_priority</a>(&amp;mut self, priority: <a class="enum" href="enum.UPriority.html" title="enum up_rust::UPriority">UPriority</a>) -&gt; &amp;mut Self</h4></section></summary><div class="docblock"><p>Sets the message’s priority.</p>
+<p>If not set explicitly, the default priority as defined in the
+<a href="https://github.com/eclipse-uprotocol/up-spec/blob/main/basics/upriority.adoc">uProtocol specification</a>
+is used.</p>
+<h5 id="arguments-6"><a class="doc-anchor" href="#arguments-6">§</a>Arguments</h5>
+<ul>
+<li><code>priority</code> - The priority to be used for sending the message.</li>
+</ul>
+<h5 id="returns-1"><a class="doc-anchor" href="#returns-1">§</a>Returns</h5>
+<p>The builder.</p>
+<h5 id="examples-6"><a class="doc-anchor" href="#examples-6">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+
+<span class="kw">let </span>topic = UUri::try_from(<span class="string">"//my-vehicle/4210/1/B24D"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>message = UMessageBuilder::publish(topic)
+                  .with_priority(UPriority::CS5)
+                  .build_with_payload(<span class="string">"closed"</span>, UPayloadFormat::Text)<span class="question-mark">?</span>;
+<span class="macro">assert_eq!</span>(message.priority_unchecked(), UPriority::CS5);</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.with_ttl" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#532-535">Source</a><h4 class="code-header">pub fn <a href="#method.with_ttl" class="fn">with_ttl</a>(&amp;mut self, ttl: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; &amp;mut Self</h4></section></summary><div class="docblock"><p>Sets the message’s time-to-live.</p>
+<h5 id="arguments-7"><a class="doc-anchor" href="#arguments-7">§</a>Arguments</h5>
+<ul>
+<li><code>ttl</code> - The time-to-live in milliseconds. The value is capped at <a href="https://doc.rust-lang.org/nightly/std/primitive.i32.html#associatedconstant.MAX" title="associated constant i32::MAX"><code>i32::MAX</code></a>.</li>
+</ul>
+<h5 id="returns-2"><a class="doc-anchor" href="#returns-2">§</a>Returns</h5>
+<p>The builder.</p>
+<h5 id="examples-7"><a class="doc-anchor" href="#examples-7">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUID, UUri};
+
+<span class="kw">let </span>invoked_method = UUri::try_from(<span class="string">"//my-vehicle/4210/5/64AB"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>reply_to_address = UUri::try_from(<span class="string">"//my-cloud/BA4C/1/0"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>request_msg_id = UUID::build();
+<span class="comment">// a service implementation would normally use
+// `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+</span><span class="kw">let </span>message = UMessageBuilder::response(reply_to_address, request_msg_id, invoked_method)
+                    .with_ttl(<span class="number">2000</span>)
+                    .build()<span class="question-mark">?</span>;
+<span class="macro">assert_eq!</span>(message.ttl_unchecked(), <span class="number">2000</span>);</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.with_traceparent" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#561-565">Source</a><h4 class="code-header">pub fn <a href="#method.with_traceparent" class="fn">with_traceparent</a>&lt;T: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;(&amp;mut self, traceparent: T) -&gt; &amp;mut Self</h4></section></summary><div class="docblock"><p>Sets the identifier of the W3C Trace Context to convey in the message.</p>
+<h5 id="arguments-8"><a class="doc-anchor" href="#arguments-8">§</a>Arguments</h5>
+<ul>
+<li><code>traceparent</code> - The identifier.</li>
+</ul>
+<h5 id="returns-3"><a class="doc-anchor" href="#returns-3">§</a>Returns</h5>
+<p>The builder.</p>
+<h5 id="examples-8"><a class="doc-anchor" href="#examples-8">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+
+<span class="kw">let </span>topic = UUri::try_from(<span class="string">"//my-vehicle/4210/1/B24D"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>traceparent = <span class="string">"00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"</span>;
+<span class="kw">let </span>message = UMessageBuilder::publish(topic.clone())
+                   .with_traceparent(traceparent)
+                   .build_with_payload(<span class="string">"closed"</span>, UPayloadFormat::Text)<span class="question-mark">?</span>;
+<span class="macro">assert_eq!</span>(message.traceparent(), <span class="prelude-val">Some</span>(traceparent));</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.build" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#620-664">Source</a><h4 class="code-header">pub fn <a href="#method.build" class="fn">build</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="struct.UMessage.html" title="struct up_rust::UMessage">UMessage</a>, <a class="enum" href="enum.UMessageError.html" title="enum up_rust::UMessageError">UMessageError</a>&gt;</h4></section></summary><div class="docblock"><p>Creates the message based on the builder’s state.</p>
+<h5 id="returns-4"><a class="doc-anchor" href="#returns-4">§</a>Returns</h5>
+<p>A message ready to be sent using <a href="trait.UTransport.html#tymethod.send" title="method up_rust::UTransport::send"><code>crate::UTransport::send</code></a>.</p>
+<h5 id="errors"><a class="doc-anchor" href="#errors">§</a>Errors</h5>
+<p>If the properties set on the builder do not represent a consistent set of <a href="struct.UAttributes.html" title="struct up_rust::UAttributes"><code>UAttributes</code></a>,
+a <a href="enum.UMessageError.html#variant.AttributesValidationError" title="variant up_rust::UMessageError::AttributesValidationError"><code>UMessageError::AttributesValidationError</code></a> is returned.</p>
+<h5 id="examples-9"><a class="doc-anchor" href="#examples-9">§</a>Examples</h5><h6 id="not-setting-id-explicitly-with-umessagebuilderwith_message_id"><a class="doc-anchor" href="#not-setting-id-explicitly-with-umessagebuilderwith_message_id">§</a>Not setting <code>id</code> explicitly with <a href="struct.UMessageBuilder.html#method.with_message_id" title="method up_rust::UMessageBuilder::with_message_id"><code>UMessageBuilder::with_message_id</code></a></h6>
+<p>The recommended way to use the <code>UMessageBuilder</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UAttributes, UAttributesValidators, UMessageBuilder, UMessageError, UMessageType, UPriority, UUID, UUri};
+
+<span class="kw">let </span>invoked_method = UUri::try_from(<span class="string">"//my-vehicle/4210/5/64AB"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>reply_to_address = UUri::try_from(<span class="string">"//my-cloud/BA4C/1/0"</span>)<span class="question-mark">?</span>;
+<span class="comment">// a service implementation would normally use
+// `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+</span><span class="kw">let </span>result = UMessageBuilder::response(reply_to_address, UUID::build(), invoked_method)
+                    .build();
+<span class="macro">assert!</span>(result.is_ok());</code></pre></div>
+<h6 id="setting-id-explicitly-with-umessagebuilderwith_message_id"><a class="doc-anchor" href="#setting-id-explicitly-with-umessagebuilderwith_message_id">§</a>Setting <code>id</code> explicitly with <a href="struct.UMessageBuilder.html#method.with_message_id" title="method up_rust::UMessageBuilder::with_message_id"><code>UMessageBuilder::with_message_id</code></a></h6>
+<p>Note that explicitly using <a href="struct.UMessageBuilder.html#method.with_message_id" title="method up_rust::UMessageBuilder::with_message_id"><code>UMessageBuilder::with_message_id</code></a> is not required as shown
+above.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UMessageBuilder, UMessageType, UPriority, UUID, UUri};
+
+<span class="kw">let </span>invoked_method = UUri::try_from(<span class="string">"//my-vehicle/4210/5/64AB"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>reply_to_address = UUri::try_from(<span class="string">"//my-cloud/BA4C/1/0"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>message_id = UUID::build();
+<span class="comment">// a service implementation would normally use
+// `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+</span><span class="kw">let </span>message = UMessageBuilder::response(reply_to_address, UUID::build(), invoked_method)
+                    .with_message_id(message_id.clone())
+                    .build()<span class="question-mark">?</span>;
+<span class="macro">assert_eq!</span>(message.id(), <span class="kw-2">&amp;</span>message_id);</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.build_with_payload_encoding" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#678-691">Source</a><h4 class="code-header">pub fn <a href="#method.build_with_payload_encoding" class="fn">build_with_payload_encoding</a>&lt;T: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;Bytes&gt;&gt;(
+    &amp;mut self,
+    payload: T,
+    encoding: <a class="struct" href="frame/metadata/struct.PayloadEncoding.html" title="struct up_rust::frame::metadata::PayloadEncoding">PayloadEncoding</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="struct.UMessage.html" title="struct up_rust::UMessage">UMessage</a>, <a class="enum" href="enum.UMessageError.html" title="enum up_rust::UMessageError">UMessageError</a>&gt;</h4></section></summary><div class="docblock"><p>Creates the message based on the builder’s state and a payload labeled
+with an open payload-encoding identity.</p>
+<p>Reserved-range encodings produce the same attributes as
+<a href="struct.UMessageBuilder.html#method.build_with_payload" title="method up_rust::UMessageBuilder::build_with_payload"><code>Self::build_with_payload</code></a>. Other encodings populate the open
+payload-encoding identity fields and leave <code>payload_format</code> unspecified.</p>
+<h5 id="errors-1"><a class="doc-anchor" href="#errors-1">§</a>Errors</h5>
+<p>If the properties set on the builder do not represent a consistent set
+of <a href="struct.UAttributes.html" title="struct up_rust::UAttributes"><code>UAttributes</code></a>, a <a href="enum.UMessageError.html#variant.AttributesValidationError" title="variant up_rust::UMessageError::AttributesValidationError"><code>UMessageError::AttributesValidationError</code></a> is
+returned.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.build_with_payload" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#722-733">Source</a><h4 class="code-header">pub fn <a href="#method.build_with_payload" class="fn">build_with_payload</a>&lt;T: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;Bytes&gt;&gt;(
+    &amp;mut self,
+    payload: T,
+    format: <a class="enum" href="enum.UPayloadFormat.html" title="enum up_rust::UPayloadFormat">UPayloadFormat</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="struct.UMessage.html" title="struct up_rust::UMessage">UMessage</a>, <a class="enum" href="enum.UMessageError.html" title="enum up_rust::UMessageError">UMessageError</a>&gt;</h4></section></summary><div class="docblock"><p>Creates the message based on the builder’s state and some payload.</p>
+<h5 id="arguments-9"><a class="doc-anchor" href="#arguments-9">§</a>Arguments</h5>
+<ul>
+<li><code>payload</code> - The data to set as payload.</li>
+<li><code>format</code> - The payload format.</li>
+</ul>
+<h5 id="returns-5"><a class="doc-anchor" href="#returns-5">§</a>Returns</h5>
+<p>A message ready to be sent using <a href="trait.UTransport.html#tymethod.send" title="method up_rust::UTransport::send"><code>crate::UTransport::send</code></a>.</p>
+<h5 id="errors-2"><a class="doc-anchor" href="#errors-2">§</a>Errors</h5>
+<p>If the properties set on the builder do not represent a consistent set of <a href="struct.UAttributes.html" title="struct up_rust::UAttributes"><code>UAttributes</code></a>,
+a <a href="enum.UMessageError.html#variant.AttributesValidationError" title="variant up_rust::UMessageError::AttributesValidationError"><code>UMessageError::AttributesValidationError</code></a> is returned.</p>
+<h5 id="examples-10"><a class="doc-anchor" href="#examples-10">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+
+<span class="kw">let </span>topic = UUri::try_from(<span class="string">"//my-vehicle/4210/1/B24D"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>message = UMessageBuilder::publish(topic)
+                   .build_with_payload(<span class="string">"locked"</span>, UPayloadFormat::Text)<span class="question-mark">?</span>;
+<span class="macro">assert!</span>(message.payload().is_some());</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.build_with_protobuf_payload" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#774-784">Source</a><h4 class="code-header">pub fn <a href="#method.build_with_protobuf_payload" class="fn">build_with_protobuf_payload</a>&lt;T: <a class="trait" href="trait.ProtobufMappable.html" title="trait up_rust::ProtobufMappable">ProtobufMappable</a>&gt;(
+    &amp;mut self,
+    payload: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;T</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="struct.UMessage.html" title="struct up_rust::UMessage">UMessage</a>, <a class="enum" href="enum.UMessageError.html" title="enum up_rust::UMessageError">UMessageError</a>&gt;</h4></section></summary><div class="docblock"><p>Creates the message based on the builder’s state and some payload.</p>
+<h5 id="arguments-10"><a class="doc-anchor" href="#arguments-10">§</a>Arguments</h5>
+<ul>
+<li><code>payload</code> - The data to set as payload.</li>
+</ul>
+<h5 id="returns-6"><a class="doc-anchor" href="#returns-6">§</a>Returns</h5>
+<p>A message ready to be sent using <a href="trait.UTransport.html#tymethod.send" title="method up_rust::UTransport::send"><code>crate::UTransport::send</code></a>. The message will have
+<a href="enum.UPayloadFormat.html#variant.Protobuf" title="variant up_rust::UPayloadFormat::Protobuf"><code>UPayloadFormat::Protobuf</code></a> set as its payload format.</p>
+<h5 id="errors-3"><a class="doc-anchor" href="#errors-3">§</a>Errors</h5>
+<p>If the given payload cannot be serialized into a protobuf byte array, a <a href="enum.UMessageError.html#variant.DataSerializationError" title="variant up_rust::UMessageError::DataSerializationError"><code>UMessageError::DataSerializationError</code></a> is returned.
+If the properties set on the builder do not represent a consistent set of <a href="struct.UAttributes.html" title="struct up_rust::UAttributes"><code>UAttributes</code></a>,
+a <a href="enum.UMessageError.html#variant.AttributesValidationError" title="variant up_rust::UMessageError::AttributesValidationError"><code>UMessageError::AttributesValidationError</code></a> is returned.</p>
+<h5 id="examples-11"><a class="doc-anchor" href="#examples-11">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>protobuf::well_known_types::wrappers::StringValue;
+<span class="kw">use </span>up_rust::{UCode, UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UStatus, UUID, UUri};
+
+<span class="kw">let </span>invoked_method = UUri::try_from(<span class="string">"//my-vehicle/4210/5/64AB"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>reply_to_address = UUri::try_from(<span class="string">"//my-cloud/BA4C/1/0"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>payload = StringValue::new();
+<span class="kw">let </span>request_id = UUID::build();
+<span class="comment">// a service implementation would normally use
+// `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+</span><span class="kw">let </span>message = UMessageBuilder::response(reply_to_address, request_id, invoked_method)
+                   .with_comm_status(UCode::InvalidArgument)
+                   .build_with_protobuf_payload(<span class="kw-2">&amp;</span>payload)<span class="question-mark">?</span>;
+<span class="macro">assert!</span>(message.payload().is_some());
+<span class="macro">assert_eq!</span>(message.payload_format_unchecked(), UPayloadFormat::Protobuf);</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.build_with_wrapped_protobuf_payload" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#825-835">Source</a><h4 class="code-header">pub fn <a href="#method.build_with_wrapped_protobuf_payload" class="fn">build_with_wrapped_protobuf_payload</a>&lt;T: <a class="trait" href="trait.ProtobufMappable.html" title="trait up_rust::ProtobufMappable">ProtobufMappable</a>&gt;(
+    &amp;mut self,
+    payload: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;T</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="struct.UMessage.html" title="struct up_rust::UMessage">UMessage</a>, <a class="enum" href="enum.UMessageError.html" title="enum up_rust::UMessageError">UMessageError</a>&gt;</h4></section></summary><div class="docblock"><p>Creates the message based on the builder’s state and some payload.</p>
+<h5 id="arguments-11"><a class="doc-anchor" href="#arguments-11">§</a>Arguments</h5>
+<ul>
+<li><code>payload</code> - The data to set as payload.</li>
+</ul>
+<h5 id="returns-7"><a class="doc-anchor" href="#returns-7">§</a>Returns</h5>
+<p>A message ready to be sent using <a href="trait.UTransport.html#tymethod.send" title="method up_rust::UTransport::send"><code>crate::UTransport::send</code></a>. The message will have
+<a href="enum.UPayloadFormat.html#variant.ProtobufWrappedInAny" title="variant up_rust::UPayloadFormat::ProtobufWrappedInAny"><code>UPayloadFormat::ProtobufWrappedInAny</code></a> set as its payload format.</p>
+<h5 id="errors-4"><a class="doc-anchor" href="#errors-4">§</a>Errors</h5>
+<p>If the given payload cannot be serialized into a protobuf byte array, a <a href="enum.UMessageError.html#variant.DataSerializationError" title="variant up_rust::UMessageError::DataSerializationError"><code>UMessageError::DataSerializationError</code></a> is returned.
+If the properties set on the builder do not represent a consistent set of <a href="struct.UAttributes.html" title="struct up_rust::UAttributes"><code>UAttributes</code></a>,
+a <a href="enum.UMessageError.html#variant.AttributesValidationError" title="variant up_rust::UMessageError::AttributesValidationError"><code>UMessageError::AttributesValidationError</code></a> is returned.</p>
+<h5 id="examples-12"><a class="doc-anchor" href="#examples-12">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>protobuf::well_known_types::wrappers::StringValue;
+<span class="kw">use </span>up_rust::{UCode, UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UStatus, UUID, UUri};
+
+<span class="kw">let </span>invoked_method = UUri::try_from(<span class="string">"//my-vehicle/4210/5/64AB"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>reply_to_address = UUri::try_from(<span class="string">"//my-cloud/BA4C/1/0"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>payload = StringValue::new();
+<span class="kw">let </span>request_id = UUID::build();
+<span class="comment">// a service implementation would normally use
+// `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+</span><span class="kw">let </span>message = UMessageBuilder::response(reply_to_address, request_id, invoked_method)
+                   .with_comm_status(UCode::InvalidArgument)
+                   .build_with_wrapped_protobuf_payload(<span class="kw-2">&amp;</span>payload)<span class="question-mark">?</span>;
+<span class="macro">assert!</span>(message.payload().is_some());
+<span class="macro">assert_eq!</span>(message.payload_format_unchecked(), UPayloadFormat::ProtobufWrappedInAny);</code></pre></div>
+</div></details></div></details><details class="toggle implementors-toggle" open><summary><section id="impl-UMessageBuilder%3CRequestBuilderState%3E" class="impl"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#838-901">Source</a><a href="#impl-UMessageBuilder%3CRequestBuilderState%3E" class="anchor">§</a><h3 class="code-header">impl <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;<a class="struct" href="struct.RequestBuilderState.html" title="struct up_rust::RequestBuilderState">RequestBuilderState</a>&gt;</h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.with_token" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#866-869">Source</a><h4 class="code-header">pub fn <a href="#method.with_token" class="fn">with_token</a>&lt;T: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;(&amp;mut self, token: T) -&gt; &amp;mut Self</h4></section></summary><div class="docblock"><p>Sets the message’s authorization token used for TAP.</p>
+<h5 id="arguments-12"><a class="doc-anchor" href="#arguments-12">§</a>Arguments</h5>
+<ul>
+<li><code>token</code> - The token.</li>
+</ul>
+<h5 id="returns-8"><a class="doc-anchor" href="#returns-8">§</a>Returns</h5>
+<p>The builder.</p>
+<h5 id="examples-13"><a class="doc-anchor" href="#examples-13">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+
+<span class="kw">let </span>method_to_invoke = UUri::try_from(<span class="string">"//my-vehicle/4210/5/64AB"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>reply_to_address = UUri::try_from(<span class="string">"//my-cloud/BA4C/1/0"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>token = <span class="string">"this-is-my-token"</span>;
+<span class="kw">let </span>message = UMessageBuilder::request(method_to_invoke, reply_to_address, <span class="number">5000</span>)
+                    .with_token(token)
+                    .build_with_payload(<span class="string">"lock"</span>, UPayloadFormat::Text)<span class="question-mark">?</span>;
+<span class="macro">assert_eq!</span>(message.token(), <span class="prelude-val">Some</span>(token));</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.with_permission_level" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#897-900">Source</a><h4 class="code-header">pub fn <a href="#method.with_permission_level" class="fn">with_permission_level</a>(&amp;mut self, level: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; &amp;mut Self</h4></section></summary><div class="docblock"><p>Sets the message’s permission level.</p>
+<h5 id="arguments-13"><a class="doc-anchor" href="#arguments-13">§</a>Arguments</h5>
+<ul>
+<li><code>level</code> - The level.</li>
+</ul>
+<h5 id="returns-9"><a class="doc-anchor" href="#returns-9">§</a>Returns</h5>
+<p>The builder.</p>
+<h5 id="examples-14"><a class="doc-anchor" href="#examples-14">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UCode, UMessageBuilder, UPayloadFormat, UPriority, UUri};
+
+<span class="kw">let </span>method_to_invoke = UUri::try_from(<span class="string">"//my-vehicle/4210/5/64AB"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>reply_to_address = UUri::try_from(<span class="string">"//my-cloud/BA4C/1/0"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>message = UMessageBuilder::request(method_to_invoke, reply_to_address, <span class="number">5000</span>)
+                    .with_permission_level(<span class="number">12</span>)
+                    .build_with_payload(<span class="string">"lock"</span>, UPayloadFormat::Text)<span class="question-mark">?</span>;
+<span class="macro">assert_eq!</span>(message.permission_level(), <span class="prelude-val">Some</span>(<span class="number">12</span>));</code></pre></div>
+</div></details></div></details><details class="toggle implementors-toggle" open><summary><section id="impl-UMessageBuilder%3CResponseBuilderState%3E" class="impl"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#903-936">Source</a><a href="#impl-UMessageBuilder%3CResponseBuilderState%3E" class="anchor">§</a><h3 class="code-header">impl <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;<a class="struct" href="struct.ResponseBuilderState.html" title="struct up_rust::ResponseBuilderState">ResponseBuilderState</a>&gt;</h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.with_comm_status" class="method"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#932-935">Source</a><h4 class="code-header">pub fn <a href="#method.with_comm_status" class="fn">with_comm_status</a>(&amp;mut self, comm_status: <a class="enum" href="enum.UCode.html" title="enum up_rust::UCode">UCode</a>) -&gt; &amp;mut Self</h4></section></summary><div class="docblock"><p>Sets the message’s communication status.</p>
+<h5 id="arguments-14"><a class="doc-anchor" href="#arguments-14">§</a>Arguments</h5>
+<ul>
+<li><code>comm_status</code> - The status.</li>
+</ul>
+<h5 id="returns-10"><a class="doc-anchor" href="#returns-10">§</a>Returns</h5>
+<p>The builder.</p>
+<h5 id="examples-15"><a class="doc-anchor" href="#examples-15">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UCode, UMessageBuilder, UPriority, UUID, UUri};
+
+<span class="kw">let </span>invoked_method = UUri::try_from(<span class="string">"//my-vehicle/4210/5/64AB"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>reply_to_address = UUri::try_from(<span class="string">"//my-cloud/BA4C/1/0"</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>request_msg_id = UUID::build();
+<span class="comment">// a service implementation would normally use
+// `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+</span><span class="kw">let </span>message = UMessageBuilder::response(reply_to_address, request_msg_id, invoked_method)
+                    .with_comm_status(UCode::Ok)
+                    .build()<span class="question-mark">?</span>;
+<span class="macro">assert_eq!</span>(message.commstatus_unchecked(), UCode::Ok);</code></pre></div>
+</div></details></div></details></div><h2 id="trait-implementations" class="section-header">Trait Implementations<a href="#trait-implementations" class="anchor">§</a></h2><div id="trait-implementations-list"><details class="toggle implementors-toggle" open><summary><section id="impl-Debug-for-UMessageBuilder%3CS%3E" class="impl"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#118-122">Source</a><a href="#impl-Debug-for-UMessageBuilder%3CS%3E" class="anchor">§</a><h3 class="code-header">impl&lt;S: <a class="trait" href="trait.BuilderState.html" title="trait up_rust::BuilderState">BuilderState</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;S&gt;</h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.fmt" class="method trait-impl"><a class="src rightside" href="../src/up_rust/umessage/umessagebuilder.rs.html#119-121">Source</a><a href="#method.fmt" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt" class="fn">fmt</a>(&amp;self, f: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>&lt;'_&gt;) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></h4></section></summary><div class='docblock'>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></div></details></div></details></div><h2 id="synthetic-implementations" class="section-header">Auto Trait Implementations<a href="#synthetic-implementations" class="anchor">§</a></h2><div id="synthetic-implementations-list"><section id="impl-Freeze-for-UMessageBuilder%3CS%3E" class="impl"><a href="#impl-Freeze-for-UMessageBuilder%3CS%3E" class="anchor">§</a><h3 class="code-header">impl&lt;S&gt; !<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Freeze.html" title="trait core::marker::Freeze">Freeze</a> for <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;S&gt;</h3></section><section id="impl-RefUnwindSafe-for-UMessageBuilder%3CS%3E" class="impl"><a href="#impl-RefUnwindSafe-for-UMessageBuilder%3CS%3E" class="anchor">§</a><h3 class="code-header">impl&lt;S&gt; !<a class="trait" href="https://doc.rust-lang.org/nightly/core/panic/unwind_safe/trait.RefUnwindSafe.html" title="trait core::panic::unwind_safe::RefUnwindSafe">RefUnwindSafe</a> for <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;S&gt;</h3></section><section id="impl-Send-for-UMessageBuilder%3CS%3E" class="impl"><a href="#impl-Send-for-UMessageBuilder%3CS%3E" class="anchor">§</a><h3 class="code-header">impl&lt;S&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> for <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;S&gt;<div class="where">where
+    S: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a>,</div></h3></section><section id="impl-Sync-for-UMessageBuilder%3CS%3E" class="impl"><a href="#impl-Sync-for-UMessageBuilder%3CS%3E" class="anchor">§</a><h3 class="code-header">impl&lt;S&gt; !<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a> for <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;S&gt;</h3></section><section id="impl-Unpin-for-UMessageBuilder%3CS%3E" class="impl"><a href="#impl-Unpin-for-UMessageBuilder%3CS%3E" class="anchor">§</a><h3 class="code-header">impl&lt;S&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a> for <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;S&gt;<div class="where">where
+    S: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a>,</div></h3></section><section id="impl-UnwindSafe-for-UMessageBuilder%3CS%3E" class="impl"><a href="#impl-UnwindSafe-for-UMessageBuilder%3CS%3E" class="anchor">§</a><h3 class="code-header">impl&lt;S&gt; !<a class="trait" href="https://doc.rust-lang.org/nightly/core/panic/unwind_safe/trait.UnwindSafe.html" title="trait core::panic::unwind_safe::UnwindSafe">UnwindSafe</a> for <a class="struct" href="struct.UMessageBuilder.html" title="struct up_rust::UMessageBuilder">UMessageBuilder</a>&lt;S&gt;</h3></section></div><h2 id="blanket-implementations" class="section-header">Blanket Implementations<a href="#blanket-implementations" class="anchor">§</a></h2><div id="blanket-implementations-list"><details class="toggle implementors-toggle"><summary><section id="impl-Any-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/any.rs.html#138">Source</a><a href="#impl-Any-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html" title="trait core::any::Any">Any</a> for T<div class="where">where
+    T: 'static + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</div></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.type_id" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/any.rs.html#139">Source</a><a href="#method.type_id" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html#tymethod.type_id" class="fn">type_id</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/any/struct.TypeId.html" title="struct core::any::TypeId">TypeId</a></h4></section></summary><div class='docblock'>Gets the <code>TypeId</code> of <code>self</code>. <a href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html#tymethod.type_id">Read more</a></div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-Any-for-T-1" class="impl"><a href="#impl-Any-for-T-1" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; Any for T<div class="where">where
+    T: <a class="trait" href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html" title="trait core::any::Any">Any</a>,</div></h3></section></summary><div class="impl-items"><section id="method.into_any" class="method trait-impl"><a href="#method.into_any" class="anchor">§</a><h4 class="code-header">fn <a class="fn">into_any</a>(self: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;T&gt;) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html" title="trait core::any::Any">Any</a>&gt;</h4></section><section id="method.into_any_rc" class="method trait-impl"><a href="#method.into_any_rc" class="anchor">§</a><h4 class="code-header">fn <a class="fn">into_any_rc</a>(self: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;T&gt;) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html" title="trait core::any::Any">Any</a>&gt;</h4></section><section id="method.type_name" class="method trait-impl"><a href="#method.type_name" class="anchor">§</a><h4 class="code-header">fn <a class="fn">type_name</a>(&amp;self) -&gt; &amp;'static <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a></h4></section></div></details><details class="toggle implementors-toggle"><summary><section id="impl-Borrow%3CT%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#209">Source</a><a href="#impl-Borrow%3CT%3E-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html" title="trait core::borrow::Borrow">Borrow</a>&lt;T&gt; for T<div class="where">where
+    T: ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</div></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.borrow" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#211">Source</a><a href="#method.borrow" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html#tymethod.borrow" class="fn">borrow</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;T</a></h4></section></summary><div class='docblock'>Immutably borrows from an owned value. <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html#tymethod.borrow">Read more</a></div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-BorrowMut%3CT%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#217">Source</a><a href="#impl-BorrowMut%3CT%3E-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html" title="trait core::borrow::BorrowMut">BorrowMut</a>&lt;T&gt; for T<div class="where">where
+    T: ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</div></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.borrow_mut" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#218">Source</a><a href="#method.borrow_mut" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html#tymethod.borrow_mut" class="fn">borrow_mut</a>(&amp;mut self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut T</a></h4></section></summary><div class='docblock'>Mutably borrows from an owned value. <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html#tymethod.borrow_mut">Read more</a></div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-From%3CT%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#767">Source</a><a href="#impl-From%3CT%3E-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;T&gt; for T</h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.from" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#770">Source</a><a href="#method.from" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from" class="fn">from</a>(t: T) -&gt; T</h4></section></summary><div class="docblock"><p>Returns the argument unchanged.</p>
+</div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-Instrument-for-T" class="impl"><a href="#impl-Instrument-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; Instrument for T</h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.instrument" class="method trait-impl"><a href="#method.instrument" class="anchor">§</a><h4 class="code-header">fn <a class="fn">instrument</a>(self, span: Span) -&gt; Instrumented&lt;Self&gt;</h4></section></summary><div class='docblock'>Instruments this type with the provided [<code>Span</code>], returning an
+<code>Instrumented</code> wrapper. <a>Read more</a></div></details><details class="toggle method-toggle" open><summary><section id="method.in_current_span" class="method trait-impl"><a href="#method.in_current_span" class="anchor">§</a><h4 class="code-header">fn <a class="fn">in_current_span</a>(self) -&gt; Instrumented&lt;Self&gt;</h4></section></summary><div class='docblock'>Instruments this type with the <a href="super::Span::current()">current</a> <a href="crate::Span"><code>Span</code></a>, returning an
+<code>Instrumented</code> wrapper. <a>Read more</a></div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-Into%3CU%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#750-752">Source</a><a href="#impl-Into%3CU%3E-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T, U&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;U&gt; for T<div class="where">where
+    U: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;T&gt;,</div></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.into" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#760">Source</a><a href="#method.into" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html#tymethod.into" class="fn">into</a>(self) -&gt; U</h4></section></summary><div class="docblock"><p>Calls <code>U::from(self)</code>.</p>
+<p>That is, this conversion is whatever the implementation of
+<code><a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;T&gt; for U</code> chooses to do.</p>
+</div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-Same-for-T" class="impl"><a class="src rightside" href="https://docs.rs/typenum/1.20.1/src/typenum/type_operators.rs.html#34">Source</a><a href="#impl-Same-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://docs.rs/typenum/1.20.1/typenum/type_operators/trait.Same.html" title="trait typenum::type_operators::Same">Same</a> for T</h3></section></summary><div class="impl-items"><details class="toggle" open><summary><section id="associatedtype.Output" class="associatedtype trait-impl"><a class="src rightside" href="https://docs.rs/typenum/1.20.1/src/typenum/type_operators.rs.html#35">Source</a><a href="#associatedtype.Output" class="anchor">§</a><h4 class="code-header">type <a href="https://docs.rs/typenum/1.20.1/typenum/type_operators/trait.Same.html#associatedtype.Output" class="associatedtype">Output</a> = T</h4></section></summary><div class='docblock'>Should always be <code>Self</code></div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-TryFrom%3CU%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#806-808">Source</a><a href="#impl-TryFrom%3CU%3E-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T, U&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;U&gt; for T<div class="where">where
+    U: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;T&gt;,</div></h3></section></summary><div class="impl-items"><details class="toggle" open><summary><section id="associatedtype.Error-1" class="associatedtype trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#810">Source</a><a href="#associatedtype.Error-1" class="anchor">§</a><h4 class="code-header">type <a href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" class="associatedtype">Error</a> = <a class="enum" href="https://doc.rust-lang.org/nightly/core/convert/enum.Infallible.html" title="enum core::convert::Infallible">Infallible</a></h4></section></summary><div class='docblock'>The type returned in the event of a conversion error.</div></details><details class="toggle method-toggle" open><summary><section id="method.try_from" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#813">Source</a><a href="#method.try_from" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#tymethod.try_from" class="fn">try_from</a>(value: U) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;T, &lt;T as <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;U&gt;&gt;::<a class="associatedtype" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a>&gt;</h4></section></summary><div class='docblock'>Performs the conversion.</div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-TryInto%3CU%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#791-793">Source</a><a href="#impl-TryInto%3CU%3E-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T, U&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html" title="trait core::convert::TryInto">TryInto</a>&lt;U&gt; for T<div class="where">where
+    U: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;,</div></h3></section></summary><div class="impl-items"><details class="toggle" open><summary><section id="associatedtype.Error" class="associatedtype trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#795">Source</a><a href="#associatedtype.Error" class="anchor">§</a><h4 class="code-header">type <a href="https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html#associatedtype.Error" class="associatedtype">Error</a> = &lt;U as <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;&gt;::<a class="associatedtype" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a></h4></section></summary><div class='docblock'>The type returned in the event of a conversion error.</div></details><details class="toggle method-toggle" open><summary><section id="method.try_into" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#798">Source</a><a href="#method.try_into" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html#tymethod.try_into" class="fn">try_into</a>(self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;U, &lt;U as <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;&gt;::<a class="associatedtype" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a>&gt;</h4></section></summary><div class='docblock'>Performs the conversion.</div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-UWithNativePrefixWire-for-TCore" class="impl"><a class="src rightside" href="../src/up_rust/wire_transport.rs.html#191-206">Source</a><a href="#impl-UWithNativePrefixWire-for-TCore" class="anchor">§</a><h3 class="code-header">impl&lt;TCore&gt; <a class="trait" href="wire_transport/trait.UWithNativePrefixWire.html" title="trait up_rust::wire_transport::UWithNativePrefixWire">UWithNativePrefixWire</a> for TCore</h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.into_native_prefix_wire_transport" class="method trait-impl"><a class="src rightside" href="../src/up_rust/wire_transport.rs.html#192-197">Source</a><a href="#method.into_native_prefix_wire_transport" class="anchor">§</a><h4 class="code-header">fn <a href="wire_transport/trait.UWithNativePrefixWire.html#tymethod.into_native_prefix_wire_transport" class="fn">into_native_prefix_wire_transport</a>&lt;W&gt;(
+    self,
+    wire: W,
+) -&gt; <a class="struct" href="wire_transport/struct.UWireTransport.html" title="struct up_rust::wire_transport::UWireTransport">UWireTransport</a>&lt;TCore, W, <a class="struct" href="wire/struct.NativePrefixFrameMetadataCodec.html" title="struct up_rust::wire::NativePrefixFrameMetadataCodec">NativePrefixFrameMetadataCodec</a>&gt;<div class="where">where
+    W: <a class="trait" href="wire/trait.UWire.html" title="trait up_rust::wire::UWire">UWire</a>,</div></h4></section></summary><div class='docblock'>Wraps this core with an external or custom selected wire using canonical metadata.</div></details><details class="toggle method-toggle" open><summary><section id="method.into_protobuf_transport" class="method trait-impl"><a class="src rightside" href="../src/up_rust/wire_transport.rs.html#199-201">Source</a><a href="#method.into_protobuf_transport" class="anchor">§</a><h4 class="code-header">fn <a href="wire_transport/trait.UWithNativePrefixWire.html#tymethod.into_protobuf_transport" class="fn">into_protobuf_transport</a>(
+    self,
+) -&gt; <a class="struct" href="wire_transport/struct.UWireTransport.html" title="struct up_rust::wire_transport::UWireTransport">UWireTransport</a>&lt;TCore, <a class="struct" href="wire/struct.ProtobufWire.html" title="struct up_rust::wire::ProtobufWire">ProtobufWire</a>, <a class="struct" href="wire/struct.NativePrefixFrameMetadataCodec.html" title="struct up_rust::wire::NativePrefixFrameMetadataCodec">NativePrefixFrameMetadataCodec</a>&gt;</h4></section></summary><div class='docblock'>Wraps this core with the Protocol Buffers selected-wire profile.</div></details><details class="toggle method-toggle" open><summary><section id="method.into_stable_container_transport" class="method trait-impl"><a class="src rightside" href="../src/up_rust/wire_transport.rs.html#203-205">Source</a><a href="#method.into_stable_container_transport" class="anchor">§</a><h4 class="code-header">fn <a href="wire_transport/trait.UWithNativePrefixWire.html#tymethod.into_stable_container_transport" class="fn">into_stable_container_transport</a>(
+    self,
+) -&gt; <a class="struct" href="wire_transport/struct.UWireTransport.html" title="struct up_rust::wire_transport::UWireTransport">UWireTransport</a>&lt;TCore, <a class="struct" href="wire/struct.StableContainerWireFormat.html" title="struct up_rust::wire::StableContainerWireFormat">StableContainerWireFormat</a>, <a class="struct" href="wire/struct.NativePrefixFrameMetadataCodec.html" title="struct up_rust::wire::NativePrefixFrameMetadataCodec">NativePrefixFrameMetadataCodec</a>&gt;</h4></section></summary><div class='docblock'>Wraps this core with the stable-container selected-wire profile.</div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-WithSubscriber-for-T" class="impl"><a href="#impl-WithSubscriber-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; WithSubscriber for T</h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.with_subscriber" class="method trait-impl"><a href="#method.with_subscriber" class="anchor">§</a><h4 class="code-header">fn <a class="fn">with_subscriber</a>&lt;S&gt;(self, subscriber: S) -&gt; WithDispatch&lt;Self&gt;<div class="where">where
+    S: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;Dispatch&gt;,</div></h4></section></summary><div class='docblock'>Attaches the provided <a href="super::Subscriber"><code>Subscriber</code></a> to this type, returning a
+[<code>WithDispatch</code>] wrapper. <a>Read more</a></div></details><details class="toggle method-toggle" open><summary><section id="method.with_current_subscriber" class="method trait-impl"><a href="#method.with_current_subscriber" class="anchor">§</a><h4 class="code-header">fn <a class="fn">with_current_subscriber</a>(self) -&gt; WithDispatch&lt;Self&gt;</h4></section></summary><div class='docblock'>Attaches the current <a href="crate::dispatcher#setting-the-default-subscriber">default</a> <a href="super::Subscriber"><code>Subscriber</code></a> to this type, returning a
+[<code>WithDispatch</code>] wrapper. <a>Read more</a></div></details></div></details></div></section></div></main></body></html>

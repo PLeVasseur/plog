@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["FrameMessageKind","FramePriority","UFrameMetadataError"],"fn":["try_project_attributes_to_frame_metadata","try_project_frame_to_umessage","try_project_umessage_to_frame_metadata"],"struct":["PayloadEncoding","UFrameMetadata","UFrameMetadataBuilder"]};

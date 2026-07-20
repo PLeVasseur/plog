@@ -1,0 +1,127 @@
+<!DOCTYPE html><html lang="en"><head><meta name="robots" content="noindex"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="The UTransport family"><title>up_rust::guide::transports::utransport - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-0ce1a80b.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="up_rust" data-themes="" data-resource-suffix="" data-rustdoc-version="1.89.0-nightly (414482f6a 2025-05-13)" data-channel="nightly" data-search-js="search-f7877310.js" data-settings-js="settings-5514c975.js" ><script src="../../../../static.files/storage-4e99c027.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../../static.files/main-7ef8a74a.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-32bb7600.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><div style="position:sticky;top:0;z-index:9999;background:#8a6d1a;color:#fff;padding:6px 14px;font:13px sans-serif;text-align:center;">Preview of the <strong>proposed</strong> up-rust <code style="color:#fff">native-frame-model</code> branch (up-rust <code style="color:#fff">8658f274</code>, up-spec <code style="color:#fff">f0e9b17</code>) &mdash; not released documentation. <a style="color:#ffe9a8" href="https://github.com/PLeVasseur/up-rust/tree/native-frame-model">branch</a> &middot; <a style="color:#ffe9a8" href="https://petelevasseur.com/">write-up</a></div><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../../up_rust/index.html">up_rust</a><span class="version">0.10.0-SNAPSHOT</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module utransport</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#the-utransport-family" title="The UTransport family">The UTransport family</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In up_<wbr>rust::<wbr>guide::<wbr>transports</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../../index.html">up_rust</a>::<wbr><a href="../../index.html">guide</a>::<wbr><a href="../index.html">transports</a></div><h1>Module <span>utransport</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../../src/up_rust/lib.rs.html#364">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="the-utransport-family"><a class="doc-anchor" href="#the-utransport-family">§</a>The UTransport family</h2>
+<p>A <code>UTransport</code>-family transport implements one trait,
+<a href="../../../trait.UTransport.html" title="trait up_rust::UTransport"><code>UTransport</code></a>: deliver a <a href="../../../struct.UMessage.html" title="struct up_rust::UMessage"><code>UMessage</code></a>,
+and keep a registry of listeners with their source/sink filters. Here is
+a <strong>complete, working transport</strong> — an in-process loopback — as a
+running example:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::sync::Arc;
+<span class="kw">use </span>tokio::sync::RwLock;
+<span class="kw">use </span>up_rust::{
+    verify_filter_criteria, ComparableListener, UCode, UListener, UMessage, UStatus, UTransport,
+    UUri,
+};
+
+<span class="kw">struct </span>Registered {
+    source: UUri,
+    sink: <span class="prelude-ty">Option</span>&lt;UUri&gt;,
+    listener: ComparableListener,
+}
+
+<span class="attr">#[derive(Default)]
+</span><span class="kw">struct </span>MiniTransport {
+    listeners: RwLock&lt;Vec&lt;Registered&gt;&gt;,
+}
+
+<span class="attr">#[async_trait::async_trait]
+</span><span class="kw">impl </span>UTransport <span class="kw">for </span>MiniTransport {
+    <span class="kw">async fn </span>send(<span class="kw-2">&amp;</span><span class="self">self</span>, message: UMessage) -&gt; <span class="prelude-ty">Result</span>&lt;(), UStatus&gt; {
+        <span class="comment">// A real transport hands the bytes to its technology here.
+        // The loopback "technology" is: match filters, dispatch locally.
+        </span><span class="kw">let </span>source = message.attributes().source();
+        <span class="kw">let </span>sink = message.attributes().sink();
+        <span class="kw">for </span>r <span class="kw">in </span><span class="self">self</span>.listeners.read().<span class="kw">await</span>.iter() {
+            <span class="kw">let </span>source_ok = r.source.matches(source);
+            <span class="kw">let </span>sink_ok = <span class="kw">match </span>(<span class="kw-2">&amp;</span>r.sink, sink) {
+                (<span class="prelude-val">Some</span>(pattern), <span class="prelude-val">Some</span>(candidate)) =&gt; pattern.matches(candidate),
+                (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; <span class="bool-val">true</span>,
+                <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
+            };
+            <span class="kw">if </span>source_ok &amp;&amp; sink_ok {
+                r.listener.on_receive(message.clone()).<span class="kw">await</span>;
+            }
+        }
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="kw">async fn </span>register_listener(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        source_filter: <span class="kw-2">&amp;</span>UUri,
+        sink_filter: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>UUri&gt;,
+        listener: Arc&lt;<span class="kw">dyn </span>UListener&gt;,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(), UStatus&gt; {
+        <span class="comment">// Reject filter combinations the spec forbids before storing anything.
+        </span>verify_filter_criteria(source_filter, sink_filter).map_err(|e| <span class="kw-2">*</span>e)<span class="question-mark">?</span>;
+        <span class="self">self</span>.listeners.write().<span class="kw">await</span>.push(Registered {
+            source: source_filter.to_owned(),
+            sink: sink_filter.map(ToOwned::to_owned),
+            listener: ComparableListener::new(listener),
+        });
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="kw">async fn </span>unregister_listener(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        source_filter: <span class="kw-2">&amp;</span>UUri,
+        sink_filter: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>UUri&gt;,
+        listener: Arc&lt;<span class="kw">dyn </span>UListener&gt;,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(), UStatus&gt; {
+        <span class="kw">let </span>target = ComparableListener::new(listener);
+        <span class="kw">let </span><span class="kw-2">mut </span>listeners = <span class="self">self</span>.listeners.write().<span class="kw">await</span>;
+        <span class="kw">let </span>before = listeners.len();
+        listeners.retain(|r| {
+            !(r.source == <span class="kw-2">*</span>source_filter
+                &amp;&amp; r.sink.as_ref() == sink_filter
+                &amp;&amp; r.listener == target)
+        });
+        <span class="kw">if </span>listeners.len() &lt; before {
+            <span class="prelude-val">Ok</span>(())
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(UStatus::fail_with_code(UCode::NotFound, <span class="string">"no such listener"</span>))
+        }
+    }
+}
+
+<span class="comment">// Prove it works: register, send, receive.
+</span><span class="kw">struct </span>Capture(tokio::sync::mpsc::UnboundedSender&lt;UMessage&gt;);
+<span class="attr">#[async_trait::async_trait]
+</span><span class="kw">impl </span>UListener <span class="kw">for </span>Capture {
+    <span class="kw">async fn </span>on_receive(<span class="kw-2">&amp;</span><span class="self">self</span>, message: UMessage) {
+        <span class="kw">let _ </span>= <span class="self">self</span>.<span class="number">0</span>.send(message);
+    }
+}
+
+<span class="attr">#[tokio::main]
+</span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt; {
+    <span class="kw">use </span>up_rust::{UMessageBuilder, UPayloadFormat};
+    <span class="kw">let </span>transport = MiniTransport::default();
+    <span class="kw">let </span>topic = UUri::try_from_parts(<span class="string">"demo"</span>, <span class="number">0x1_0001</span>, <span class="number">1</span>, <span class="number">0x8001</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>(tx, <span class="kw-2">mut </span>rx) = tokio::sync::mpsc::unbounded_channel();
+
+    transport.register_listener(<span class="kw-2">&amp;</span>topic, <span class="prelude-val">None</span>, Arc::new(Capture(tx))).<span class="kw">await</span><span class="question-mark">?</span>;
+    transport
+        .send(UMessageBuilder::publish(topic).build_with_payload(<span class="string">"42"</span>, UPayloadFormat::Text)<span class="question-mark">?</span>)
+        .<span class="kw">await</span><span class="question-mark">?</span>;
+
+    <span class="kw">let </span>received = rx.recv().<span class="kw">await</span>.expect(<span class="string">"message delivered"</span>);
+    <span class="macro">assert_eq!</span>(received.payload().unwrap().as_ref(), <span class="string">b"42"</span>);
+    <span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+<p>The crate’s own <a href="../../../local_transport/struct.LocalTransport.html" title="struct up_rust::local_transport::LocalTransport"><code>LocalTransport</code></a>
+is this same shape grown up: a <code>HashSet</code> keyed on
+<a href="../../../struct.ComparableListener.html" title="struct up_rust::ComparableListener"><code>ComparableListener</code></a> so duplicate
+registrations are rejected with <code>AlreadyExists</code>, and filter matching via
+the message’s attributes. Read its source when you outgrow the sketch.</p>
+<p>What a real technology changes: <code>send</code> serializes —
+<code>message.attributes()</code> to protobuf bytes for the metadata, plus the
+payload — and hands both to the broker or bus; the receive side runs the
+inverse and rebuilds a <code>UMessage</code> before dispatching to listeners.</p>
+<p>That is the whole level. Error mapping: use
+<a href="../../../enum.UCode.html" title="enum up_rust::UCode"><code>UCode</code></a> faithfully — <code>AlreadyExists</code> for duplicate
+registration, <code>NotFound</code> for unknown listeners, <code>InvalidArgument</code> for
+filters your technology cannot express, <code>Unavailable</code> when the link is
+down. Applications and the roles built above you switch on these codes.</p>
+<p>Next levels: <a href="../owned/index.html" title="mod up_rust::guide::transports::owned">owned frames</a> and
+<a href="../zero_copy/index.html" title="mod up_rust::guide::transports::zero_copy">zero-copy</a>. Shared obligations:
+<a href="../index.html" title="mod up_rust::guide::transports">the transport hub</a>.</p>
+</div></details></section></div></main></body></html>

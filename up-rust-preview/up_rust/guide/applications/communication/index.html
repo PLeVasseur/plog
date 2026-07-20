@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="en"><head><meta name="robots" content="noindex"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="The Communication Layer (up-L2)"><title>up_rust::guide::applications::communication - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-0ce1a80b.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="up_rust" data-themes="" data-resource-suffix="" data-rustdoc-version="1.89.0-nightly (414482f6a 2025-05-13)" data-channel="nightly" data-search-js="search-f7877310.js" data-settings-js="settings-5514c975.js" ><script src="../../../../static.files/storage-4e99c027.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../../static.files/main-7ef8a74a.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-32bb7600.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><div style="position:sticky;top:0;z-index:9999;background:#8a6d1a;color:#fff;padding:6px 14px;font:13px sans-serif;text-align:center;">Preview of the <strong>proposed</strong> up-rust <code style="color:#fff">native-frame-model</code> branch (up-rust <code style="color:#fff">8658f274</code>, up-spec <code style="color:#fff">f0e9b17</code>) &mdash; not released documentation. <a style="color:#ffe9a8" href="https://github.com/PLeVasseur/up-rust/tree/native-frame-model">branch</a> &middot; <a style="color:#ffe9a8" href="https://petelevasseur.com/">write-up</a></div><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../../up_rust/index.html">up_rust</a><span class="version">0.10.0-SNAPSHOT</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module communication</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#the-communication-layer-up-l2" title="The Communication Layer (up-L2)">The Communication Layer (up-L2)</a><ul><li><a href="#publishing" title="Publishing">Publishing</a></li><li><a href="#subscribing-and-why-it-needs-a-service" title="Subscribing (and why it needs a service)">Subscribing (and why it needs a service)</a></li><li><a href="#notifying-one-receiver" title="Notifying one receiver">Notifying one receiver</a></li><li><a href="#serving-rpc" title="Serving RPC">Serving RPC</a></li><li><a href="#calling-rpc" title="Calling RPC">Calling RPC</a></li><li><a href="#the-same-roles-over-the-experimental-families" title="The same roles, over the experimental families">The same roles, over the experimental families</a></li></ul></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In up_<wbr>rust::<wbr>guide::<wbr>applications</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../../index.html">up_rust</a>::<wbr><a href="../../index.html">guide</a>::<wbr><a href="../index.html">applications</a></div><h1>Module <span>communication</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../../src/up_rust/lib.rs.html#357">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="the-communication-layer-up-l2"><a class="doc-anchor" href="#the-communication-layer-up-l2">§</a>The Communication Layer (up-L2)</h2>
+<p>The roles hide message building entirely: you say <em>what</em> (publish this,
+call that) and the layer builds, addresses, and correlates the messages
+over whatever transport it was given. Enable <code>communication</code>.</p>
+<h3 id="publishing"><a class="doc-anchor" href="#publishing">§</a>Publishing</h3>
+<p>The hub page’s quickstart is the whole pattern; here it is again with
+the pieces named — <code>LocalTransport</code> is the in-process transport the
+examples use:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::sync::Arc;
+<span class="kw">use </span>up_rust::local_transport::LocalTransport;
+<span class="kw">use </span>up_rust::StaticUriProvider;
+<span class="kw">use </span>up_rust::communication::{CallOptions, Publisher, SimplePublisher, UPayload};
+<span class="kw">use </span>up_rust::UPayloadFormat;
+
+<span class="attr">#[tokio::main]
+</span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt; {
+    <span class="kw">let </span>transport = Arc::new(LocalTransport::default());
+    <span class="kw">let </span>identity = Arc::new(StaticUriProvider::new(<span class="string">"my-vehicle"</span>, <span class="number">0x1_0001</span>, <span class="number">1</span>)<span class="question-mark">?</span>);
+
+    <span class="kw">let </span>publisher = SimplePublisher::new(transport, identity);
+    <span class="kw">let </span>payload = UPayload::new(<span class="string">"92.5"</span>, UPayloadFormat::Text);
+    publisher
+        .publish(<span class="number">0x8001</span>, CallOptions::for_publish(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>), <span class="prelude-val">Some</span>(payload))
+        .<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="comment">// Delivered to every subscriber of my-vehicle/0x1_0001/1/0x8001.
+    </span><span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+<h3 id="subscribing-and-why-it-needs-a-service"><a class="doc-anchor" href="#subscribing-and-why-it-needs-a-service">§</a>Subscribing (and why it needs a service)</h3>
+<p>Publish, notify, and RPC are pure transport interactions. <strong>Subscription
+is different by design</strong>: uProtocol tracks who subscribes to what in a
+service — uSubscription — so subscriptions survive reconnects and can be
+observed. The <a href="../../../communication/trait.Subscriber.html" title="trait up_rust::communication::Subscriber"><code>Subscriber</code></a> role
+therefore needs two collaborators: a transport <em>and</em> a uSubscription
+client.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::communication::InMemorySubscriber;
+
+<span class="comment">// `new` wires the uSubscription client for you: an RPC client over your
+// transport, talking to the uSubscription service in your deployment.
+</span><span class="kw">let </span>subscriber = InMemorySubscriber::new(transport, identity).<span class="kw">await</span><span class="question-mark">?</span>;
+
+subscriber.subscribe(<span class="kw-2">&amp;</span>topic, Arc::new(TempListener), <span class="prelude-val">None</span>).<span class="kw">await</span><span class="question-mark">?</span>;</code></pre></div>
+<p>A real subscription round-trips through the uSubscription service, so
+this compiles against your deployment’s transport and RPC client rather
+than running standalone; for unit tests, <code>test-util</code> provides role
+mocks.</p>
+<h3 id="notifying-one-receiver"><a class="doc-anchor" href="#notifying-one-receiver">§</a>Notifying one receiver</h3>
+<p>Publish goes to whoever subscribed; a <em>notification</em> targets one uEntity.
+Same shape, one extra argument:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::sync::Arc;
+<span class="kw">use </span>up_rust::local_transport::LocalTransport;
+<span class="kw">use </span>up_rust::{StaticUriProvider, UPayloadFormat, UUri};
+<span class="kw">use </span>up_rust::communication::{CallOptions, Notifier, SimpleNotifier, UPayload};
+
+<span class="attr">#[tokio::main]
+</span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt; {
+    <span class="kw">let </span>transport = Arc::new(LocalTransport::default());
+    <span class="kw">let </span>identity = Arc::new(StaticUriProvider::new(<span class="string">"my-vehicle"</span>, <span class="number">0x1_0001</span>, <span class="number">1</span>)<span class="question-mark">?</span>);
+    <span class="kw">let </span>destination = UUri::try_from_parts(<span class="string">"my-vehicle"</span>, <span class="number">0x2_0002</span>, <span class="number">1</span>, <span class="number">0x0000</span>)<span class="question-mark">?</span>;
+
+    <span class="kw">let </span>notifier = SimpleNotifier::new(transport, identity);
+    notifier
+        .notify(
+            <span class="number">0x8002</span>,
+            <span class="kw-2">&amp;</span>destination,
+            CallOptions::for_notification(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+            <span class="prelude-val">Some</span>(UPayload::new(<span class="string">"door open"</span>, UPayloadFormat::Text)),
+        )
+        .<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="comment">// Exactly one receiver: the uEntity at `destination` — not a topic fan-out.
+    </span><span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+<h3 id="serving-rpc"><a class="doc-anchor" href="#serving-rpc">§</a>Serving RPC</h3>
+<p>You expose a resource id and a handler; the server owns listener
+registration and response addressing:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::sync::Arc;
+<span class="kw">use </span>up_rust::local_transport::LocalTransport;
+<span class="kw">use </span>up_rust::{StaticUriProvider, UAttributes};
+<span class="kw">use </span>up_rust::communication::{
+    InMemoryRpcServer, RequestHandler, RpcServer, ServiceInvocationError, UPayload,
+};
+
+<span class="kw">struct </span>EchoHandler;
+
+<span class="attr">#[async_trait::async_trait]
+</span><span class="kw">impl </span>RequestHandler <span class="kw">for </span>EchoHandler {
+    <span class="kw">async fn </span>handle_request(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        _resource_id: u16,
+        _attributes: <span class="kw-2">&amp;</span>UAttributes,
+        request: <span class="prelude-ty">Option</span>&lt;UPayload&gt;,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;UPayload&gt;, ServiceInvocationError&gt; {
+        <span class="prelude-val">Ok</span>(request) <span class="comment">// echo the request payload back
+    </span>}
+}
+
+<span class="attr">#[tokio::main]
+</span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt; {
+    <span class="kw">let </span>transport = Arc::new(LocalTransport::default());
+    <span class="kw">let </span>service = Arc::new(StaticUriProvider::new(<span class="string">"my-vehicle"</span>, <span class="number">0x2_0002</span>, <span class="number">1</span>)<span class="question-mark">?</span>);
+
+    <span class="kw">let </span>server = InMemoryRpcServer::new(transport, service);
+    server.register_endpoint(<span class="prelude-val">None</span>, <span class="number">0x00A1</span>, Arc::new(EchoHandler)).<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="comment">// The service now answers requests to my-vehicle/0x2_0002/1/0x00A1.
+    </span><span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+<p>Return <code>Err(ServiceInvocationError::...)</code> from the handler and the
+caller receives it as a <code>CommStatus</code> — an application-level failure,
+delivered, not a transport failure.</p>
+<h3 id="calling-rpc"><a class="doc-anchor" href="#calling-rpc">§</a>Calling RPC</h3>
+<p>The client correlates responses to requests and enforces your deadline.
+(The inline echo service here is scaffolding so the round trip can run
+and assert; in a deployment it’s someone else’s uEntity.)</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::sync::Arc;
+<span class="kw">use </span>up_rust::local_transport::LocalTransport;
+<span class="kw">use </span>up_rust::{LocalUriProvider, StaticUriProvider, UAttributes, UPayloadFormat};
+<span class="kw">use </span>up_rust::communication::{
+    CallOptions, InMemoryRpcClient, InMemoryRpcServer, RequestHandler, RpcClient, RpcServer,
+    ServiceInvocationError, UPayload,
+};
+
+<span class="attr">#[tokio::main]
+</span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt; {
+    <span class="kw">let </span>transport = Arc::new(LocalTransport::default());
+    <span class="kw">let </span>service = Arc::new(StaticUriProvider::new(<span class="string">"my-vehicle"</span>, <span class="number">0x2_0002</span>, <span class="number">1</span>)<span class="question-mark">?</span>);
+
+    <span class="kw">let </span>me = Arc::new(StaticUriProvider::new(<span class="string">"my-vehicle"</span>, <span class="number">0x3_0003</span>, <span class="number">1</span>)<span class="question-mark">?</span>);
+    <span class="kw">let </span>client = InMemoryRpcClient::new(transport, me).<span class="kw">await</span><span class="question-mark">?</span>;
+
+    <span class="kw">let </span>response = client
+        .invoke_method(
+            service.get_resource_uri(<span class="number">0x00A1</span>),
+            CallOptions::for_rpc_request(<span class="number">5_000</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>), <span class="comment">// 5s deadline
+            </span><span class="prelude-val">Some</span>(UPayload::new(<span class="string">"ping"</span>, UPayloadFormat::Text)),
+        )
+        .<span class="kw">await</span><span class="question-mark">?</span>;
+
+    <span class="macro">assert_eq!</span>(response.unwrap().payload(), <span class="string">"ping"</span>);
+    <span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+<p>If the deadline passes first, <code>invoke_method</code> returns
+<code>CommStatus(DeadlineExceeded)</code> — see
+<a href="../index.html" title="mod up_rust::guide::applications">when things fail</a> on the hub.</p>
+<h3 id="the-same-roles-over-the-experimental-families"><a class="doc-anchor" href="#the-same-roles-over-the-experimental-families">§</a>The same roles, over the experimental families</h3>
+<p>The role layer is not UTransport-only. Both experimental transport families
+carry it:</p>
+<h4 id="roles-over-owned-frames"><a class="doc-anchor" href="#roles-over-owned-frames">§</a>Roles over owned frames</h4>
+<p><code>communication::owned::Endpoint</code> offers the full role set over any
+<a href="../../../trait.UOwnedTransport.html" title="trait up_rust::UOwnedTransport"><code>UOwnedTransport</code></a> — same semantics, validated
+frames underneath. Runnable, over the in-memory owned transport
+(<code>test-util</code>):</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::sync::Arc;
+<span class="kw">use </span>up_rust::communication::owned::Endpoint;
+<span class="kw">use </span>up_rust::communication::{CallOptions, UPayload};
+<span class="kw">use </span>up_rust::{InMemoryOwnedTransport, StaticUriProvider, UPayloadFormat};
+
+<span class="attr">#[tokio::main]
+</span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt; {
+    <span class="kw">let </span>transport = Arc::new(InMemoryOwnedTransport::default());
+    <span class="kw">let </span>me = Arc::new(StaticUriProvider::new(<span class="string">"my-vehicle"</span>, <span class="number">0x1_0001</span>, <span class="number">1</span>)<span class="question-mark">?</span>);
+
+    <span class="kw">let </span>endpoint = Endpoint::new(transport, me);
+    endpoint
+        .publisher()
+        .publish(<span class="number">0x8001</span>, CallOptions::for_publish(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+                 <span class="prelude-val">Some</span>(UPayload::new(<span class="string">"92.5"</span>, UPayloadFormat::Text)))
+        .<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="comment">// Delivered as a validated owned frame to every matching owned listener.
+    </span><span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+<p>The owned subscriber follows the same rule as the UTransport-family one:
+<strong>subscription is a service interaction</strong>, so
+<code>endpoint.subscriber(usubscription_client)</code> takes a uSubscription client
+and informs the service before registering the local listener.</p>
+<h4 id="typed-zero-copy-publishing-with-role-ergonomics"><a class="doc-anchor" href="#typed-zero-copy-publishing-with-role-ergonomics">§</a>Typed zero-copy publishing with role ergonomics</h4>
+<p>Over a selected-wire zero-copy transport,
+<code>communication::zero_copy::Endpoint</code> gives the publisher role the typed
+loan path: <code>publish_stable</code> and <code>publish_uninit_stable</code> write your value
+directly into transport storage, with role-style addressing instead of
+manual metadata:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>endpoint = zero_copy::Endpoint::new(wire_transport, me);
+endpoint
+    .publisher()
+    .publish_uninit_stable::&lt;LidarScan&gt;(
+        <span class="number">0x8003</span>,
+        CallOptions::for_publish(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+        |context| context.into_init().point_count(<span class="number">1</span>).first_range_mm(<span class="number">12_450</span>).finish(),
+    )
+    .<span class="kw">await</span><span class="question-mark">?</span>;</code></pre></div>
+<p>The receive direction mirrors the owned subscriber:
+<code>endpoint.subscriber(usubscription)</code> consults the uSubscription service
+first and, on an active or pending subscription, registers a
+zero-copy listener — received payloads arrive as typed
+<a href="../../../wire_transport/struct.UWireRx.html" title="struct up_rust::wire_transport::UWireRx"><code>UWireRx</code></a> leases whose
+<a href="../../../wire_transport/struct.UWireRx.html#method.decode_payload" title="method up_rust::wire_transport::UWireRx::decode_payload"><code>decode_payload</code></a> reads the value in
+place.</p>
+<p>The mechanics of loans and stable payloads live in the
+<a href="../transport/index.html" title="mod up_rust::guide::applications::transport">Transport Layer page</a> and the
+<a href="../../transports/zero_copy/index.html" title="mod up_rust::guide::transports::zero_copy">zero-copy transport tutorial</a>.</p>
+<p>For the typed zero-copy payload path, see
+<a href="../transport/index.html" title="mod up_rust::guide::applications::transport">the Transport Layer page</a>.</p>
+</div></details></section></div></main></body></html>
