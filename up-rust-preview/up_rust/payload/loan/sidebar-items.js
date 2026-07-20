@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["LoanedInitPayload","LoanedUninitPayload"],"trait":["BorrowPayload","LoanPayload","LoanUninitPayload"]};

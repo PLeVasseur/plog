@@ -1,0 +1,188 @@
+<!DOCTYPE html><html lang="en"><head><meta name="robots" content="noindex"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="The uProtocol Application Layer client interface to the uSubscription service."><title>USubscription in up_rust::core::usubscription - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0ce1a80b.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="up_rust" data-themes="" data-resource-suffix="" data-rustdoc-version="1.89.0-nightly (414482f6a 2025-05-13)" data-channel="nightly" data-search-js="search-f7877310.js" data-settings-js="settings-5514c975.js" ><script src="../../../static.files/storage-4e99c027.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../../static.files/main-7ef8a74a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-32bb7600.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc trait"><div style="position:sticky;top:0;z-index:9999;background:#8a6d1a;color:#fff;padding:6px 14px;font:13px sans-serif;text-align:center;">Preview of the <strong>proposed</strong> up-rust <code style="color:#fff">native-frame-model</code> branch (up-rust <code style="color:#fff">8658f274</code>, up-spec <code style="color:#fff">f0e9b17</code>) &mdash; not released documentation. <a style="color:#ffe9a8" href="https://github.com/PLeVasseur/up-rust/tree/native-frame-model">branch</a> &middot; <a style="color:#ffe9a8" href="https://petelevasseur.com/">write-up</a></div><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../up_rust/index.html">up_rust</a><span class="version">0.10.0-SNAPSHOT</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">USubscription</a></h2><h3><a href="#required-methods">Required Methods</a></h3><ul class="block"><li><a href="#tymethod.fetch_subscribers" title="fetch_subscribers">fetch_subscribers</a></li><li><a href="#tymethod.fetch_subscriptions_by_subscriber" title="fetch_subscriptions_by_subscriber">fetch_subscriptions_by_subscriber</a></li><li><a href="#tymethod.fetch_subscriptions_by_topic" title="fetch_subscriptions_by_topic">fetch_subscriptions_by_topic</a></li><li><a href="#tymethod.register_for_notifications" title="register_for_notifications">register_for_notifications</a></li><li><a href="#tymethod.reset" title="reset">reset</a></li><li><a href="#tymethod.subscribe" title="subscribe">subscribe</a></li><li><a href="#tymethod.unregister_for_notifications" title="unregister_for_notifications">unregister_for_notifications</a></li><li><a href="#tymethod.unsubscribe" title="unsubscribe">unsubscribe</a></li></ul><h3><a href="#implementors">Implementors</a></h3></section><div id="rustdoc-modnav"><h2><a href="index.html">In up_<wbr>rust::<wbr>core::<wbr>usubscription</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">up_rust</a>::<wbr><a href="../index.html">core</a>::<wbr><a href="index.html">usubscription</a></div><h1>Trait <span class="trait">USubscription</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/up_rust/core/usubscription.rs.html#191-304">Source</a> </span></div><pre class="rust item-decl"><code>pub trait USubscription: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a> {
+    // Required methods
+    fn <a href="#tymethod.subscribe" class="fn">subscribe</a>&lt;'life0, 'life1, 'async_trait&gt;(
+        &amp;'life0 self,
+        topic: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+        expiration: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>&gt;,
+        min_sample_period: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>&gt;,
+    ) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="../../communication/enum.SubscriptionStatus.html" title="enum up_rust::communication::SubscriptionStatus">SubscriptionStatus</a>, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;
+       <span class="where">where Self: 'async_trait,
+             'life0: 'async_trait,
+             'life1: 'async_trait</span>;
+<span class="item-spacer"></span>    fn <a href="#tymethod.unsubscribe" class="fn">unsubscribe</a>&lt;'life0, 'life1, 'async_trait&gt;(
+        &amp;'life0 self,
+        topic: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    ) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;
+       <span class="where">where Self: 'async_trait,
+             'life0: 'async_trait,
+             'life1: 'async_trait</span>;
+<span class="item-spacer"></span>    fn <a href="#tymethod.fetch_subscriptions_by_topic" class="fn">fetch_subscriptions_by_topic</a>&lt;'life0, 'life1, 'async_trait&gt;(
+        &amp;'life0 self,
+        topic: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    ) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="struct.SubscriptionInfo.html" title="struct up_rust::core::usubscription::SubscriptionInfo">SubscriptionInfo</a>&gt;, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;
+       <span class="where">where Self: 'async_trait,
+             'life0: 'async_trait,
+             'life1: 'async_trait</span>;
+<span class="item-spacer"></span>    fn <a href="#tymethod.fetch_subscriptions_by_subscriber" class="fn">fetch_subscriptions_by_subscriber</a>&lt;'life0, 'life1, 'async_trait&gt;(
+        &amp;'life0 self,
+        subscriber: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    ) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="struct.SubscriptionInfo.html" title="struct up_rust::core::usubscription::SubscriptionInfo">SubscriptionInfo</a>&gt;, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;
+       <span class="where">where Self: 'async_trait,
+             'life0: 'async_trait,
+             'life1: 'async_trait</span>;
+<span class="item-spacer"></span>    fn <a href="#tymethod.register_for_notifications" class="fn">register_for_notifications</a>&lt;'life0, 'life1, 'async_trait&gt;(
+        &amp;'life0 self,
+        topic: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    ) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;
+       <span class="where">where Self: 'async_trait,
+             'life0: 'async_trait,
+             'life1: 'async_trait</span>;
+<span class="item-spacer"></span>    fn <a href="#tymethod.unregister_for_notifications" class="fn">unregister_for_notifications</a>&lt;'life0, 'life1, 'async_trait&gt;(
+        &amp;'life0 self,
+        topic: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    ) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;
+       <span class="where">where Self: 'async_trait,
+             'life0: 'async_trait,
+             'life1: 'async_trait</span>;
+<span class="item-spacer"></span>    fn <a href="#tymethod.fetch_subscribers" class="fn">fetch_subscribers</a>&lt;'life0, 'life1, 'async_trait&gt;(
+        &amp;'life0 self,
+        topic: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    ) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>&gt;, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;
+       <span class="where">where Self: 'async_trait,
+             'life0: 'async_trait,
+             'life1: 'async_trait</span>;
+<span class="item-spacer"></span>    fn <a href="#tymethod.reset" class="fn">reset</a>&lt;'life0, 'async_trait&gt;(
+        &amp;'life0 self,
+        reason: <a class="enum" href="enum.ResetReason.html" title="enum up_rust::core::usubscription::ResetReason">ResetReason</a>,
+        message: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;,
+    ) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;
+       <span class="where">where Self: 'async_trait,
+             'life0: 'async_trait</span>;
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>The uProtocol Application Layer client interface to the uSubscription service.</p>
+<p>Please refer to the <a href="https://github.com/eclipse-uprotocol/up-spec/blob/main/up-l3/usubscription/v3/README.adoc">uSubscription service specification</a>
+for details.</p>
+<p><strong>Note</strong> that in contrast to the uSubscription service specification, the functions defined in this trait only
+support commonly used input and output parameters of the operations defined in the specification. This is mainly
+due to the fact, that for many of the other parameters defined in the specification, it is not entirely clear if
+and how they should be used in practice. The next version of the uSubscription service specification will
+include a more detailed description of the operations and their parameters, which will then be reflected in the
+next version of this trait.</p>
+</div></details><h2 id="required-methods" class="section-header">Required Methods<a href="#required-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="tymethod.subscribe" class="method"><a class="src rightside" href="../../../src/up_rust/core/usubscription.rs.html#210-215">Source</a><h4 class="code-header">fn <a href="#tymethod.subscribe" class="fn">subscribe</a>&lt;'life0, 'life1, 'async_trait&gt;(
+    &amp;'life0 self,
+    topic: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    expiration: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>&gt;,
+    min_sample_period: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>&gt;,
+) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="../../communication/enum.SubscriptionStatus.html" title="enum up_rust::communication::SubscriptionStatus">SubscriptionStatus</a>, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;<div class="where">where
+    Self: 'async_trait,
+    'life0: 'async_trait,
+    'life1: 'async_trait,</div></h4></section></summary><div class="docblock"><p>Subscribes to a topic.</p>
+<h5 id="parameters"><a class="doc-anchor" href="#parameters">§</a>Parameters</h5>
+<ul>
+<li><code>topic</code> - The topic to subscribe to.</li>
+<li><code>expiration</code> - The point in time at which the subscription expires (milliseconds since Unix epoch).
+If not specified, the subscription is valid until explicitly unsubscribed.</li>
+<li><code>min_sample_period</code> - The minimum duration (in seconds) between two events that should be maintained
+for remote only topics. Device dispatchers use this attribute to reduce the
+publication rates of events sent between devices.
+This attribute is commonly used for mobile/cloud components subscribing to vehicle topics that are published
+at a high rate. If the desired sampling period set by the subscriber is lower than the original publisher’s
+publication period, the attribute is ignored.
+If not specified, the sampling period is set by the publisher.</li>
+</ul>
+<h5 id="returns"><a class="doc-anchor" href="#returns">§</a>Returns</h5>
+<p>The outcome of the attempt to establish the subscription.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.unsubscribe" class="method"><a class="src rightside" href="../../../src/up_rust/core/usubscription.rs.html#226">Source</a><h4 class="code-header">fn <a href="#tymethod.unsubscribe" class="fn">unsubscribe</a>&lt;'life0, 'life1, 'async_trait&gt;(
+    &amp;'life0 self,
+    topic: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;<div class="where">where
+    Self: 'async_trait,
+    'life0: 'async_trait,
+    'life1: 'async_trait,</div></h4></section></summary><div class="docblock"><p>Unsubscribes this client from a topic.</p>
+<h5 id="parameters-1"><a class="doc-anchor" href="#parameters-1">§</a>Parameters</h5>
+<ul>
+<li><code>topic</code> - The topic to unsubscribe from.</li>
+</ul>
+<h5 id="errors"><a class="doc-anchor" href="#errors">§</a>Errors</h5>
+<p>Returns an error if the attempt to unsubscribe has failed.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.fetch_subscriptions_by_topic" class="method"><a class="src rightside" href="../../../src/up_rust/core/usubscription.rs.html#237-240">Source</a><h4 class="code-header">fn <a href="#tymethod.fetch_subscriptions_by_topic" class="fn">fetch_subscriptions_by_topic</a>&lt;'life0, 'life1, 'async_trait&gt;(
+    &amp;'life0 self,
+    topic: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="struct.SubscriptionInfo.html" title="struct up_rust::core::usubscription::SubscriptionInfo">SubscriptionInfo</a>&gt;, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;<div class="where">where
+    Self: 'async_trait,
+    'life0: 'async_trait,
+    'life1: 'async_trait,</div></h4></section></summary><div class="docblock"><p>Gets all (currently) active subscriptions for a given topic.</p>
+<h5 id="parameters-2"><a class="doc-anchor" href="#parameters-2">§</a>Parameters</h5>
+<ul>
+<li><code>topic</code> - The topic to fetch subscriptions for.</li>
+</ul>
+<h5 id="errors-1"><a class="doc-anchor" href="#errors-1">§</a>Errors</h5>
+<p>Returns an error if the attempt to retrieve the subscriptions has failed.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.fetch_subscriptions_by_subscriber" class="method"><a class="src rightside" href="../../../src/up_rust/core/usubscription.rs.html#251-254">Source</a><h4 class="code-header">fn <a href="#tymethod.fetch_subscriptions_by_subscriber" class="fn">fetch_subscriptions_by_subscriber</a>&lt;'life0, 'life1, 'async_trait&gt;(
+    &amp;'life0 self,
+    subscriber: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="struct.SubscriptionInfo.html" title="struct up_rust::core::usubscription::SubscriptionInfo">SubscriptionInfo</a>&gt;, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;<div class="where">where
+    Self: 'async_trait,
+    'life0: 'async_trait,
+    'life1: 'async_trait,</div></h4></section></summary><div class="docblock"><p>Gets a uEntity’s (currently) active subscriptions.</p>
+<h5 id="parameters-3"><a class="doc-anchor" href="#parameters-3">§</a>Parameters</h5>
+<ul>
+<li><code>subscriber</code> - The uEntity to get the subscriptions for.</li>
+</ul>
+<h5 id="errors-2"><a class="doc-anchor" href="#errors-2">§</a>Errors</h5>
+<p>Returns an error if the attempt to retrieve the subscriptions has failed.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.register_for_notifications" class="method"><a class="src rightside" href="../../../src/up_rust/core/usubscription.rs.html#265">Source</a><h4 class="code-header">fn <a href="#tymethod.register_for_notifications" class="fn">register_for_notifications</a>&lt;'life0, 'life1, 'async_trait&gt;(
+    &amp;'life0 self,
+    topic: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;<div class="where">where
+    Self: 'async_trait,
+    'life0: 'async_trait,
+    'life1: 'async_trait,</div></h4></section></summary><div class="docblock"><p>Registers this client for notifications about changes to the subscription status for a given topic.</p>
+<h5 id="parameters-4"><a class="doc-anchor" href="#parameters-4">§</a>Parameters</h5>
+<ul>
+<li><code>topic</code> - The topic to receive changes to subscription status for.</li>
+</ul>
+<h5 id="errors-3"><a class="doc-anchor" href="#errors-3">§</a>Errors</h5>
+<p>Returns an error if the attempt to register for notifications has failed.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.unregister_for_notifications" class="method"><a class="src rightside" href="../../../src/up_rust/core/usubscription.rs.html#276">Source</a><h4 class="code-header">fn <a href="#tymethod.unregister_for_notifications" class="fn">unregister_for_notifications</a>&lt;'life0, 'life1, 'async_trait&gt;(
+    &amp;'life0 self,
+    topic: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;<div class="where">where
+    Self: 'async_trait,
+    'life0: 'async_trait,
+    'life1: 'async_trait,</div></h4></section></summary><div class="docblock"><p>Unregisters this client from notifications about changes to the subscription status for a given topic.</p>
+<h5 id="parameters-5"><a class="doc-anchor" href="#parameters-5">§</a>Parameters</h5>
+<ul>
+<li><code>topic</code> - The topic to no longer receive changes to subscription status for.</li>
+</ul>
+<h5 id="errors-4"><a class="doc-anchor" href="#errors-4">§</a>Errors</h5>
+<p>Returns an error if the attempt to unregister from notifications has failed.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.fetch_subscribers" class="method"><a class="src rightside" href="../../../src/up_rust/core/usubscription.rs.html#291">Source</a><h4 class="code-header">fn <a href="#tymethod.fetch_subscribers" class="fn">fetch_subscribers</a>&lt;'life0, 'life1, 'async_trait&gt;(
+    &amp;'life0 self,
+    topic: &amp;'life1 <a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="../../struct.UUri.html" title="struct up_rust::UUri">UUri</a>&gt;, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;<div class="where">where
+    Self: 'async_trait,
+    'life0: 'async_trait,
+    'life1: 'async_trait,</div></h4></section></summary><div class="docblock"><p>Fetches a list of subscribers that are currently subscribed to a given topic.</p>
+<h5 id="parameters-6"><a class="doc-anchor" href="#parameters-6">§</a>Parameters</h5>
+<ul>
+<li><code>topic</code> - The topic to fetch subscriptions for.</li>
+</ul>
+<h5 id="returns-1"><a class="doc-anchor" href="#returns-1">§</a>Returns</h5>
+<p>A list of URIs representing the uEntities that are subscribed to the given topic.</p>
+<h5 id="errors-5"><a class="doc-anchor" href="#errors-5">§</a>Errors</h5>
+<p>Returns an error if the attempt to fetch subscribers has failed.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.reset" class="method"><a class="src rightside" href="../../../src/up_rust/core/usubscription.rs.html#303">Source</a><h4 class="code-header">fn <a href="#tymethod.reset" class="fn">reset</a>&lt;'life0, 'async_trait&gt;(
+    &amp;'life0 self,
+    reason: <a class="enum" href="enum.ResetReason.html" title="enum up_rust::core::usubscription::ResetReason">ResetReason</a>,
+    message: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;,
+) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="../../struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;<div class="where">where
+    Self: 'async_trait,
+    'life0: 'async_trait,</div></h4></section></summary><div class="docblock"><p>Flushes all stored subscription information, including any persistently stored subscriptions.</p>
+<h5 id="parameters-7"><a class="doc-anchor" href="#parameters-7">§</a>Parameters</h5>
+<ul>
+<li><code>reason</code> - The reason for the reset.</li>
+<li><code>message</code> - An optional human-readable message providing additional context about the reset.</li>
+</ul>
+<h5 id="errors-6"><a class="doc-anchor" href="#errors-6">§</a>Errors</h5>
+<p>Returns an error if the attempt to reset has failed.</p>
+</div></details></div><h2 id="implementors" class="section-header">Implementors<a href="#implementors" class="anchor">§</a></h2><div id="implementors-list"><section id="impl-USubscription-for-RpcClientUSubscription" class="impl"><a class="src rightside" href="../../../src/up_rust/core/usubscription/usubscription_client.rs.html#253-437">Source</a><a href="#impl-USubscription-for-RpcClientUSubscription" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="trait.USubscription.html" title="trait up_rust::core::usubscription::USubscription">USubscription</a> for <a class="struct" href="struct.RpcClientUSubscription.html" title="struct up_rust::core::usubscription::RpcClientUSubscription">RpcClientUSubscription</a></h3></section></div><script src="../../../trait.impl/up_rust/core/usubscription/trait.USubscription.js" async></script></section></div></main></body></html>

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["validate_frame_view_for_transport"],"trait":["UFrameView"]};

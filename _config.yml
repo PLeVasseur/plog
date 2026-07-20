@@ -18,6 +18,15 @@ header_pages:
   - articles/index.md
   - media/index.md
 
+# Include: rustdoc (mockall) emits underscore-prefixed module directories
+# under up-rust-preview/ which Jekyll would otherwise drop from the site.
+include:
+  - __mock_MockDeploymentTarget
+  - __mock_MockDeploymentTarget_DeploymentTarget
+  - __update
+  - __get
+  - __delete
+
 # Exclude from processing
 exclude:
   - _plans

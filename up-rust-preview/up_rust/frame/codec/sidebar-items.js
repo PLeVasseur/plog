@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["FIELD_COMM_STATUS","FIELD_MASK_V1","FIELD_PAYLOAD_ENCODING","FIELD_PERMISSION_LEVEL","FIELD_REQID","FIELD_SINK","FIELD_TOKEN","FIELD_TRACEPARENT","FIELD_TTL","FRAME_FIELDS_VERSION"],"enum":["UFrameFieldsError"],"fn":["decode_frame_metadata_fields","encode_frame_metadata_fields"]};

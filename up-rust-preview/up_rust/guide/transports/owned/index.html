@@ -1,0 +1,63 @@
+<!DOCTYPE html><html lang="en"><head><meta name="robots" content="noindex"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Owned frames (experimental)"><title>up_rust::guide::transports::owned - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-0ce1a80b.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="up_rust" data-themes="" data-resource-suffix="" data-rustdoc-version="1.89.0-nightly (414482f6a 2025-05-13)" data-channel="nightly" data-search-js="search-f7877310.js" data-settings-js="settings-5514c975.js" ><script src="../../../../static.files/storage-4e99c027.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../../static.files/main-7ef8a74a.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-32bb7600.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><div style="position:sticky;top:0;z-index:9999;background:#8a6d1a;color:#fff;padding:6px 14px;font:13px sans-serif;text-align:center;">Preview of the <strong>proposed</strong> up-rust <code style="color:#fff">native-frame-model</code> branch (up-rust <code style="color:#fff">8658f274</code>, up-spec <code style="color:#fff">f0e9b17</code>) &mdash; not released documentation. <a style="color:#ffe9a8" href="https://github.com/PLeVasseur/up-rust/tree/native-frame-model">branch</a> &middot; <a style="color:#ffe9a8" href="https://petelevasseur.com/">write-up</a></div><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../../up_rust/index.html">up_rust</a><span class="version">0.10.0-SNAPSHOT</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module owned</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#owned-frames-experimental" title="Owned frames (experimental)">Owned frames (experimental)</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In up_<wbr>rust::<wbr>guide::<wbr>transports</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../../index.html">up_rust</a>::<wbr><a href="../../index.html">guide</a>::<wbr><a href="../index.html">transports</a></div><h1>Module <span>owned</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../../src/up_rust/lib.rs.html#373">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="owned-frames-experimental"><a class="doc-anchor" href="#owned-frames-experimental">§</a>Owned frames (experimental)</h2>
+<p>The owned-frame family (<code>owned-frame-transport</code>) exchanges whole
+<strong>validated frames as owned values</strong> — and, the headline it earns over
+the <code>UTransport</code> family: owned frames ride the <strong>selected-wire system</strong>.
+Custom wire encodings, negotiated wire identities, native-prefix
+metadata — the machinery the <a href="../../wires/index.html" title="mod up_rust::guide::wires">wire chapter</a>
+describes — compose over owned carriage, while the <code>UTransport</code> path’s
+encoding stays whatever the transport does internally. Pick this family
+when you want either of two things: pluggable wire formats, or
+validation done once at the boundary when your technology naturally
+hands over complete buffers (a DDS sample, a queue element).</p>
+<p>You implement <code>UOwnedTransportImpl</code>; users call <code>UOwnedTransport</code> and
+receive through <code>UOwnedListener</code>. The shape mirrors the UTransport
+family with frames in place of messages — and validity is in the type:
+<code>UOwnedFrame</code> written plain means <code>UOwnedFrame&lt;Validated&gt;</code>, the only
+state a transport ever sees.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{UOwnedFrame, UOwnedTransportImpl, UStatus};
+
+<span class="kw">struct </span>MyTransport { <span class="comment">/* connection handle */ </span>}
+
+<span class="attr">#[async_trait::async_trait]
+</span><span class="kw">impl </span>UOwnedTransportImpl <span class="kw">for </span>MyTransport {
+    <span class="kw">async fn </span>send_validated_owned(<span class="kw-2">&amp;</span><span class="self">self</span>, frame: UOwnedFrame) -&gt; <span class="prelude-ty">Result</span>&lt;(), UStatus&gt; {
+        <span class="comment">// `frame` is `UOwnedFrame&lt;Validated&gt;` by type: metadata checked,
+        // payload presence consistent — no re-checking here.
+        </span><span class="self">self</span>.backend().publish(frame.metadata(), frame.payload())
+    }
+    <span class="comment">// register/unregister owned listeners: same registry pattern as the
+    // UTransport tutorial.
+</span>}</code></pre></div>
+<p>Building a frame is one step — constructors validate, so what you get
+back is already the state dispatch requires:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::{PayloadEncoding, UMessageBuilder, UOwnedFrame, UUri};
+
+<span class="kw">let </span>topic = UUri::try_from_parts(<span class="string">"demo"</span>, <span class="number">0x1_0001</span>, <span class="number">1</span>, <span class="number">0x8001</span>)<span class="question-mark">?</span>;
+<span class="kw">let </span>message = UMessageBuilder::publish(topic).build()<span class="question-mark">?</span>;
+
+<span class="comment">// Frame metadata is a projection of the same attributes a UMessage carries:
+</span><span class="kw">let </span>metadata = message.attributes().to_frame_metadata(PayloadEncoding::RAW)<span class="question-mark">?</span>;
+<span class="kw">let </span>frame = UOwnedFrame::with_payload(metadata, <span class="string">b"reading"</span>.to_vec())<span class="question-mark">?</span>;
+
+<span class="macro">assert_eq!</span>(frame.payload_bytes(), <span class="string">b"reading"</span>);</code></pre></div>
+<p>The other state exists for the receive side: bytes decoded off the wire
+become <code>UOwnedFrame&lt;</code><a href="../../../enum.Unvalidated.html" title="enum up_rust::Unvalidated"><code>Unvalidated</code></a><code>&gt;</code>, and the
+only way forward is <a href="../../../struct.UOwnedFrame.html#method.validate" title="method up_rust::UOwnedFrame::validate"><code>UOwnedFrame::validate</code></a>, which transitions to
+<a href="../../../enum.Validated.html" title="enum up_rust::Validated"><code>Validated</code></a>. The state transition <em>is</em> the
+validation; an invalid frame reaching a listener is a compile error,
+not a runtime drop.</p>
+<p><strong>When to choose owned over zero-copy:</strong> your technology hands you
+complete, already-copied buffers anyway, so loan mechanics buy nothing —
+but wire pluggability and boundary validation still do.</p>
+<p>If your technology should instead stay ignorant of frames entirely and
+carry pre-encoded bytes, implement <code>UOwnedTransportCore</code> and let
+<a href="../../../wire_transport/struct.UWireTransport.html" title="struct up_rust::wire_transport::UWireTransport"><code>UWireTransport</code></a> compose the encoding above you
+— the same composition story as the
+<a href="../zero_copy/index.html" title="mod up_rust::guide::transports::zero_copy">zero-copy core</a>, and the wire
+chapter’s <a href="../../wires/index.html" title="mod up_rust::guide::wires">composition section</a> shows the payoff:
+the transport code is identical for every wire.</p>
+<p>Shared obligations: <a href="../index.html" title="mod up_rust::guide::transports">the transport hub</a>. Which
+trait is which: <a href="../../trait_map/index.html" title="mod up_rust::guide::trait_map">the trait map</a>.</p>
+</div></details></section></div></main></body></html>

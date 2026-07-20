@@ -1,0 +1,125 @@
+<!DOCTYPE html><html lang="en"><head><meta name="robots" content="noindex"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="The uProtocol Transport Layer interface that provides a common API for uEntity developers to send and receive messages."><title>UTransport in up_rust - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-0ce1a80b.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="up_rust" data-themes="" data-resource-suffix="" data-rustdoc-version="1.89.0-nightly (414482f6a 2025-05-13)" data-channel="nightly" data-search-js="search-f7877310.js" data-settings-js="settings-5514c975.js" ><script src="../static.files/storage-4e99c027.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-7ef8a74a.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-32bb7600.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc trait"><div style="position:sticky;top:0;z-index:9999;background:#8a6d1a;color:#fff;padding:6px 14px;font:13px sans-serif;text-align:center;">Preview of the <strong>proposed</strong> up-rust <code style="color:#fff">native-frame-model</code> branch (up-rust <code style="color:#fff">8658f274</code>, up-spec <code style="color:#fff">f0e9b17</code>) &mdash; not released documentation. <a style="color:#ffe9a8" href="https://github.com/PLeVasseur/up-rust/tree/native-frame-model">branch</a> &middot; <a style="color:#ffe9a8" href="https://petelevasseur.com/">write-up</a></div><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../up_rust/index.html">up_rust</a><span class="version">0.10.0-SNAPSHOT</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">UTransport</a></h2><h3><a href="#required-methods">Required Methods</a></h3><ul class="block"><li><a href="#tymethod.send" title="send">send</a></li></ul><h3><a href="#provided-methods">Provided Methods</a></h3><ul class="block"><li><a href="#method.receive" title="receive">receive</a></li><li><a href="#method.register_listener" title="register_listener">register_listener</a></li><li><a href="#method.unregister_listener" title="unregister_listener">unregister_listener</a></li></ul><h3><a href="#implementors">Implementors</a></h3></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate up_<wbr>rust</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="index.html">up_rust</a></div><h1>Trait <span class="trait">UTransport</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/up_rust/utransport.rs.html#210-305">Source</a> </span></div><pre class="rust item-decl"><code>pub trait UTransport: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a> {
+    // Required method
+    fn <a href="#tymethod.send" class="fn">send</a>&lt;'life0, 'async_trait&gt;(
+        &amp;'life0 self,
+        message: <a class="struct" href="struct.UMessage.html" title="struct up_rust::UMessage">UMessage</a>,
+    ) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;
+       <span class="where">where Self: 'async_trait,
+             'life0: 'async_trait</span>;
+
+    // Provided methods
+    fn <a href="#method.receive" class="fn">receive</a>&lt;'life0, 'life1, 'life2, 'async_trait&gt;(
+        &amp;'life0 self,
+        _source_filter: &amp;'life1 <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+        _sink_filter: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;'life2 <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>&gt;,
+    ) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="struct.UMessage.html" title="struct up_rust::UMessage">UMessage</a>, <a class="struct" href="struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;
+       <span class="where">where Self: 'async_trait,
+             'life0: 'async_trait,
+             'life1: 'async_trait,
+             'life2: 'async_trait</span> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.register_listener" class="fn">register_listener</a>&lt;'life0, 'life1, 'life2, 'async_trait&gt;(
+        &amp;'life0 self,
+        _source_filter: &amp;'life1 <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+        _sink_filter: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;'life2 <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>&gt;,
+        _listener: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/sync/struct.Arc.html" title="struct alloc::sync::Arc">Arc</a>&lt;dyn <a class="trait" href="trait.UListener.html" title="trait up_rust::UListener">UListener</a>&gt;,
+    ) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;
+       <span class="where">where Self: 'async_trait,
+             'life0: 'async_trait,
+             'life1: 'async_trait,
+             'life2: 'async_trait</span> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.unregister_listener" class="fn">unregister_listener</a>&lt;'life0, 'life1, 'life2, 'async_trait&gt;(
+        &amp;'life0 self,
+        _source_filter: &amp;'life1 <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+        _sink_filter: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;'life2 <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>&gt;,
+        _listener: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/sync/struct.Arc.html" title="struct alloc::sync::Arc">Arc</a>&lt;dyn <a class="trait" href="trait.UListener.html" title="trait up_rust::UListener">UListener</a>&gt;,
+    ) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;
+       <span class="where">where Self: 'async_trait,
+             'life0: 'async_trait,
+             'life1: 'async_trait,
+             'life2: 'async_trait</span> { ... }
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>The uProtocol Transport Layer interface that provides a common API for uEntity developers to send and
+receive messages.</p>
+<p>Implementations contain the details for connecting to the underlying transport technology and
+sending <a href="struct.UMessage.html" title="struct up_rust::UMessage"><code>UMessage</code></a>s using the configured technology.</p>
+<p>Please refer to the <a href="https://github.com/eclipse-uprotocol/up-spec/blob/v1.6.0-alpha.7/up-l1/README.adoc">uProtocol Transport Layer specification</a>
+for details.
+<em>Role: implemented by transports; called by applications (usually via the <a href="communication/index.html" title="mod up_rust::communication"><code>communication</code></a> roles) — see the <a href="guide/trait_map/index.html" title="mod up_rust::guide::trait_map">trait map</a>.</em></p>
+</div></details><h2 id="required-methods" class="section-header">Required Methods<a href="#required-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="tymethod.send" class="method"><a class="src rightside" href="../src/up_rust/utransport.rs.html#222">Source</a><h4 class="code-header">fn <a href="#tymethod.send" class="fn">send</a>&lt;'life0, 'async_trait&gt;(
+    &amp;'life0 self,
+    message: <a class="struct" href="struct.UMessage.html" title="struct up_rust::UMessage">UMessage</a>,
+) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;<div class="where">where
+    Self: 'async_trait,
+    'life0: 'async_trait,</div></h4></section></summary><div class="docblock"><p>Sends a message using this transport’s message exchange mechanism.</p>
+<h5 id="arguments"><a class="doc-anchor" href="#arguments">§</a>Arguments</h5>
+<ul>
+<li><code>message</code> - The message to send. The <code>type</code>, <code>source</code> and <code>sink</code> properties of the
+<a href="https://github.com/eclipse-uprotocol/up-spec/blob/v1.6.0-alpha.7/basics/uattributes.adoc">UAttributes</a> contained
+in the message determine the addressing semantics.</li>
+</ul>
+<h5 id="errors"><a class="doc-anchor" href="#errors">§</a>Errors</h5>
+<p>Returns an error if the message could not be sent.</p>
+</div></details></div><h2 id="provided-methods" class="section-header">Provided Methods<a href="#provided-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="method.receive" class="method"><a class="src rightside" href="../src/up_rust/utransport.rs.html#237-246">Source</a><h4 class="code-header">fn <a href="#method.receive" class="fn">receive</a>&lt;'life0, 'life1, 'life2, 'async_trait&gt;(
+    &amp;'life0 self,
+    _source_filter: &amp;'life1 <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    _sink_filter: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;'life2 <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>&gt;,
+) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="struct.UMessage.html" title="struct up_rust::UMessage">UMessage</a>, <a class="struct" href="struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;<div class="where">where
+    Self: 'async_trait,
+    'life0: 'async_trait,
+    'life1: 'async_trait,
+    'life2: 'async_trait,</div></h4></section></summary><div class="docblock"><p>Receives a message from the transport.</p>
+<p>This default implementation returns an error with <a href="enum.UCode.html#variant.Unimplemented" title="variant up_rust::UCode::Unimplemented"><code>UCode::Unimplemented</code></a>.</p>
+<h5 id="arguments-1"><a class="doc-anchor" href="#arguments-1">§</a>Arguments</h5>
+<ul>
+<li><code>source_filter</code> - The <em>source</em> address pattern that the message to receive needs to match.</li>
+<li><code>sink_filter</code> - The <em>sink</em> address pattern that the message to receive needs to match,
+or <code>None</code> to indicate that the message must not contain any sink address.</li>
+</ul>
+<h5 id="errors-1"><a class="doc-anchor" href="#errors-1">§</a>Errors</h5>
+<p>Returns an error if no message could be received, e.g. because no message matches the given addresses.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.register_listener" class="method"><a class="src rightside" href="../src/up_rust/utransport.rs.html#266-276">Source</a><h4 class="code-header">fn <a href="#method.register_listener" class="fn">register_listener</a>&lt;'life0, 'life1, 'life2, 'async_trait&gt;(
+    &amp;'life0 self,
+    _source_filter: &amp;'life1 <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    _sink_filter: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;'life2 <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>&gt;,
+    _listener: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/sync/struct.Arc.html" title="struct alloc::sync::Arc">Arc</a>&lt;dyn <a class="trait" href="trait.UListener.html" title="trait up_rust::UListener">UListener</a>&gt;,
+) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;<div class="where">where
+    Self: 'async_trait,
+    'life0: 'async_trait,
+    'life1: 'async_trait,
+    'life2: 'async_trait,</div></h4></section></summary><div class="docblock"><p>Registers a listener to be called for messages.</p>
+<p>The listener will be invoked for each message that matches the given source and sink filter patterns
+according to the rules defined by the <a href="https://github.com/eclipse-uprotocol/up-spec/blob/v1.6.0-alpha.7/basics/uri.adoc">UUri specification</a>.</p>
+<p>This default implementation returns an error with <a href="enum.UCode.html#variant.Unimplemented" title="variant up_rust::UCode::Unimplemented"><code>UCode::Unimplemented</code></a>.</p>
+<h5 id="arguments-2"><a class="doc-anchor" href="#arguments-2">§</a>Arguments</h5>
+<ul>
+<li><code>source_filter</code> - The <em>source</em> address pattern that messages need to match.</li>
+<li><code>sink_filter</code> - The <em>sink</em> address pattern that messages need to match,
+or <code>None</code> to match messages that do not contain any sink address.</li>
+<li><code>listener</code> - The listener to invoke.
+The listener can be unregistered again using <a href="trait.UTransport.html#method.unregister_listener" title="method up_rust::UTransport::unregister_listener"><code>UTransport::unregister_listener</code></a>.</li>
+</ul>
+<h5 id="errors-2"><a class="doc-anchor" href="#errors-2">§</a>Errors</h5>
+<p>Returns an error if the listener could not be registered.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.unregister_listener" class="method"><a class="src rightside" href="../src/up_rust/utransport.rs.html#294-304">Source</a><h4 class="code-header">fn <a href="#method.unregister_listener" class="fn">unregister_listener</a>&lt;'life0, 'life1, 'life2, 'async_trait&gt;(
+    &amp;'life0 self,
+    _source_filter: &amp;'life1 <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>,
+    _sink_filter: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;'life2 <a class="struct" href="struct.UUri.html" title="struct up_rust::UUri">UUri</a>&gt;,
+    _listener: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/sync/struct.Arc.html" title="struct alloc::sync::Arc">Arc</a>&lt;dyn <a class="trait" href="trait.UListener.html" title="trait up_rust::UListener">UListener</a>&gt;,
+) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html" title="struct core::pin::Pin">Pin</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/nightly/core/future/future/trait.Future.html" title="trait core::future::future::Future">Future</a>&lt;Output = <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="struct.UStatus.html" title="struct up_rust::UStatus">UStatus</a>&gt;&gt; + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + 'async_trait&gt;&gt;<div class="where">where
+    Self: 'async_trait,
+    'life0: 'async_trait,
+    'life1: 'async_trait,
+    'life2: 'async_trait,</div></h4></section></summary><div class="docblock"><p>Deregisters a message listener.</p>
+<p>The listener will no longer be called for any (matching) messages after this function has
+returned successfully.</p>
+<p>This default implementation returns an error with <a href="enum.UCode.html#variant.Unimplemented" title="variant up_rust::UCode::Unimplemented"><code>UCode::Unimplemented</code></a>.</p>
+<h5 id="arguments-3"><a class="doc-anchor" href="#arguments-3">§</a>Arguments</h5>
+<ul>
+<li><code>source_filter</code> - The <em>source</em> address pattern that the listener had been registered for.</li>
+<li><code>sink_filter</code> - The <em>sink</em> address pattern that the listener had been registered for.</li>
+<li><code>listener</code> - The listener to unregister.</li>
+</ul>
+<h5 id="errors-3"><a class="doc-anchor" href="#errors-3">§</a>Errors</h5>
+<p>Returns an error if the listener could not be unregistered, for example if the given listener does not exist.</p>
+</div></details></div><h2 id="implementors" class="section-header">Implementors<a href="#implementors" class="anchor">§</a></h2><div id="implementors-list"><section id="impl-UTransport-for-LocalTransport" class="impl"><a class="src rightside" href="../src/up_rust/local_transport.rs.html#78-128">Source</a><a href="#impl-UTransport-for-LocalTransport" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="trait.UTransport.html" title="trait up_rust::UTransport">UTransport</a> for <a class="struct" href="local_transport/struct.LocalTransport.html" title="struct up_rust::local_transport::LocalTransport">LocalTransport</a></h3></section><section id="impl-UTransport-for-MockTransport" class="impl"><a class="src rightside" href="../src/up_rust/utransport.rs.html#686-708">Source</a><a href="#impl-UTransport-for-MockTransport" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="trait.UTransport.html" title="trait up_rust::UTransport">UTransport</a> for <a class="struct" href="struct.MockTransport.html" title="struct up_rust::MockTransport">MockTransport</a></h3><div class="docblock"><p>This delegates the invocation of the UTransport functions to the mocked functions of the Transport struct.
+see <a href="https://github.com/asomers/mockall/issues/571">https://github.com/asomers/mockall/issues/571</a></p>
+</div></section></div><script src="../trait.impl/up_rust/utransport/trait.UTransport.js" async></script></section></div></main></body></html>

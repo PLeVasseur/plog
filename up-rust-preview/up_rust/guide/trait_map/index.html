@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="en"><head><meta name="robots" content="noindex"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="The trait map: how the traits fit together"><title>up_rust::guide::trait_map - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0ce1a80b.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="up_rust" data-themes="" data-resource-suffix="" data-rustdoc-version="1.89.0-nightly (414482f6a 2025-05-13)" data-channel="nightly" data-search-js="search-f7877310.js" data-settings-js="settings-5514c975.js" ><script src="../../../static.files/storage-4e99c027.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-7ef8a74a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-32bb7600.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><div style="position:sticky;top:0;z-index:9999;background:#8a6d1a;color:#fff;padding:6px 14px;font:13px sans-serif;text-align:center;">Preview of the <strong>proposed</strong> up-rust <code style="color:#fff">native-frame-model</code> branch (up-rust <code style="color:#fff">8658f274</code>, up-spec <code style="color:#fff">f0e9b17</code>) &mdash; not released documentation. <a style="color:#ffe9a8" href="https://github.com/PLeVasseur/up-rust/tree/native-frame-model">branch</a> &middot; <a style="color:#ffe9a8" href="https://petelevasseur.com/">write-up</a></div><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../up_rust/index.html">up_rust</a><span class="version">0.10.0-SNAPSHOT</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module trait_<wbr>map</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#the-trait-map-how-the-traits-fit-together" title="The trait map: how the traits fit together">The trait map: how the traits fit together</a><ul><li><a href="#the-stack-in-five-lines" title="The stack in five lines">The stack in five lines</a></li><li><a href="#the-families" title="The families">The families</a></li><li><a href="#what-flows-in-one-sentence-each" title="What flows, in one sentence each">What flows, in one sentence each</a></li><li><a href="#the-communication-layer-roles-up-l2" title="The Communication Layer roles (up-L2)">The Communication Layer roles (up-L2)</a></li><li><a href="#the-wire-authors-traits" title="The wire author’s traits">The wire author’s traits</a></li><li><a href="#the-composition-structs-not-traits-but-youll-look-for-them-here" title="The composition structs (not traits, but you’ll look for them here)">The composition structs (not traits, but you’ll look for them here)</a></li><li><a href="#the-standalone-utilities" title="The standalone utilities">The standalone utilities</a></li><li><a href="#where-to-go" title="Where to go">Where to go</a></li></ul></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In up_<wbr>rust::<wbr>guide</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">up_rust</a>::<wbr><a href="../index.html">guide</a></div><h1>Module <span>trait_map</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/up_rust/lib.rs.html#397">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="the-trait-map-how-the-traits-fit-together"><a class="doc-anchor" href="#the-trait-map-how-the-traits-fit-together">§</a>The trait map: how the traits fit together</h2>
+<p>The crate’s traits look numerous but form a small system: <strong>four
+transport families x four roles, plus three standalone utilities</strong>.
+Learn the naming grammar once and every trait’s job is readable from its
+name:</p>
+<ul>
+<li><strong>Bare name</strong> (<code>UTransport</code>, <code>UZeroCopyTransport</code>) — <em>you call it.</em>
+The user-facing contract a configured transport hands you.</li>
+<li><strong><code>...Impl</code> / <code>...Core</code></strong> (<code>UZeroCopyTransportImpl</code>,
+<code>UZeroCopyTransportCore</code>) — <em>you implement it,</em> and only if you are
+writing a transport. <code>Impl</code> speaks the library’s semantic frame types;
+<code>Core</code> receives already-encoded bytes and stays a dumb pipe while
+<a href="../../wire_transport/struct.UWireTransport.html" title="struct up_rust::wire_transport::UWireTransport"><code>UWireTransport</code></a> composes wires above it.</li>
+<li><strong><code>...Ext</code></strong> (<code>UZeroCopyTransportExt</code>) — <em>free methods.</em> Blanket
+conveniences you get on every implementation; never implemented by
+hand.</li>
+<li><strong><code>...Listener</code></strong> (<code>UListener</code>, <code>UZeroCopyListener</code>) — <em>you receive
+through it.</em> Implement one and register it to be called back.</li>
+</ul>
+<h3 id="the-stack-in-five-lines"><a class="doc-anchor" href="#the-stack-in-five-lines">§</a>The stack in five lines</h3><div class="example-wrap"><pre class="language-text"><code>application            roles (up-L2)  or  UMessage + UTransport (up-L1)
+                                 |
+transport family       UTransport / owned / zero-copy capability
+                                 |
+wire composition       UWireTransport = encoded core + wire + codec
+                                 |
+technology             broker, bus, shared memory</code></pre></div><h3 id="the-families"><a class="doc-anchor" href="#the-families">§</a>The families</h3><div><table><thead><tr><th>Family</th><th>You implement</th><th>You call</th><th>You receive with</th><th>What flows</th></tr></thead><tbody>
+<tr><td>Classic (always available)</td><td><a href="../../trait.UTransport.html" title="trait up_rust::UTransport"><code>UTransport</code></a></td><td><a href="../../trait.UTransport.html" title="trait up_rust::UTransport"><code>UTransport</code></a></td><td><a href="../../trait.UListener.html" title="trait up_rust::UListener"><code>UListener</code></a></td><td><a href="../../struct.UMessage.html" title="struct up_rust::UMessage"><code>UMessage</code></a></td></tr>
+<tr><td>Owned frames (<code>owned-frame-transport</code>)</td><td><a href="../../trait.UOwnedTransportImpl.html" title="trait up_rust::UOwnedTransportImpl"><code>UOwnedTransportImpl</code></a></td><td><a href="../../trait.UOwnedTransport.html" title="trait up_rust::UOwnedTransport"><code>UOwnedTransport</code></a></td><td><a href="../../trait.UOwnedListener.html" title="trait up_rust::UOwnedListener"><code>UOwnedListener</code></a></td><td>the <a href="../../enum.Validated.html" title="enum up_rust::Validated"><code>Validated</code></a> frame state</td></tr>
+<tr><td>Zero-copy (<code>zero-copy-transport</code>)</td><td><a href="../../trait.UZeroCopyTransportImpl.html" title="trait up_rust::UZeroCopyTransportImpl"><code>UZeroCopyTransportImpl</code></a> or <a href="../../wire_transport/trait.UZeroCopyTransportCore.html" title="trait up_rust::wire_transport::UZeroCopyTransportCore"><code>UZeroCopyTransportCore</code></a></td><td><a href="../../trait.UZeroCopyTransport.html" title="trait up_rust::UZeroCopyTransport"><code>UZeroCopyTransport</code></a> (+ <a href="../../trait.UZeroCopyTransportExt.html" title="trait up_rust::UZeroCopyTransportExt"><code>UZeroCopyTransportExt</code></a>)</td><td><a href="../../trait.UZeroCopyListener.html" title="trait up_rust::UZeroCopyListener"><code>UZeroCopyListener</code></a></td><td><a href="../../trait.UTxBuffer.html" title="trait up_rust::UTxBuffer"><code>UTxBuffer</code></a> out; <a href="../../trait.UZeroCopyRxLease.html" title="trait up_rust::UZeroCopyRxLease"><code>UZeroCopyRxLease</code></a> back</td></tr>
+<tr><td>Zero-copy, uninitialized loans (same feature)</td><td><a href="../../trait.UZeroCopyUninitTransportImpl.html" title="trait up_rust::UZeroCopyUninitTransportImpl"><code>UZeroCopyUninitTransportImpl</code></a></td><td><a href="../../trait.UZeroCopyUninitTransport.html" title="trait up_rust::UZeroCopyUninitTransport"><code>UZeroCopyUninitTransport</code></a> (+ <code>Ext</code>)</td><td>(same listener)</td><td><a href="../../trait.UUninitTxBuffer.html" title="trait up_rust::UUninitTxBuffer"><code>UUninitTxBuffer</code></a></td></tr>
+</tbody></table>
+</div>
+<p>The UTransport family is the floor every transport provides. The owned and
+zero-copy families are additive capability levels a transport offers
+only when its technology honestly supports them — the
+<a href="../transports/index.html" title="mod up_rust::guide::transports">transport tutorial</a> walks all three with code.</p>
+<h3 id="what-flows-in-one-sentence-each"><a class="doc-anchor" href="#what-flows-in-one-sentence-each">§</a>What flows, in one sentence each</h3>
+<ul>
+<li><a href="../../trait.UTxBuffer.html" title="trait up_rust::UTxBuffer"><code>UTxBuffer</code></a> — transmit storage a zero-copy
+transport <em>lends</em> you; write the payload in place, then commit.</li>
+<li><a href="../../trait.UUninitTxBuffer.html" title="trait up_rust::UUninitTxBuffer"><code>UUninitTxBuffer</code></a> — the same loan before
+initialization; the typed init API fills it safely.</li>
+<li><a href="../../trait.UZeroCopyRxLease.html" title="trait up_rust::UZeroCopyRxLease"><code>UZeroCopyRxLease</code></a> — a received payload you
+read in place; dropping it returns the storage. When the storage is
+contiguous loan-backed memory it also implements
+<a href="../../trait.ULoanedContiguousZeroCopyRxFrame.html" title="trait up_rust::ULoanedContiguousZeroCopyRxFrame"><code>ULoanedContiguousZeroCopyRxFrame</code></a>,
+which lets typed payloads be <em>borrowed</em> rather than copied out.</li>
+<li><a href="../../frame/view/trait.UFrameView.html" title="trait up_rust::frame::view::UFrameView"><code>UFrameView</code></a> — the neutral read vocabulary every
+received frame speaks, whatever the family: metadata plus ordered
+payload bytes. Owned frames and zero-copy leases both implement it, so
+decoding code is written once.</li>
+</ul>
+<h3 id="the-communication-layer-roles-up-l2"><a class="doc-anchor" href="#the-communication-layer-roles-up-l2">§</a>The Communication Layer roles (up-L2)</h3>
+<p>Applications mostly never touch the tables above directly — they use the
+role traits. The ready-made implementations below drive a <code>UTransport</code>-family
+transport. The owned-frame endpoint provides the corresponding owned role
+facades; the zero-copy endpoint currently provides publish and lease-preserving
+subscribe without pretending its receive lease is a classic <code>UMessage</code>
+(<code>communication::owned::Endpoint</code>, <code>communication::zero_copy::Endpoint</code> — see
+<a href="../applications/index.html" title="mod up_rust::guide::applications">the application guide</a>) (feature
+<code>communication-api</code> for the traits, <code>communication</code> for ready-made
+implementations):</p>
+<div><table><thead><tr><th>You want to…</th><th>Role trait</th><th>Ready-made implementation</th></tr></thead><tbody>
+<tr><td>Publish to whoever listens</td><td><a href="../../communication/trait.Publisher.html" title="trait up_rust::communication::Publisher"><code>Publisher</code></a></td><td><a href="../../communication/struct.SimplePublisher.html" title="struct up_rust::communication::SimplePublisher"><code>SimplePublisher</code></a></td></tr>
+<tr><td>Target one uEntity</td><td><a href="../../communication/trait.Notifier.html" title="trait up_rust::communication::Notifier"><code>Notifier</code></a></td><td><a href="../../communication/struct.SimpleNotifier.html" title="struct up_rust::communication::SimpleNotifier"><code>SimpleNotifier</code></a></td></tr>
+<tr><td>Consume a topic</td><td><a href="../../communication/trait.Subscriber.html" title="trait up_rust::communication::Subscriber"><code>Subscriber</code></a></td><td><a href="../../communication/struct.InMemorySubscriber.html" title="struct up_rust::communication::InMemorySubscriber"><code>InMemorySubscriber</code></a> (needs a uSubscription client — see <a href="../applications/index.html" title="mod up_rust::guide::applications">the application tutorial</a>)</td></tr>
+<tr><td>Call a service</td><td><a href="../../communication/trait.RpcClient.html" title="trait up_rust::communication::RpcClient"><code>RpcClient</code></a></td><td><a href="../../communication/struct.InMemoryRpcClient.html" title="struct up_rust::communication::InMemoryRpcClient"><code>InMemoryRpcClient</code></a></td></tr>
+<tr><td>Serve requests</td><td><a href="../../communication/trait.RpcServer.html" title="trait up_rust::communication::RpcServer"><code>RpcServer</code></a> + <a href="../../communication/trait.RequestHandler.html" title="trait up_rust::communication::RequestHandler"><code>RequestHandler</code></a></td><td><a href="../../communication/struct.InMemoryRpcServer.html" title="struct up_rust::communication::InMemoryRpcServer"><code>InMemoryRpcServer</code></a></td></tr>
+</tbody></table>
+</div><h3 id="the-wire-authors-traits"><a class="doc-anchor" href="#the-wire-authors-traits">§</a>The wire author’s traits</h3>
+<p>A wire format is a marker plus a codec (feature <code>wire-implementer-api</code>):</p>
+<div><table><thead><tr><th>Trait</th><th>Job</th></tr></thead><tbody>
+<tr><td><a href="../../wire/trait.UWire.html" title="trait up_rust::wire::UWire"><code>UWire</code></a></td><td>The marker: the wire’s identity constants</td></tr>
+<tr><td><a href="../../payload/codec/trait.PayloadCodec.html" title="trait up_rust::payload::codec::PayloadCodec"><code>PayloadCodec</code></a></td><td>Names the codec and its payload encoding</td></tr>
+<tr><td><a href="../../payload/codec/trait.EncodePayload.html" title="trait up_rust::payload::codec::EncodePayload"><code>EncodePayload</code></a><code>&lt;T&gt;</code></td><td>Measure (<code>payload_layout</code>) then write <code>T</code> in place</td></tr>
+<tr><td><a href="../../payload/codec/trait.DecodePayload.html" title="trait up_rust::payload::codec::DecodePayload"><code>DecodePayload</code></a><code>&lt;T&gt;</code></td><td>Read <code>T</code> from borrowed payload bytes</td></tr>
+<tr><td><a href="../../payload/codec/trait.ReadDecodePayload.html" title="trait up_rust::payload::codec::ReadDecodePayload"><code>ReadDecodePayload</code></a><code>&lt;T&gt;</code></td><td>Decode from an ordered reader — works on segmented storage without coalescing</td></tr>
+<tr><td><a href="../../wire/trait.UWirePayload.html" title="trait up_rust::wire::UWirePayload"><code>UWirePayload</code></a><code>&lt;T&gt;</code></td><td>Associates a payload type (and its codec) with the wire</td></tr>
+</tbody></table>
+</div><h3 id="the-composition-structs-not-traits-but-youll-look-for-them-here"><a class="doc-anchor" href="#the-composition-structs-not-traits-but-youll-look-for-them-here">§</a>The composition structs (not traits, but you’ll look for them here)</h3>
+<ul>
+<li><a href="../../wire_transport/struct.UWireTransport.html" title="struct up_rust::wire_transport::UWireTransport"><code>UWireTransport</code></a> — wraps an encoded core
+(<a href="../../wire_transport/trait.UZeroCopyTransportCore.html" title="trait up_rust::wire_transport::UZeroCopyTransportCore"><code>UZeroCopyTransportCore</code></a> / <a href="../../wire_transport/trait.UOwnedTransportCore.html" title="trait up_rust::wire_transport::UOwnedTransportCore"><code>UOwnedTransportCore</code></a>) and composes the
+selected wire and metadata codec above it. Concretely: the core moves
+two opaque byte regions; <code>UWireTransport</code> owns everything typed above
+them — it encodes metadata through the codec, stamps and checks wire
+identity, sizes loans from <code>payload_layout</code>, runs the payload codec in
+place, and rejects foreign bytes before any decoder sees them. This is
+where the families and the wires meet, and it is why the transport
+crate underneath never mentions a codec.</li>
+<li><a href="../../wire_transport/struct.UWireRx.html" title="struct up_rust::wire_transport::UWireRx"><code>UWireRx</code></a> — the received-payload wrapper (a lease
+for zero-copy, an owned frame for owned) that adds wire-aware typed decoding on
+top of the raw lease.</li>
+</ul>
+<h3 id="the-standalone-utilities"><a class="doc-anchor" href="#the-standalone-utilities">§</a>The standalone utilities</h3>
+<ul>
+<li><a href="../../trait.LocalUriProvider.html" title="trait up_rust::LocalUriProvider"><code>LocalUriProvider</code></a> — answers “what is <em>my</em>
+address?”; roles use it to build source URIs.</li>
+<li><a href="../../trait.ProtobufMappable.html" title="trait up_rust::ProtobufMappable"><code>ProtobufMappable</code></a> — lets any
+protobuf-generated type ride as a payload implicitly
+(<code>protobuf-support</code>).</li>
+<li><a href="../../trait.UAttributesValidator.html" title="trait up_rust::UAttributesValidator"><code>UAttributesValidator</code></a> — validates
+message attributes per message kind; transports use it at boundaries.</li>
+</ul>
+<h3 id="where-to-go"><a class="doc-anchor" href="#where-to-go">§</a>Where to go</h3>
+<p>Applications: <a href="../applications/index.html" title="mod up_rust::guide::applications">the application tutorial</a>. Transport
+authors: <a href="../transports/index.html" title="mod up_rust::guide::transports">the transport tutorial</a>. Wire and payload
+authors: <a href="../wires/index.html" title="mod up_rust::guide::wires">the wire tutorial</a>.</p>
+</div></details></section></div></main></body></html>

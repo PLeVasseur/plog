@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="en"><head><meta name="robots" content="noindex"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Adding a wire format (and stable payloads)"><title>up_rust::guide::wires - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0ce1a80b.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="up_rust" data-themes="" data-resource-suffix="" data-rustdoc-version="1.89.0-nightly (414482f6a 2025-05-13)" data-channel="nightly" data-search-js="search-f7877310.js" data-settings-js="settings-5514c975.js" ><script src="../../../static.files/storage-4e99c027.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-7ef8a74a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-32bb7600.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><div style="position:sticky;top:0;z-index:9999;background:#8a6d1a;color:#fff;padding:6px 14px;font:13px sans-serif;text-align:center;">Preview of the <strong>proposed</strong> up-rust <code style="color:#fff">native-frame-model</code> branch (up-rust <code style="color:#fff">8658f274</code>, up-spec <code style="color:#fff">f0e9b17</code>) &mdash; not released documentation. <a style="color:#ffe9a8" href="https://github.com/PLeVasseur/up-rust/tree/native-frame-model">branch</a> &middot; <a style="color:#ffe9a8" href="https://petelevasseur.com/">write-up</a></div><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../up_rust/index.html">up_rust</a><span class="version">0.10.0-SNAPSHOT</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module wires</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#adding-a-wire-format-and-stable-payloads" title="Adding a wire format (and stable payloads)">Adding a wire format (and stable payloads)</a><ul><li><a href="#why-three-traits" title="Why three traits?">Why three traits?</a></li><li><a href="#why-identities-are-strict" title="Why identities are strict">Why identities are strict</a></li><li><a href="#feature-and-import-doors" title="Feature and import doors">Feature and import doors</a></li><li><a href="#error-categories" title="Error categories">Error categories</a></li><li><a href="#manual-tx-see-the-zero-copy-escape-hatch" title="Manual TX: see the zero-copy escape hatch">Manual TX: see the zero-copy escape hatch</a></li><li><a href="#the-two-typed-paths-and-which-one-is-truly-zero-copy" title="The two typed paths (and which one is truly zero-copy)">The two typed paths (and which one is truly zero-copy)</a></li><li><a href="#stable-payloads-writing-typed-data-straight-into-loans" title="Stable payloads (writing typed data straight into loans)">Stable payloads (writing typed data straight into loans)</a></li></ul></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In up_<wbr>rust::<wbr>guide</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">up_rust</a>::<wbr><a href="../index.html">guide</a></div><h1>Module <span>wires</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/up_rust/lib.rs.html#395">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="adding-a-wire-format-and-stable-payloads"><a class="doc-anchor" href="#adding-a-wire-format-and-stable-payloads">§</a>Adding a wire format (and stable payloads)</h2>
+<p>A wire format teaches uProtocol to carry one payload encoding — CDR,
+Arrow IPC, your in-house format — over every capable transport at once.
+The whole job is one crate: a marker type, a codec, and identity
+constants. In outline:</p>
+<p>the runnable demo below is the complete outline — a marker
+type carrying identity constants, a codec that measures then writes in
+place, and the association binding payload types to that codec.</p>
+<h3 id="why-three-traits"><a class="doc-anchor" href="#why-three-traits">§</a>Why three traits?</h3>
+<p>The split is load-bearing, and the demo shows each part earning its
+keep:</p>
+<ul>
+<li><a href="../../wire/trait.UWire.html" title="trait up_rust::wire::UWire"><code>UWire</code></a> is the wire’s <strong>identity</strong> — the constants two
+peers negotiate on (“are these bytes even mine to decode?”). One
+identity, forever.</li>
+<li><a href="../../payload/codec/trait.PayloadCodec.html" title="trait up_rust::payload::codec::PayloadCodec"><code>PayloadCodec</code></a> is one <strong>encoding
+implementation</strong> — a name plus the payload encoding it produces.</li>
+<li><code>UWirePayload&lt;T&gt;</code> is the <strong>binding</strong>: “on this wire, type <code>T</code> uses
+that codec.” It is separate because one wire identity routinely serves
+many payload types — a <code>LidarWire</code> can carry a <code>PointCloud</code> through a
+fixed-layout codec and a <code>StatusBlob</code> through a raw-bytes codec, one
+negotiated identity, two codecs — which a merged trait cannot express.
+Downstream dispatch also relies on the codec being a nameable type:
+generic wire routing constrains on codec equality, which only works
+when the codec is a type, not a method set folded into the marker.</li>
+</ul>
+<p>For the common all-in-one case the marker implements everything and
+binds <code>Codec = Self</code>, as the demo does —
+<a href="../../macro.bind_wire_self_codec.html" title="macro up_rust::bind_wire_self_codec"><code>bind_wire_self_codec!</code></a> writes those
+binding lines for you. (A trait-level default or blanket impl was
+considered and rejected: the default form is unstable Rust, and a
+blanket impl would forbid, by coherence, a wire binding a different
+codec for some payload type — the case this split exists to support.)</p>
+<p>Before the checklist, a demo wire <strong>running end to end</strong> — identity and
+codec — carrying a <code>u32</code> little-endian:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>up_rust::payload::codec::{DecodePayload, EncodePayload, PayloadCodec, PayloadLayout};
+<span class="kw">use </span>up_rust::payload::UWireError;
+<span class="kw">use </span>up_rust::{PayloadEncoding, UWire, WireIdentity};
+
+<span class="kw">struct </span>DemoU32Wire;
+
+<span class="kw">impl </span>UWire <span class="kw">for </span>DemoU32Wire {
+    <span class="comment">// Experimental compact codes (0x8000..=0xFFFE): literal-labeled, unregistered.
+    </span><span class="kw">const </span>WIRE_ID: WireIdentity = WireIdentity::new(<span class="string">"guide.demo.u32-le"</span>, <span class="number">0x8042</span>);
+    <span class="kw">const </span>PAYLOAD_FAMILY_ID: WireIdentity = WireIdentity::new(<span class="string">"guide.demo.u32"</span>, <span class="number">0x8042</span>);
+    <span class="kw">const </span>METADATA_LAYOUT_ID: WireIdentity =
+        WireIdentity::new(<span class="string">"uprotocol.native-prefix.v1"</span>, <span class="number">0x0001</span>);
+    <span class="kw">const </span>FORMAT_VERSION: u16 = <span class="number">1</span>;
+}
+
+<span class="kw">impl </span>PayloadCodec <span class="kw">for </span>DemoU32Wire {
+    <span class="kw">fn </span>codec_name() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str { <span class="string">"demo-u32-le" </span>}
+    <span class="kw">fn </span>payload_encoding() -&gt; PayloadEncoding { PayloadEncoding::RAW }
+}
+
+<span class="kw">impl </span>EncodePayload&lt;u32&gt; <span class="kw">for </span>DemoU32Wire {
+    <span class="kw">fn </span>payload_layout(_value: <span class="kw-2">&amp;</span>u32) -&gt; <span class="prelude-ty">Result</span>&lt;PayloadLayout, UWireError&gt; {
+        PayloadLayout::new(<span class="number">4</span>, <span class="number">4</span>) <span class="comment">// fixed size, four-byte alignment
+    </span>}
+    <span class="kw">fn </span>encode_payload(value: <span class="kw-2">&amp;</span>u32, dst: <span class="kw-2">&amp;mut </span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;(), UWireError&gt; {
+        dst.copy_from_slice(<span class="kw-2">&amp;</span>value.to_le_bytes());
+        <span class="prelude-val">Ok</span>(())
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; DecodePayload&lt;<span class="lifetime">'a</span>, u32&gt; <span class="kw">for </span>DemoU32Wire {
+    <span class="kw">fn </span>decode_payload(src: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;u32, UWireError&gt; {
+        <span class="kw">let </span>bytes: [u8; <span class="number">4</span>] = src.try_into().map_err(|<span class="kw">_</span>| {
+            UWireError::invalid_payload(<span class="string">"demo-u32-le payload must be exactly 4 bytes"</span>)
+        })<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(u32::from_le_bytes(bytes))
+    }
+}
+
+<span class="comment">// Round-trip: measure, encode in place, decode.
+</span><span class="kw">let </span>value: u32 = <span class="number">0xDEAD_BEEF</span>;
+<span class="kw">let </span>layout = DemoU32Wire::payload_layout(<span class="kw-2">&amp;</span>value)<span class="question-mark">?</span>;
+<span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[<span class="number">0u8</span>; layout.len()];
+DemoU32Wire::encode_payload(<span class="kw-2">&amp;</span>value, <span class="kw-2">&amp;mut </span>buf)<span class="question-mark">?</span>;
+<span class="macro">assert_eq!</span>(DemoU32Wire::decode_payload(<span class="kw-2">&amp;</span>buf)<span class="question-mark">?</span>, value);
+<span class="macro">assert_eq!</span>(DemoU32Wire::WIRE_ID.compact_id(), <span class="number">0x8042</span>); <span class="comment">// experimental range</span></code></pre></div>
+<p>Need a custom metadata profile instead of the native prefix? Construct
+directly: <code>UWireTransport::new(core, wire, my_codec)</code> — that constructor
+<em>is</em> the composition; the convenience above is it with the canonical
+codec filled in.</p>
+<p>One line composes the demo over any encoded core —
+<code>core.into_native_prefix_wire_transport(DemoU32Wire)</code> — and the
+transport then speaks typed <code>u32</code> payloads over whatever the core
+carries. The <a href="../transports/zero_copy/index.html" title="mod up_rust::guide::transports::zero_copy">zero-copy tutorial</a>
+compiles that composition, twice, to show the core code never changes
+when the wire does. Everything else on this page is the packaging around exactly this:
+identity constants that let receivers reject foreign bytes early, and a
+codec pair that measures then writes in place.</p>
+<p>The steps, in the order that avoids rework:</p>
+<ol>
+<li>Write down the governing representation/version, supported subset, byte
+order, framing markers, options, padding, canonical-byte and complete-input
+rules before implementing the codec.</li>
+<li>Implement <code>PayloadCodec</code>, <code>EncodePayload</code>, <code>DecodePayload</code>, and, when ordered
+reader input is supported, <code>ReadDecodePayload</code>.</li>
+<li>Define selected-wire and payload-family identities. Compact codes are unique
+within their own namespace. Codes in the experimental range must stay
+literal-labeled and must not be described as registered or stable.</li>
+<li>Implement <code>UWire</code> on a marker and associate each payload type through
+<code>UWirePayload&lt;T&gt;</code>. The associated codec can be a separate type; it is not
+required to be the marker.</li>
+<li>Choose a documented metadata profile. <code>NativePrefixFrameMetadataCodec</code> is
+the canonical field-block profile. Free <code>with_*_native_prefix</code> constructors
+are ecosystem conveniences, not requirements on <code>UWire</code>.</li>
+<li>Run wrong-wire, wrong-payload-family, unknown-layout, malformed-envelope,
+exact/short/overlong/oversized-reader, independent-vector, trailing-byte,
+golden, and round-trip tests.</li>
+</ol>
+<p><code>PayloadFormat</code> already receives a blanket <code>PayloadCodec</code> implementation. Do
+not add a second <code>PayloadCodec</code> implementation for the same format marker; Rust
+will correctly reject the overlap with E0119. Put encode/decode capability on
+the existing marker or use a distinct codec type and select it through
+<code>UWirePayload&lt;T&gt;</code>.</p>
+<p>The external XCDRv2, Arrow, and OMGIDL crates demonstrate different profiles
+without adding transport-specific codec code. Their implementation details do
+not override the trait contracts. In particular, a <code>ReadDecodePayload</code>
+implementation allocates only after applying a finite limit, consumes exactly
+the declared length, distinguishes early EOF, probes one additional byte to
+reject overlong input, and returns errors rather than panicking.</p>
+<p><code>payload_layout</code> is a measurement operation. A variable-length codec may need a
+probe serialization or traversal and may do equivalent work again during
+<code>encode_payload</code>. Benchmark these as separate phases; never label layout probing
+as zero-cost.</p>
+<h3 id="why-identities-are-strict"><a class="doc-anchor" href="#why-identities-are-strict">§</a>Why identities are strict</h3>
+<p>A wire identity is what lets a receiver reject bytes <em>before</em> handing
+them to the wrong decoder: the adapter checks the <code>UPWM</code> prefix first,
+so a CDR payload never reaches an Arrow decoder as garbage-in. That only
+works if compact codes never collide — hence uniqueness within each
+namespace. The experimental range (<code>0x8000..=0xFFFE</code>) exists so teams
+can develop wires today without a registry; codes there are
+literal-labeled precisely because nothing guarantees two projects chose
+differently. When uProtocol operates an identity registry, registered
+codes become stable and the experimental range stays what it is: a
+sandbox.</p>
+<h3 id="feature-and-import-doors"><a class="doc-anchor" href="#feature-and-import-doors">§</a>Feature and import doors</h3>
+<p>Use one role feature rather than relying on feature unification from a larger
+workspace:</p>
+<div class="example-wrap"><pre class="language-text"><code>ordinary selected-wire user: selected-wire-user-api
+wire author:                 wire-implementer-api
+physical transport author:   transport-implementer-api
+typed uninitialized TX user: selected-wire-user-api + zero-copy-transport
+communication roles:         communication</code></pre></div>
+<p>Each role needs exactly its own feature — depend on <code>up-rust</code> with
+<code>default-features = false</code> and the one feature above.</p>
+<h3 id="error-categories"><a class="doc-anchor" href="#error-categories">§</a>Error categories</h3>
+<p>Public boundaries preserve stable categories even when detailed internal errors
+differ:</p>
+<div><table><thead><tr><th>Failure</th><th>Public status category</th></tr></thead><tbody>
+<tr><td>malformed caller input or selected-wire payload</td><td>invalid argument</td></tr>
+<tr><td>unsupported family, wire, profile, or operation</td><td>unimplemented</td></tr>
+<tr><td>unavailable backend, peer, or discovery state</td><td>unavailable or not found, as documented by the binding</td></tr>
+<tr><td>bounded queue, loan, listener, or storage exhaustion</td><td>resource exhausted</td></tr>
+<tr><td>violated lifecycle invariant or unexpected implementation failure</td><td>failed precondition or internal</td></tr>
+</tbody></table>
+</div>
+<p><code>UWireError</code> provides codec diagnostics and currently converts to invalid
+argument at generic wire boundaries. A transport must not flatten backend,
+exhaustion, or lifecycle statuses into codec errors. Tests inject each public
+category at the boundary where it is promised.</p>
+<h3 id="manual-tx-see-the-zero-copy-escape-hatch"><a class="doc-anchor" href="#manual-tx-see-the-zero-copy-escape-hatch">§</a>Manual TX: see the zero-copy escape hatch</h3>
+<p>The ordered contract a manual (untyped/initialized-loan) sender must
+uphold lives with the concrete lifecycle it belongs to: the
+<a href="../transports/zero_copy/index.html" title="mod up_rust::guide::transports::zero_copy">zero-copy tutorial’s escape hatch</a>.
+Prefer the typed helpers; they perform those steps for you.</p>
+<h3 id="the-two-typed-paths-and-which-one-is-truly-zero-copy"><a class="doc-anchor" href="#the-two-typed-paths-and-which-one-is-truly-zero-copy">§</a>The two typed paths (and which one is truly zero-copy)</h3><div><table><thead><tr><th>path</th><th>serializations</th><th>intermediate copies</th><th>encode step exists?</th></tr></thead><tbody>
+<tr><td>codec path (<code>EncodePayload</code>)</td><td>one</td><td>zero</td><td>yes — it IS the serialization, written directly into the loaned buffer</td></tr>
+<tr><td>stable path (<code>StablePayload</code> derive)</td><td><strong>zero</strong></td><td>zero</td><td>no — the in-memory layout is the wire layout; typed init writes fields in place</td></tr>
+</tbody></table>
+</div>
+<p>“Zero-copy” on the codec path is about <em>where</em> the serialized bytes
+land (straight into transport storage, no staging buffer) — a genuine
+serialization still happens, once. <strong>The stable path is the true
+zero-copy path: no serialization exists at all.</strong> When the payload can
+carry a stable layout, prefer it.</p>
+<h3 id="stable-payloads-writing-typed-data-straight-into-loans"><a class="doc-anchor" href="#stable-payloads-writing-typed-data-straight-into-loans">§</a>Stable payloads (writing typed data straight into loans)</h3>
+<p>This section is the layer <em>beneath</em> the application-facing typed
+helpers — it is for wire and payload authors. Application code never
+touches <code>MaybeUninit</code>: it writes a closure of named setters ending in
+<code>finish()</code>, as the
+<a href="../applications/transport/index.html" title="mod up_rust::guide::applications::transport">application transport chapter</a>
+shows. What follows is what the derive generates and the helpers drive.</p>
+<p>The whole flow, running — derive, then initialize directly in
+uninitialized storage, builder-style, ending in a completion proof:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::mem::MaybeUninit;
+<span class="kw">use </span>up_rust::StablePayloadInit <span class="kw">as _</span>;
+
+<span class="attr">#[repr(C)]
+#[derive(Clone, Copy, up_rust::StablePayload, up_rust::ByteBackedStablePayload,
+         up_rust::StablePayloadInit)]
+#[stable_payload(type_name = <span class="string">"guide.demo.Reading"</span>)]
+</span><span class="kw">struct </span>Reading {
+    sensor_id: u16,
+    value: u16,
+}
+
+<span class="kw">let </span><span class="kw-2">mut </span>storage = [MaybeUninit::&lt;u8&gt;::uninit(); size_of::&lt;Reading&gt;()];
+<span class="kw">let </span>init = Reading::init_from_uninit_bytes(<span class="kw-2">&amp;mut </span>storage)<span class="question-mark">?</span>;
+<span class="kw">let </span>_finished = init.sensor_id(<span class="number">7</span>).value(<span class="number">451</span>).finish()<span class="question-mark">?</span>; <span class="comment">// finish() is the proof</span></code></pre></div>
+<p>Field setters exist because you derived <code>StablePayloadInit</code>; forgetting
+a field or calling a setter twice is a <em>compile</em> error, not a runtime
+one — the typestate pins in the test suite lock that in.</p>
+<ol>
+<li>Define an explicit <code>#[repr(C)]</code> layout with no implicit padding.</li>
+<li>Derive <code>StablePayload</code>, and derive <code>ByteBackedStablePayload</code> only when every
+byte pattern is valid for every field.</li>
+<li>Derive <code>StablePayloadInit</code> to obtain the typestate initializer.</li>
+<li>Initialize every field and explicit padding slot, call <code>finish()</code>, and return
+its completion proof from the higher-ranked initialization closure.</li>
+</ol>
+<p>The proof constructor is private. Typestate makes incomplete completion
+unavailable, and the higher-ranked closure prevents a proof tied to one call
+from escaping or being substituted into another. Field writes go through the
+library’s checked write kernels; you never write unsafe code to implement
+a stable payload.</p>
+<p>For which trait is which, see the <a href="../trait_map/index.html" title="mod up_rust::guide::trait_map">trait map</a>.</p>
+</div></details></section></div></main></body></html>

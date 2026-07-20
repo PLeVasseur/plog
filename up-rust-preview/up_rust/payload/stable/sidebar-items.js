@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["StablePayloadVariant"],"fn":["assert_stable_payload_byte_backed_uninit","stable_payload_supports_byte_backed_uninit"],"struct":["InitializedStablePayload","StableContainerPayload","StableContainerPayloadInfo","StablePayloadInitContext","StableTypeDetail"],"trait":["ByteBackedStablePayload","StablePayload","StablePayloadInit"]};

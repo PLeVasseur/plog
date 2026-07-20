@@ -1,0 +1,1268 @@
+<!DOCTYPE html><html lang="en"><head><meta name="robots" content="noindex"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/umessage/umessagebuilder.rs`."><title>umessagebuilder.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0ce1a80b.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="up_rust" data-themes="" data-resource-suffix="" data-rustdoc-version="1.89.0-nightly (414482f6a 2025-05-13)" data-channel="nightly" data-search-js="search-f7877310.js" data-settings-js="settings-5514c975.js" ><script src="../../../static.files/storage-4e99c027.js"></script><script defer src="../../../static.files/src-script-63605ae7.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-7ef8a74a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-32bb7600.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><div style="position:sticky;top:0;z-index:9999;background:#8a6d1a;color:#fff;padding:6px 14px;font:13px sans-serif;text-align:center;">Preview of the <strong>proposed</strong> up-rust <code style="color:#fff">native-frame-model</code> branch (up-rust <code style="color:#fff">8658f274</code>, up-spec <code style="color:#fff">f0e9b17</code>) &mdash; not released documentation. <a style="color:#ffe9a8" href="https://github.com/PLeVasseur/up-rust/tree/native-frame-model">branch</a> &middot; <a style="color:#ffe9a8" href="https://petelevasseur.com/">write-up</a></div><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">up_rust/umessage/</div>umessagebuilder.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">/********************************************************************************
+<a href=#2 id=2 data-nosnippet>2</a> * Copyright (c) 2024 Contributors to the Eclipse Foundation
+<a href=#3 id=3 data-nosnippet>3</a> *
+<a href=#4 id=4 data-nosnippet>4</a> * See the NOTICE file(s) distributed with this work for additional
+<a href=#5 id=5 data-nosnippet>5</a> * information regarding copyright ownership.
+<a href=#6 id=6 data-nosnippet>6</a> *
+<a href=#7 id=7 data-nosnippet>7</a> * This program and the accompanying materials are made available under the
+<a href=#8 id=8 data-nosnippet>8</a> * terms of the Apache License Version 2.0 which is available at
+<a href=#9 id=9 data-nosnippet>9</a> * https://www.apache.org/licenses/LICENSE-2.0
+<a href=#10 id=10 data-nosnippet>10</a> *
+<a href=#11 id=11 data-nosnippet>11</a> * SPDX-License-Identifier: Apache-2.0
+<a href=#12 id=12 data-nosnippet>12</a> ********************************************************************************/
+<a href=#13 id=13 data-nosnippet>13</a>
+<a href=#14 id=14 data-nosnippet>14</a></span><span class="kw">use </span>bytes::Bytes;
+<a href=#15 id=15 data-nosnippet>15</a>
+<a href=#16 id=16 data-nosnippet>16</a><span class="kw">use </span><span class="kw">crate</span>::uattributes::NotificationValidator;
+<a href=#17 id=17 data-nosnippet>17</a><span class="attr">#[cfg(feature = <span class="string">"protobuf-support"</span>)]
+<a href=#18 id=18 data-nosnippet>18</a></span><span class="kw">use </span><span class="kw">crate</span>::ProtobufMappable;
+<a href=#19 id=19 data-nosnippet>19</a><span class="kw">use crate</span>::{
+<a href=#20 id=20 data-nosnippet>20</a>    PublishValidator, RequestValidator, ResponseValidator, UAttributes, UAttributesValidator,
+<a href=#21 id=21 data-nosnippet>21</a>    UCode, UMessage, UMessageError, UMessageType, UPayloadFormat, UPriority, UUri, UUID,
+<a href=#22 id=22 data-nosnippet>22</a>};
+<a href=#23 id=23 data-nosnippet>23</a>
+<a href=#24 id=24 data-nosnippet>24</a><span class="kw">mod </span>sealed {
+<a href=#25 id=25 data-nosnippet>25</a>    <span class="kw">pub trait </span>Sealed {}
+<a href=#26 id=26 data-nosnippet>26</a>}
+<a href=#27 id=27 data-nosnippet>27</a>
+<a href=#28 id=28 data-nosnippet>28</a><span class="doccomment">/// Represents the type of message being built by a [UMessageBuilder].
+<a href=#29 id=29 data-nosnippet>29</a>/// This is used to limit the available builder functions and to ensure that the
+<a href=#30 id=30 data-nosnippet>30</a>/// builder is used in a consistent way.
+<a href=#31 id=31 data-nosnippet>31</a>/// For example, only a builder for a request message can set the `permission_level` and `token` attributes
+<a href=#32 id=32 data-nosnippet>32</a>/// and only a builder for a response message can set the `comm_status` and `request_id` attributes.
+<a href=#33 id=33 data-nosnippet>33</a>/// This is achieved by having different builder state types for each message type and by using the
+<a href=#34 id=34 data-nosnippet>34</a>/// [BuilderState::merge_into_attributes] function to add the state-specific attributes to the
+<a href=#35 id=35 data-nosnippet>35</a>/// final message attributes when building the message.
+<a href=#36 id=36 data-nosnippet>36</a>///
+<a href=#37 id=37 data-nosnippet>37</a>/// _Note_: Only this crate can provide implementations of [Self] because of the dependency
+<a href=#38 id=38 data-nosnippet>38</a>/// on a sealed trait. This is relevant because otherwise, external crates could add custom
+<a href=#39 id=39 data-nosnippet>39</a>/// constructor functions to [UMessageBuilder] that return malicious implementations of [Self]
+<a href=#40 id=40 data-nosnippet>40</a>/// which might produce invalid [UMessage] instances by means of the [Self::merge_into_attributes]
+<a href=#41 id=41 data-nosnippet>41</a>/// function.
+<a href=#42 id=42 data-nosnippet>42</a></span><span class="kw">pub trait </span>BuilderState: sealed::Sealed {
+<a href=#43 id=43 data-nosnippet>43</a>    <span class="doccomment">/// The merge into attributes.
+<a href=#44 id=44 data-nosnippet>44</a>    </span><span class="kw">fn </span>merge_into_attributes(<span class="kw-2">&amp;</span><span class="self">self</span>, _attributes: <span class="kw-2">&amp;mut </span>UAttributes) {}
+<a href=#45 id=45 data-nosnippet>45</a>}
+<a href=#46 id=46 data-nosnippet>46</a>
+<a href=#47 id=47 data-nosnippet>47</a><span class="attr">#[derive(Debug)]
+<a href=#48 id=48 data-nosnippet>48</a></span><span class="kw">pub struct </span>InitialBuilderState;
+<a href=#49 id=49 data-nosnippet>49</a><span class="kw">impl </span>sealed::Sealed <span class="kw">for </span>InitialBuilderState {}
+<a href=#50 id=50 data-nosnippet>50</a><span class="kw">impl </span>BuilderState <span class="kw">for </span>InitialBuilderState {}
+<a href=#51 id=51 data-nosnippet>51</a>
+<a href=#52 id=52 data-nosnippet>52</a><span class="doccomment">/// The item.
+<a href=#53 id=53 data-nosnippet>53</a></span><span class="attr">#[derive(Debug)]
+<a href=#54 id=54 data-nosnippet>54</a></span><span class="kw">pub struct </span>PublishBuilderState;
+<a href=#55 id=55 data-nosnippet>55</a><span class="kw">impl </span>sealed::Sealed <span class="kw">for </span>PublishBuilderState {}
+<a href=#56 id=56 data-nosnippet>56</a><span class="kw">impl </span>BuilderState <span class="kw">for </span>PublishBuilderState {}
+<a href=#57 id=57 data-nosnippet>57</a>
+<a href=#58 id=58 data-nosnippet>58</a><span class="doccomment">/// The item.
+<a href=#59 id=59 data-nosnippet>59</a></span><span class="attr">#[derive(Debug)]
+<a href=#60 id=60 data-nosnippet>60</a></span><span class="kw">pub struct </span>NotificationBuilderState;
+<a href=#61 id=61 data-nosnippet>61</a><span class="kw">impl </span>sealed::Sealed <span class="kw">for </span>NotificationBuilderState {}
+<a href=#62 id=62 data-nosnippet>62</a><span class="kw">impl </span>BuilderState <span class="kw">for </span>NotificationBuilderState {}
+<a href=#63 id=63 data-nosnippet>63</a>
+<a href=#64 id=64 data-nosnippet>64</a><span class="doccomment">/// The item.
+<a href=#65 id=65 data-nosnippet>65</a></span><span class="attr">#[derive(Debug)]
+<a href=#66 id=66 data-nosnippet>66</a></span><span class="kw">pub struct </span>RequestBuilderState {
+<a href=#67 id=67 data-nosnippet>67</a>    permission_level: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+<a href=#68 id=68 data-nosnippet>68</a>    token: <span class="prelude-ty">Option</span>&lt;String&gt;,
+<a href=#69 id=69 data-nosnippet>69</a>}
+<a href=#70 id=70 data-nosnippet>70</a><span class="kw">impl </span>sealed::Sealed <span class="kw">for </span>RequestBuilderState {}
+<a href=#71 id=71 data-nosnippet>71</a><span class="kw">impl </span>BuilderState <span class="kw">for </span>RequestBuilderState {
+<a href=#72 id=72 data-nosnippet>72</a>    <span class="kw">fn </span>merge_into_attributes(<span class="kw-2">&amp;</span><span class="self">self</span>, attributes: <span class="kw-2">&amp;mut </span>UAttributes) {
+<a href=#73 id=73 data-nosnippet>73</a>        attributes.permission_level = <span class="self">self</span>.permission_level;
+<a href=#74 id=74 data-nosnippet>74</a>        attributes.token = <span class="self">self</span>.token.clone();
+<a href=#75 id=75 data-nosnippet>75</a>    }
+<a href=#76 id=76 data-nosnippet>76</a>}
+<a href=#77 id=77 data-nosnippet>77</a>
+<a href=#78 id=78 data-nosnippet>78</a><span class="doccomment">/// The item.
+<a href=#79 id=79 data-nosnippet>79</a></span><span class="attr">#[derive(Debug)]
+<a href=#80 id=80 data-nosnippet>80</a></span><span class="kw">pub struct </span>ResponseBuilderState {
+<a href=#81 id=81 data-nosnippet>81</a>    comm_status: <span class="prelude-ty">Option</span>&lt;UCode&gt;,
+<a href=#82 id=82 data-nosnippet>82</a>    request_id: UUID,
+<a href=#83 id=83 data-nosnippet>83</a>}
+<a href=#84 id=84 data-nosnippet>84</a><span class="kw">impl </span>sealed::Sealed <span class="kw">for </span>ResponseBuilderState {}
+<a href=#85 id=85 data-nosnippet>85</a><span class="kw">impl </span>BuilderState <span class="kw">for </span>ResponseBuilderState {
+<a href=#86 id=86 data-nosnippet>86</a>    <span class="kw">fn </span>merge_into_attributes(<span class="kw-2">&amp;</span><span class="self">self</span>, attributes: <span class="kw-2">&amp;mut </span>UAttributes) {
+<a href=#87 id=87 data-nosnippet>87</a>        attributes.commstatus = <span class="self">self</span>.comm_status;
+<a href=#88 id=88 data-nosnippet>88</a>        attributes.reqid = <span class="prelude-val">Some</span>(<span class="self">self</span>.request_id.clone());
+<a href=#89 id=89 data-nosnippet>89</a>    }
+<a href=#90 id=90 data-nosnippet>90</a>}
+<a href=#91 id=91 data-nosnippet>91</a>
+<a href=#92 id=92 data-nosnippet>92</a><span class="kw">struct </span>CommonAttributes {
+<a href=#93 id=93 data-nosnippet>93</a>    message_type: UMessageType,
+<a href=#94 id=94 data-nosnippet>94</a>    source: UUri,
+<a href=#95 id=95 data-nosnippet>95</a>    message_id: <span class="prelude-ty">Option</span>&lt;UUID&gt;,
+<a href=#96 id=96 data-nosnippet>96</a>    sink: <span class="prelude-ty">Option</span>&lt;UUri&gt;,
+<a href=#97 id=97 data-nosnippet>97</a>    ttl: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+<a href=#98 id=98 data-nosnippet>98</a>    priority: <span class="prelude-ty">Option</span>&lt;UPriority&gt;,
+<a href=#99 id=99 data-nosnippet>99</a>    traceparent: <span class="prelude-ty">Option</span>&lt;String&gt;,
+<a href=#100 id=100 data-nosnippet>100</a>    payload_format: <span class="prelude-ty">Option</span>&lt;UPayloadFormat&gt;,
+<a href=#101 id=101 data-nosnippet>101</a>    payload: <span class="prelude-ty">Option</span>&lt;Bytes&gt;,
+<a href=#102 id=102 data-nosnippet>102</a>    open_payload_encoding: <span class="prelude-ty">Option</span>&lt;<span class="kw">crate</span>::PayloadEncoding&gt;,
+<a href=#103 id=103 data-nosnippet>103</a>    validator: Box&lt;<span class="kw">dyn </span>UAttributesValidator&gt;,
+<a href=#104 id=104 data-nosnippet>104</a>}
+<a href=#105 id=105 data-nosnippet>105</a>
+<a href=#106 id=106 data-nosnippet>106</a><span class="doccomment">/// A builder for creating [`UMessage`]s.
+<a href=#107 id=107 data-nosnippet>107</a>///
+<a href=#108 id=108 data-nosnippet>108</a>/// Messages are used by uEntities to inform other entities about the occurrence of events
+<a href=#109 id=109 data-nosnippet>109</a>/// and/or to invoke service operations provided by other entities.
+<a href=#110 id=110 data-nosnippet>110</a>///
+<a href=#111 id=111 data-nosnippet>111</a>/// For each type of message there is a dedicated builder which ensures that only attributes
+<a href=#112 id=112 data-nosnippet>112</a>/// relevant to that message type are set.
+<a href=#113 id=113 data-nosnippet>113</a></span><span class="kw">pub struct </span>UMessageBuilder&lt;S: BuilderState&gt; {
+<a href=#114 id=114 data-nosnippet>114</a>    common: CommonAttributes,
+<a href=#115 id=115 data-nosnippet>115</a>    extra: S,
+<a href=#116 id=116 data-nosnippet>116</a>}
+<a href=#117 id=117 data-nosnippet>117</a>
+<a href=#118 id=118 data-nosnippet>118</a><span class="kw">impl</span>&lt;S: BuilderState&gt; core::fmt::Debug <span class="kw">for </span>UMessageBuilder&lt;S&gt; {
+<a href=#119 id=119 data-nosnippet>119</a>    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>core::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; core::fmt::Result {
+<a href=#120 id=120 data-nosnippet>120</a>        f.debug_struct(<span class="string">"UMessageBuilder"</span>).finish_non_exhaustive()
+<a href=#121 id=121 data-nosnippet>121</a>    }
+<a href=#122 id=122 data-nosnippet>122</a>}
+<a href=#123 id=123 data-nosnippet>123</a>
+<a href=#124 id=124 data-nosnippet>124</a><span class="kw">impl </span>UMessageBuilder&lt;InitialBuilderState&gt; {
+<a href=#125 id=125 data-nosnippet>125</a>    <span class="doccomment">/// Gets a builder for creating *publish* messages.
+<a href=#126 id=126 data-nosnippet>126</a>    ///
+<a href=#127 id=127 data-nosnippet>127</a>    /// A publish message is used to notify all interested consumers of an event that has occurred.
+<a href=#128 id=128 data-nosnippet>128</a>    /// Consumers usually indicate their interest by *subscribing* to a particular topic.
+<a href=#129 id=129 data-nosnippet>129</a>    ///
+<a href=#130 id=130 data-nosnippet>130</a>    /// # Arguments
+<a href=#131 id=131 data-nosnippet>131</a>    ///
+<a href=#132 id=132 data-nosnippet>132</a>    /// * `topic` - The topic to publish the message to.
+<a href=#133 id=133 data-nosnippet>133</a>    ///
+<a href=#134 id=134 data-nosnippet>134</a>    /// # Examples
+<a href=#135 id=135 data-nosnippet>135</a>    ///
+<a href=#136 id=136 data-nosnippet>136</a>    /// ```rust
+<a href=#137 id=137 data-nosnippet>137</a>    /// use up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+<a href=#138 id=138 data-nosnippet>138</a>    ///
+<a href=#139 id=139 data-nosnippet>139</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#140 id=140 data-nosnippet>140</a>    /// let topic = UUri::try_from("//my-vehicle/4210/1/B24D")?;
+<a href=#141 id=141 data-nosnippet>141</a>    /// let message = UMessageBuilder::publish(topic.clone())
+<a href=#142 id=142 data-nosnippet>142</a>    ///                    .build_with_payload("closed", UPayloadFormat::Text)?;
+<a href=#143 id=143 data-nosnippet>143</a>    /// assert_eq!(message.type_(), UMessageType::Publish);
+<a href=#144 id=144 data-nosnippet>144</a>    /// assert!(message.priority().is_none());
+<a href=#145 id=145 data-nosnippet>145</a>    /// assert_eq!(message.source(), &amp;topic);
+<a href=#146 id=146 data-nosnippet>146</a>    /// # Ok(())
+<a href=#147 id=147 data-nosnippet>147</a>    /// # }
+<a href=#148 id=148 data-nosnippet>148</a>    /// ```
+<a href=#149 id=149 data-nosnippet>149</a>    </span><span class="attr">#[must_use]
+<a href=#150 id=150 data-nosnippet>150</a>    </span><span class="kw">pub fn </span>publish(topic: UUri) -&gt; UMessageBuilder&lt;PublishBuilderState&gt; {
+<a href=#151 id=151 data-nosnippet>151</a>        <span class="kw">let </span>common = CommonAttributes {
+<a href=#152 id=152 data-nosnippet>152</a>            <span class="comment">// [impl-&gt;dsn~up-attributes-publish-type~1]
+<a href=#153 id=153 data-nosnippet>153</a>            </span>message_type: UMessageType::Publish,
+<a href=#154 id=154 data-nosnippet>154</a>            source: topic,
+<a href=#155 id=155 data-nosnippet>155</a>            message_id: <span class="prelude-val">None</span>,
+<a href=#156 id=156 data-nosnippet>156</a>            sink: <span class="prelude-val">None</span>,
+<a href=#157 id=157 data-nosnippet>157</a>            ttl: <span class="prelude-val">None</span>,
+<a href=#158 id=158 data-nosnippet>158</a>            priority: <span class="prelude-val">None</span>,
+<a href=#159 id=159 data-nosnippet>159</a>            traceparent: <span class="prelude-val">None</span>,
+<a href=#160 id=160 data-nosnippet>160</a>            payload_format: <span class="prelude-val">None</span>,
+<a href=#161 id=161 data-nosnippet>161</a>            payload: <span class="prelude-val">None</span>,
+<a href=#162 id=162 data-nosnippet>162</a>            open_payload_encoding: <span class="prelude-val">None</span>,
+<a href=#163 id=163 data-nosnippet>163</a>            validator: Box::new(PublishValidator),
+<a href=#164 id=164 data-nosnippet>164</a>        };
+<a href=#165 id=165 data-nosnippet>165</a>        UMessageBuilder {
+<a href=#166 id=166 data-nosnippet>166</a>            common,
+<a href=#167 id=167 data-nosnippet>167</a>            extra: PublishBuilderState,
+<a href=#168 id=168 data-nosnippet>168</a>        }
+<a href=#169 id=169 data-nosnippet>169</a>    }
+<a href=#170 id=170 data-nosnippet>170</a>
+<a href=#171 id=171 data-nosnippet>171</a>    <span class="doccomment">/// Gets a builder for creating *notification* messages.
+<a href=#172 id=172 data-nosnippet>172</a>    ///
+<a href=#173 id=173 data-nosnippet>173</a>    /// A notification is used to inform a specific consumer about an event that has occurred.
+<a href=#174 id=174 data-nosnippet>174</a>    ///
+<a href=#175 id=175 data-nosnippet>175</a>    /// # Arguments
+<a href=#176 id=176 data-nosnippet>176</a>    ///
+<a href=#177 id=177 data-nosnippet>177</a>    /// * `origin` - The component that the notification originates from.
+<a href=#178 id=178 data-nosnippet>178</a>    /// * `destination` - The URI identifying the destination to send the notification to.
+<a href=#179 id=179 data-nosnippet>179</a>    ///
+<a href=#180 id=180 data-nosnippet>180</a>    /// # Examples
+<a href=#181 id=181 data-nosnippet>181</a>    ///
+<a href=#182 id=182 data-nosnippet>182</a>    /// ```rust
+<a href=#183 id=183 data-nosnippet>183</a>    /// use up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+<a href=#184 id=184 data-nosnippet>184</a>    ///
+<a href=#185 id=185 data-nosnippet>185</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#186 id=186 data-nosnippet>186</a>    /// let origin = UUri::try_from("//my-vehicle/4210/5/F20B")?;
+<a href=#187 id=187 data-nosnippet>187</a>    /// let destination = UUri::try_from("//my-cloud/CCDD/2/0")?;
+<a href=#188 id=188 data-nosnippet>188</a>    /// let message = UMessageBuilder::notification(origin.clone(), destination.clone())
+<a href=#189 id=189 data-nosnippet>189</a>    ///                    .build_with_payload("unexpected movement", UPayloadFormat::Text)?;
+<a href=#190 id=190 data-nosnippet>190</a>    /// assert_eq!(message.type_(), UMessageType::Notification);
+<a href=#191 id=191 data-nosnippet>191</a>    /// assert!(message.priority().is_none());
+<a href=#192 id=192 data-nosnippet>192</a>    /// assert_eq!(message.source(), &amp;origin);
+<a href=#193 id=193 data-nosnippet>193</a>    /// assert_eq!(message.sink_unchecked(), &amp;destination);
+<a href=#194 id=194 data-nosnippet>194</a>    /// # Ok(())
+<a href=#195 id=195 data-nosnippet>195</a>    /// # }
+<a href=#196 id=196 data-nosnippet>196</a>    /// ```
+<a href=#197 id=197 data-nosnippet>197</a>    </span><span class="attr">#[must_use]
+<a href=#198 id=198 data-nosnippet>198</a>    </span><span class="kw">pub fn </span>notification(
+<a href=#199 id=199 data-nosnippet>199</a>        origin: UUri,
+<a href=#200 id=200 data-nosnippet>200</a>        destination: UUri,
+<a href=#201 id=201 data-nosnippet>201</a>    ) -&gt; UMessageBuilder&lt;NotificationBuilderState&gt; {
+<a href=#202 id=202 data-nosnippet>202</a>        <span class="kw">let </span>common = CommonAttributes {
+<a href=#203 id=203 data-nosnippet>203</a>            <span class="comment">// [impl-&gt;dsn~up-attributes-notification-type~1]
+<a href=#204 id=204 data-nosnippet>204</a>            </span>message_type: UMessageType::Notification,
+<a href=#205 id=205 data-nosnippet>205</a>            source: origin,
+<a href=#206 id=206 data-nosnippet>206</a>            message_id: <span class="prelude-val">None</span>,
+<a href=#207 id=207 data-nosnippet>207</a>            sink: <span class="prelude-val">Some</span>(destination),
+<a href=#208 id=208 data-nosnippet>208</a>            ttl: <span class="prelude-val">None</span>,
+<a href=#209 id=209 data-nosnippet>209</a>            priority: <span class="prelude-val">None</span>,
+<a href=#210 id=210 data-nosnippet>210</a>            traceparent: <span class="prelude-val">None</span>,
+<a href=#211 id=211 data-nosnippet>211</a>            payload_format: <span class="prelude-val">None</span>,
+<a href=#212 id=212 data-nosnippet>212</a>            payload: <span class="prelude-val">None</span>,
+<a href=#213 id=213 data-nosnippet>213</a>            open_payload_encoding: <span class="prelude-val">None</span>,
+<a href=#214 id=214 data-nosnippet>214</a>            validator: Box::new(NotificationValidator),
+<a href=#215 id=215 data-nosnippet>215</a>        };
+<a href=#216 id=216 data-nosnippet>216</a>        UMessageBuilder {
+<a href=#217 id=217 data-nosnippet>217</a>            common,
+<a href=#218 id=218 data-nosnippet>218</a>            extra: NotificationBuilderState,
+<a href=#219 id=219 data-nosnippet>219</a>        }
+<a href=#220 id=220 data-nosnippet>220</a>    }
+<a href=#221 id=221 data-nosnippet>221</a>
+<a href=#222 id=222 data-nosnippet>222</a>    <span class="doccomment">/// Gets a builder for creating RPC *request* messages.
+<a href=#223 id=223 data-nosnippet>223</a>    ///
+<a href=#224 id=224 data-nosnippet>224</a>    /// A request message is used to invoke a service's method with some input data, expecting
+<a href=#225 id=225 data-nosnippet>225</a>    /// the service to reply with a response message which is correlated by means of the `request_id`.
+<a href=#226 id=226 data-nosnippet>226</a>    ///
+<a href=#227 id=227 data-nosnippet>227</a>    /// The builder will be initialized with [`UPriority::CS4`].
+<a href=#228 id=228 data-nosnippet>228</a>    ///
+<a href=#229 id=229 data-nosnippet>229</a>    /// # Arguments
+<a href=#230 id=230 data-nosnippet>230</a>    ///
+<a href=#231 id=231 data-nosnippet>231</a>    /// * `method_to_invoke` - The URI identifying the method to invoke.
+<a href=#232 id=232 data-nosnippet>232</a>    /// * `reply_to_address` - The URI that the sender of the request expects the response message at.
+<a href=#233 id=233 data-nosnippet>233</a>    /// * `ttl` - The number of milliseconds after which the request should no longer be processed
+<a href=#234 id=234 data-nosnippet>234</a>    ///   by the target service. The value is capped at [`i32::MAX`].
+<a href=#235 id=235 data-nosnippet>235</a>    ///
+<a href=#236 id=236 data-nosnippet>236</a>    /// # Examples
+<a href=#237 id=237 data-nosnippet>237</a>    ///
+<a href=#238 id=238 data-nosnippet>238</a>    /// ```rust
+<a href=#239 id=239 data-nosnippet>239</a>    /// use up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+<a href=#240 id=240 data-nosnippet>240</a>    ///
+<a href=#241 id=241 data-nosnippet>241</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#242 id=242 data-nosnippet>242</a>    /// let method_to_invoke = UUri::try_from("//my-vehicle/4210/5/64AB")?;
+<a href=#243 id=243 data-nosnippet>243</a>    /// let reply_to_address = UUri::try_from("//my-cloud/BA4C/1/0")?;
+<a href=#244 id=244 data-nosnippet>244</a>    /// let message = UMessageBuilder::request(method_to_invoke.clone(), reply_to_address.clone(), 5000)
+<a href=#245 id=245 data-nosnippet>245</a>    ///                    .build_with_payload("lock", UPayloadFormat::Text)?;
+<a href=#246 id=246 data-nosnippet>246</a>    /// assert_eq!(message.type_(), UMessageType::Request);
+<a href=#247 id=247 data-nosnippet>247</a>    /// assert_eq!(message.priority_unchecked(), UPriority::CS4);
+<a href=#248 id=248 data-nosnippet>248</a>    /// assert_eq!(message.source(), &amp;reply_to_address);
+<a href=#249 id=249 data-nosnippet>249</a>    /// assert_eq!(message.sink_unchecked(), &amp;method_to_invoke);
+<a href=#250 id=250 data-nosnippet>250</a>    /// assert_eq!(message.ttl_unchecked(), 5000);
+<a href=#251 id=251 data-nosnippet>251</a>    /// # Ok(())
+<a href=#252 id=252 data-nosnippet>252</a>    /// # }
+<a href=#253 id=253 data-nosnippet>253</a>    /// ```
+<a href=#254 id=254 data-nosnippet>254</a>    </span><span class="attr">#[must_use]
+<a href=#255 id=255 data-nosnippet>255</a>    </span><span class="kw">pub fn </span>request(
+<a href=#256 id=256 data-nosnippet>256</a>        method_to_invoke: UUri,
+<a href=#257 id=257 data-nosnippet>257</a>        reply_to_address: UUri,
+<a href=#258 id=258 data-nosnippet>258</a>        ttl: u32,
+<a href=#259 id=259 data-nosnippet>259</a>    ) -&gt; UMessageBuilder&lt;RequestBuilderState&gt; {
+<a href=#260 id=260 data-nosnippet>260</a>        <span class="kw">let </span>common = CommonAttributes {
+<a href=#261 id=261 data-nosnippet>261</a>            <span class="comment">// [impl-&gt;dsn~up-attributes-request-type~1]
+<a href=#262 id=262 data-nosnippet>262</a>            </span>message_type: UMessageType::Request,
+<a href=#263 id=263 data-nosnippet>263</a>            source: reply_to_address,
+<a href=#264 id=264 data-nosnippet>264</a>            message_id: <span class="prelude-val">None</span>,
+<a href=#265 id=265 data-nosnippet>265</a>            sink: <span class="prelude-val">Some</span>(method_to_invoke),
+<a href=#266 id=266 data-nosnippet>266</a>            ttl: <span class="prelude-val">Some</span>(ttl),
+<a href=#267 id=267 data-nosnippet>267</a>            priority: <span class="prelude-val">Some</span>(UPriority::CS4),
+<a href=#268 id=268 data-nosnippet>268</a>            traceparent: <span class="prelude-val">None</span>,
+<a href=#269 id=269 data-nosnippet>269</a>            payload_format: <span class="prelude-val">None</span>,
+<a href=#270 id=270 data-nosnippet>270</a>            payload: <span class="prelude-val">None</span>,
+<a href=#271 id=271 data-nosnippet>271</a>            open_payload_encoding: <span class="prelude-val">None</span>,
+<a href=#272 id=272 data-nosnippet>272</a>            validator: Box::new(RequestValidator),
+<a href=#273 id=273 data-nosnippet>273</a>        };
+<a href=#274 id=274 data-nosnippet>274</a>        UMessageBuilder {
+<a href=#275 id=275 data-nosnippet>275</a>            common,
+<a href=#276 id=276 data-nosnippet>276</a>            extra: RequestBuilderState {
+<a href=#277 id=277 data-nosnippet>277</a>                permission_level: <span class="prelude-val">None</span>,
+<a href=#278 id=278 data-nosnippet>278</a>                token: <span class="prelude-val">None</span>,
+<a href=#279 id=279 data-nosnippet>279</a>            },
+<a href=#280 id=280 data-nosnippet>280</a>        }
+<a href=#281 id=281 data-nosnippet>281</a>    }
+<a href=#282 id=282 data-nosnippet>282</a>
+<a href=#283 id=283 data-nosnippet>283</a>    <span class="doccomment">/// Gets a builder for creating RPC *response* messages.
+<a href=#284 id=284 data-nosnippet>284</a>    ///
+<a href=#285 id=285 data-nosnippet>285</a>    /// A response message is used to send the outcome of processing a request message
+<a href=#286 id=286 data-nosnippet>286</a>    /// to the original sender of the request message.
+<a href=#287 id=287 data-nosnippet>287</a>    ///
+<a href=#288 id=288 data-nosnippet>288</a>    /// The builder will be initialized with [`UPriority::CS4`].
+<a href=#289 id=289 data-nosnippet>289</a>    ///
+<a href=#290 id=290 data-nosnippet>290</a>    /// # Arguments
+<a href=#291 id=291 data-nosnippet>291</a>    ///
+<a href=#292 id=292 data-nosnippet>292</a>    /// * `reply_to_address` - The URI that the sender of the request expects to receive the response message at.
+<a href=#293 id=293 data-nosnippet>293</a>    /// * `request_id` - The identifier of the request that this is the response to.
+<a href=#294 id=294 data-nosnippet>294</a>    /// * `invoked_method` - The URI identifying the method that has been invoked and which the created message is
+<a href=#295 id=295 data-nosnippet>295</a>    ///   the outcome of.
+<a href=#296 id=296 data-nosnippet>296</a>    ///
+<a href=#297 id=297 data-nosnippet>297</a>    /// # Examples
+<a href=#298 id=298 data-nosnippet>298</a>    ///
+<a href=#299 id=299 data-nosnippet>299</a>    /// ```rust
+<a href=#300 id=300 data-nosnippet>300</a>    /// use up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUID, UUri};
+<a href=#301 id=301 data-nosnippet>301</a>    ///
+<a href=#302 id=302 data-nosnippet>302</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#303 id=303 data-nosnippet>303</a>    /// let invoked_method = UUri::try_from("//my-vehicle/4210/5/64AB")?;
+<a href=#304 id=304 data-nosnippet>304</a>    /// let reply_to_address = UUri::try_from("//my-cloud/BA4C/1/0")?;
+<a href=#305 id=305 data-nosnippet>305</a>    /// let request_id = UUID::build();
+<a href=#306 id=306 data-nosnippet>306</a>    /// // a service implementation would normally use
+<a href=#307 id=307 data-nosnippet>307</a>    /// // `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+<a href=#308 id=308 data-nosnippet>308</a>    /// let message = UMessageBuilder::response(reply_to_address.clone(), request_id.clone(), invoked_method.clone())
+<a href=#309 id=309 data-nosnippet>309</a>    ///                    .build()?;
+<a href=#310 id=310 data-nosnippet>310</a>    /// assert_eq!(message.type_(), UMessageType::Response);
+<a href=#311 id=311 data-nosnippet>311</a>    /// assert_eq!(message.priority_unchecked(), UPriority::CS4);
+<a href=#312 id=312 data-nosnippet>312</a>    /// assert_eq!(message.source(), &amp;invoked_method);
+<a href=#313 id=313 data-nosnippet>313</a>    /// assert_eq!(message.sink_unchecked(), &amp;reply_to_address);
+<a href=#314 id=314 data-nosnippet>314</a>    /// assert_eq!(message.request_id_unchecked(), &amp;request_id);
+<a href=#315 id=315 data-nosnippet>315</a>    /// # Ok(())
+<a href=#316 id=316 data-nosnippet>316</a>    /// # }
+<a href=#317 id=317 data-nosnippet>317</a>    /// ```
+<a href=#318 id=318 data-nosnippet>318</a>    </span><span class="attr">#[must_use]
+<a href=#319 id=319 data-nosnippet>319</a>    </span><span class="kw">pub fn </span>response(
+<a href=#320 id=320 data-nosnippet>320</a>        reply_to_address: UUri,
+<a href=#321 id=321 data-nosnippet>321</a>        request_id: UUID,
+<a href=#322 id=322 data-nosnippet>322</a>        invoked_method: UUri,
+<a href=#323 id=323 data-nosnippet>323</a>    ) -&gt; UMessageBuilder&lt;ResponseBuilderState&gt; {
+<a href=#324 id=324 data-nosnippet>324</a>        <span class="kw">let </span>common = CommonAttributes {
+<a href=#325 id=325 data-nosnippet>325</a>            <span class="comment">// [impl-&gt;dsn~up-attributes-response-type~1]
+<a href=#326 id=326 data-nosnippet>326</a>            </span>message_type: UMessageType::Response,
+<a href=#327 id=327 data-nosnippet>327</a>            source: invoked_method,
+<a href=#328 id=328 data-nosnippet>328</a>            message_id: <span class="prelude-val">None</span>,
+<a href=#329 id=329 data-nosnippet>329</a>            sink: <span class="prelude-val">Some</span>(reply_to_address),
+<a href=#330 id=330 data-nosnippet>330</a>            ttl: <span class="prelude-val">None</span>,
+<a href=#331 id=331 data-nosnippet>331</a>            priority: <span class="prelude-val">Some</span>(UPriority::CS4),
+<a href=#332 id=332 data-nosnippet>332</a>            traceparent: <span class="prelude-val">None</span>,
+<a href=#333 id=333 data-nosnippet>333</a>            payload_format: <span class="prelude-val">None</span>,
+<a href=#334 id=334 data-nosnippet>334</a>            payload: <span class="prelude-val">None</span>,
+<a href=#335 id=335 data-nosnippet>335</a>            open_payload_encoding: <span class="prelude-val">None</span>,
+<a href=#336 id=336 data-nosnippet>336</a>            validator: Box::new(ResponseValidator),
+<a href=#337 id=337 data-nosnippet>337</a>        };
+<a href=#338 id=338 data-nosnippet>338</a>        UMessageBuilder {
+<a href=#339 id=339 data-nosnippet>339</a>            common,
+<a href=#340 id=340 data-nosnippet>340</a>            extra: ResponseBuilderState {
+<a href=#341 id=341 data-nosnippet>341</a>                comm_status: <span class="prelude-val">None</span>,
+<a href=#342 id=342 data-nosnippet>342</a>                request_id,
+<a href=#343 id=343 data-nosnippet>343</a>            },
+<a href=#344 id=344 data-nosnippet>344</a>        }
+<a href=#345 id=345 data-nosnippet>345</a>    }
+<a href=#346 id=346 data-nosnippet>346</a>
+<a href=#347 id=347 data-nosnippet>347</a>    <span class="doccomment">/// Gets a builder for creating an RPC *response* message in reply to a *request*.
+<a href=#348 id=348 data-nosnippet>348</a>    ///
+<a href=#349 id=349 data-nosnippet>349</a>    /// A response message is used to send the outcome of processing a request message
+<a href=#350 id=350 data-nosnippet>350</a>    /// to the original sender of the request message.
+<a href=#351 id=351 data-nosnippet>351</a>    ///
+<a href=#352 id=352 data-nosnippet>352</a>    /// The builder will be initialized with values from the given request attributes.
+<a href=#353 id=353 data-nosnippet>353</a>    ///
+<a href=#354 id=354 data-nosnippet>354</a>    /// # Arguments
+<a href=#355 id=355 data-nosnippet>355</a>    ///
+<a href=#356 id=356 data-nosnippet>356</a>    /// * `request_attributes` - The attributes from the request message. The response message
+<a href=#357 id=357 data-nosnippet>357</a>    ///   builder will be initialized with the corresponding attribute values.
+<a href=#358 id=358 data-nosnippet>358</a>    ///
+<a href=#359 id=359 data-nosnippet>359</a>    /// # Panics
+<a href=#360 id=360 data-nosnippet>360</a>    ///
+<a href=#361 id=361 data-nosnippet>361</a>    /// if the given attributes do not represent a request message.
+<a href=#362 id=362 data-nosnippet>362</a>    ///
+<a href=#363 id=363 data-nosnippet>363</a>    /// # Examples
+<a href=#364 id=364 data-nosnippet>364</a>    ///
+<a href=#365 id=365 data-nosnippet>365</a>    /// ```rust
+<a href=#366 id=366 data-nosnippet>366</a>    /// use up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUID, UUri};
+<a href=#367 id=367 data-nosnippet>367</a>    ///
+<a href=#368 id=368 data-nosnippet>368</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#369 id=369 data-nosnippet>369</a>    /// let method_to_invoke = UUri::try_from("//my-vehicle/4210/5/64AB")?;
+<a href=#370 id=370 data-nosnippet>370</a>    /// let reply_to_address = UUri::try_from("//my-cloud/BA4C/1/0")?;
+<a href=#371 id=371 data-nosnippet>371</a>    /// let request_message_id = UUID::build();
+<a href=#372 id=372 data-nosnippet>372</a>    /// let request_message = UMessageBuilder::request(method_to_invoke.clone(), reply_to_address.clone(), 5000)
+<a href=#373 id=373 data-nosnippet>373</a>    ///                           .with_message_id(request_message_id.clone()) // normally not needed, used only for asserts below
+<a href=#374 id=374 data-nosnippet>374</a>    ///                           .build_with_payload("lock", UPayloadFormat::Text)?;
+<a href=#375 id=375 data-nosnippet>375</a>    ///
+<a href=#376 id=376 data-nosnippet>376</a>    /// let response_message = UMessageBuilder::response_for_request(request_message.attributes())
+<a href=#377 id=377 data-nosnippet>377</a>    ///                           .with_priority(UPriority::CS5)
+<a href=#378 id=378 data-nosnippet>378</a>    ///                           .build()?;
+<a href=#379 id=379 data-nosnippet>379</a>    /// assert_eq!(response_message.type_(), UMessageType::Response);
+<a href=#380 id=380 data-nosnippet>380</a>    /// assert_eq!(response_message.priority_unchecked(), UPriority::CS5);
+<a href=#381 id=381 data-nosnippet>381</a>    /// assert_eq!(response_message.source(), &amp;method_to_invoke);
+<a href=#382 id=382 data-nosnippet>382</a>    /// assert_eq!(response_message.sink_unchecked(), &amp;reply_to_address);
+<a href=#383 id=383 data-nosnippet>383</a>    /// assert_eq!(response_message.request_id_unchecked(), &amp;request_message_id);
+<a href=#384 id=384 data-nosnippet>384</a>    /// assert_eq!(response_message.ttl_unchecked(), 5000);
+<a href=#385 id=385 data-nosnippet>385</a>    /// # Ok(())
+<a href=#386 id=386 data-nosnippet>386</a>    /// # }
+<a href=#387 id=387 data-nosnippet>387</a>    /// ```
+<a href=#388 id=388 data-nosnippet>388</a>    </span><span class="attr">#[must_use]
+<a href=#389 id=389 data-nosnippet>389</a>    </span><span class="kw">pub fn </span>response_for_request(
+<a href=#390 id=390 data-nosnippet>390</a>        request_attributes: <span class="kw-2">&amp;</span>UAttributes,
+<a href=#391 id=391 data-nosnippet>391</a>    ) -&gt; UMessageBuilder&lt;ResponseBuilderState&gt; {
+<a href=#392 id=392 data-nosnippet>392</a>        <span class="macro">assert!</span>(
+<a href=#393 id=393 data-nosnippet>393</a>            request_attributes.is_request(),
+<a href=#394 id=394 data-nosnippet>394</a>            <span class="string">"Given attributes do not represent a request message"
+<a href=#395 id=395 data-nosnippet>395</a>        </span>);
+<a href=#396 id=396 data-nosnippet>396</a>        <span class="kw">let </span>common = CommonAttributes {
+<a href=#397 id=397 data-nosnippet>397</a>            <span class="comment">// [impl-&gt;dsn~up-attributes-response-type~1]
+<a href=#398 id=398 data-nosnippet>398</a>            </span>message_type: UMessageType::Response,
+<a href=#399 id=399 data-nosnippet>399</a>            source: request_attributes
+<a href=#400 id=400 data-nosnippet>400</a>                .sink()
+<a href=#401 id=401 data-nosnippet>401</a>                .expect(<span class="string">"Request attributes must contain a sink"</span>)
+<a href=#402 id=402 data-nosnippet>402</a>                .to_owned(),
+<a href=#403 id=403 data-nosnippet>403</a>            message_id: <span class="prelude-val">None</span>,
+<a href=#404 id=404 data-nosnippet>404</a>            sink: <span class="prelude-val">Some</span>(request_attributes.source().to_owned()),
+<a href=#405 id=405 data-nosnippet>405</a>            ttl: request_attributes.ttl(),
+<a href=#406 id=406 data-nosnippet>406</a>            priority: request_attributes.priority(),
+<a href=#407 id=407 data-nosnippet>407</a>            traceparent: <span class="prelude-val">None</span>,
+<a href=#408 id=408 data-nosnippet>408</a>            payload_format: <span class="prelude-val">None</span>,
+<a href=#409 id=409 data-nosnippet>409</a>            payload: <span class="prelude-val">None</span>,
+<a href=#410 id=410 data-nosnippet>410</a>            open_payload_encoding: <span class="prelude-val">None</span>,
+<a href=#411 id=411 data-nosnippet>411</a>            validator: Box::new(ResponseValidator),
+<a href=#412 id=412 data-nosnippet>412</a>        };
+<a href=#413 id=413 data-nosnippet>413</a>        UMessageBuilder {
+<a href=#414 id=414 data-nosnippet>414</a>            common,
+<a href=#415 id=415 data-nosnippet>415</a>            extra: ResponseBuilderState {
+<a href=#416 id=416 data-nosnippet>416</a>                comm_status: <span class="prelude-val">None</span>,
+<a href=#417 id=417 data-nosnippet>417</a>                request_id: request_attributes.id().to_owned(),
+<a href=#418 id=418 data-nosnippet>418</a>            },
+<a href=#419 id=419 data-nosnippet>419</a>        }
+<a href=#420 id=420 data-nosnippet>420</a>    }
+<a href=#421 id=421 data-nosnippet>421</a>}
+<a href=#422 id=422 data-nosnippet>422</a>
+<a href=#423 id=423 data-nosnippet>423</a><span class="kw">impl</span>&lt;S: BuilderState&gt; UMessageBuilder&lt;S&gt; {
+<a href=#424 id=424 data-nosnippet>424</a>    <span class="doccomment">/// Sets the message's identifier.
+<a href=#425 id=425 data-nosnippet>425</a>    ///
+<a href=#426 id=426 data-nosnippet>426</a>    /// Every message must have an identifier. However, if this function is not used, an
+<a href=#427 id=427 data-nosnippet>427</a>    /// identifier will be generated for the message when one of the `build` functions is called.
+<a href=#428 id=428 data-nosnippet>428</a>    ///
+<a href=#429 id=429 data-nosnippet>429</a>    /// This method is mainly useful for implementing tests that include assertions on the message ID.
+<a href=#430 id=430 data-nosnippet>430</a>    ///
+<a href=#431 id=431 data-nosnippet>431</a>    /// # Arguments
+<a href=#432 id=432 data-nosnippet>432</a>    ///
+<a href=#433 id=433 data-nosnippet>433</a>    /// * `message_id` - The identifier to use.
+<a href=#434 id=434 data-nosnippet>434</a>    ///
+<a href=#435 id=435 data-nosnippet>435</a>    /// # Returns
+<a href=#436 id=436 data-nosnippet>436</a>    ///
+<a href=#437 id=437 data-nosnippet>437</a>    /// The builder.
+<a href=#438 id=438 data-nosnippet>438</a>    ///
+<a href=#439 id=439 data-nosnippet>439</a>    /// # Examples
+<a href=#440 id=440 data-nosnippet>440</a>    ///
+<a href=#441 id=441 data-nosnippet>441</a>    /// ```rust
+<a href=#442 id=442 data-nosnippet>442</a>    /// use up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUID, UUri};
+<a href=#443 id=443 data-nosnippet>443</a>    ///
+<a href=#444 id=444 data-nosnippet>444</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#445 id=445 data-nosnippet>445</a>    /// let topic = UUri::try_from("//my-vehicle/4210/1/B24D")?;
+<a href=#446 id=446 data-nosnippet>446</a>    /// let mut builder = UMessageBuilder::publish(topic);
+<a href=#447 id=447 data-nosnippet>447</a>    /// let message_one = builder
+<a href=#448 id=448 data-nosnippet>448</a>    ///                     .with_message_id(UUID::build())
+<a href=#449 id=449 data-nosnippet>449</a>    ///                     .build_with_payload("closed", UPayloadFormat::Text)?;
+<a href=#450 id=450 data-nosnippet>450</a>    /// let message_two = builder
+<a href=#451 id=451 data-nosnippet>451</a>    ///                     // use new message ID but retain all other attributes
+<a href=#452 id=452 data-nosnippet>452</a>    ///                     .with_message_id(UUID::build())
+<a href=#453 id=453 data-nosnippet>453</a>    ///                     .build_with_payload("open", UPayloadFormat::Text)?;
+<a href=#454 id=454 data-nosnippet>454</a>    /// assert_ne!(message_one.id(), message_two.id());
+<a href=#455 id=455 data-nosnippet>455</a>    /// assert_eq!(message_one.source(), message_two.source());
+<a href=#456 id=456 data-nosnippet>456</a>    /// assert_eq!(message_one.payload_format_unchecked(), message_two.payload_format_unchecked());
+<a href=#457 id=457 data-nosnippet>457</a>    /// # Ok(())
+<a href=#458 id=458 data-nosnippet>458</a>    /// # }
+<a href=#459 id=459 data-nosnippet>459</a>    /// ```
+<a href=#460 id=460 data-nosnippet>460</a>    </span><span class="kw">pub fn </span>with_message_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, message_id: UUID) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+<a href=#461 id=461 data-nosnippet>461</a>        <span class="self">self</span>.common.message_id = <span class="prelude-val">Some</span>(message_id);
+<a href=#462 id=462 data-nosnippet>462</a>        <span class="self">self
+<a href=#463 id=463 data-nosnippet>463</a>    </span>}
+<a href=#464 id=464 data-nosnippet>464</a>
+<a href=#465 id=465 data-nosnippet>465</a>    <span class="doccomment">/// Sets the message's priority.
+<a href=#466 id=466 data-nosnippet>466</a>    ///
+<a href=#467 id=467 data-nosnippet>467</a>    /// If not set explicitly, the default priority as defined in the
+<a href=#468 id=468 data-nosnippet>468</a>    /// [uProtocol specification](https://github.com/eclipse-uprotocol/up-spec/blob/main/basics/upriority.adoc)
+<a href=#469 id=469 data-nosnippet>469</a>    /// is used.
+<a href=#470 id=470 data-nosnippet>470</a>    ///
+<a href=#471 id=471 data-nosnippet>471</a>    /// # Arguments
+<a href=#472 id=472 data-nosnippet>472</a>    ///
+<a href=#473 id=473 data-nosnippet>473</a>    /// * `priority` - The priority to be used for sending the message.
+<a href=#474 id=474 data-nosnippet>474</a>    ///
+<a href=#475 id=475 data-nosnippet>475</a>    /// # Returns
+<a href=#476 id=476 data-nosnippet>476</a>    ///
+<a href=#477 id=477 data-nosnippet>477</a>    /// The builder.
+<a href=#478 id=478 data-nosnippet>478</a>    ///
+<a href=#479 id=479 data-nosnippet>479</a>    /// # Examples
+<a href=#480 id=480 data-nosnippet>480</a>    ///
+<a href=#481 id=481 data-nosnippet>481</a>    /// ```rust
+<a href=#482 id=482 data-nosnippet>482</a>    /// use up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+<a href=#483 id=483 data-nosnippet>483</a>    ///
+<a href=#484 id=484 data-nosnippet>484</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#485 id=485 data-nosnippet>485</a>    /// let topic = UUri::try_from("//my-vehicle/4210/1/B24D")?;
+<a href=#486 id=486 data-nosnippet>486</a>    /// let message = UMessageBuilder::publish(topic)
+<a href=#487 id=487 data-nosnippet>487</a>    ///                   .with_priority(UPriority::CS5)
+<a href=#488 id=488 data-nosnippet>488</a>    ///                   .build_with_payload("closed", UPayloadFormat::Text)?;
+<a href=#489 id=489 data-nosnippet>489</a>    /// assert_eq!(message.priority_unchecked(), UPriority::CS5);
+<a href=#490 id=490 data-nosnippet>490</a>    /// # Ok(())
+<a href=#491 id=491 data-nosnippet>491</a>    /// # }
+<a href=#492 id=492 data-nosnippet>492</a>    /// ```
+<a href=#493 id=493 data-nosnippet>493</a>    </span><span class="kw">pub fn </span>with_priority(<span class="kw-2">&amp;mut </span><span class="self">self</span>, priority: UPriority) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+<a href=#494 id=494 data-nosnippet>494</a>        <span class="kw">if </span>UAttributes::is_default_priority(priority) {
+<a href=#495 id=495 data-nosnippet>495</a>            <span class="comment">// no need to explicitly set default priority, as the absence of a
+<a href=#496 id=496 data-nosnippet>496</a>            // priority attribute on the message will be interpreted as the default priority
+<a href=#497 id=497 data-nosnippet>497</a>            </span><span class="self">self</span>.common.priority = <span class="prelude-val">None</span>;
+<a href=#498 id=498 data-nosnippet>498</a>        } <span class="kw">else </span>{
+<a href=#499 id=499 data-nosnippet>499</a>            <span class="self">self</span>.common.priority = <span class="prelude-val">Some</span>(priority);
+<a href=#500 id=500 data-nosnippet>500</a>        }
+<a href=#501 id=501 data-nosnippet>501</a>        <span class="self">self
+<a href=#502 id=502 data-nosnippet>502</a>    </span>}
+<a href=#503 id=503 data-nosnippet>503</a>
+<a href=#504 id=504 data-nosnippet>504</a>    <span class="doccomment">/// Sets the message's time-to-live.
+<a href=#505 id=505 data-nosnippet>505</a>    ///
+<a href=#506 id=506 data-nosnippet>506</a>    /// # Arguments
+<a href=#507 id=507 data-nosnippet>507</a>    ///
+<a href=#508 id=508 data-nosnippet>508</a>    /// * `ttl` - The time-to-live in milliseconds. The value is capped at [`i32::MAX`].
+<a href=#509 id=509 data-nosnippet>509</a>    ///
+<a href=#510 id=510 data-nosnippet>510</a>    /// # Returns
+<a href=#511 id=511 data-nosnippet>511</a>    ///
+<a href=#512 id=512 data-nosnippet>512</a>    /// The builder.
+<a href=#513 id=513 data-nosnippet>513</a>    ///
+<a href=#514 id=514 data-nosnippet>514</a>    /// # Examples
+<a href=#515 id=515 data-nosnippet>515</a>    ///
+<a href=#516 id=516 data-nosnippet>516</a>    /// ```rust
+<a href=#517 id=517 data-nosnippet>517</a>    /// use up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUID, UUri};
+<a href=#518 id=518 data-nosnippet>518</a>    ///
+<a href=#519 id=519 data-nosnippet>519</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#520 id=520 data-nosnippet>520</a>    /// let invoked_method = UUri::try_from("//my-vehicle/4210/5/64AB")?;
+<a href=#521 id=521 data-nosnippet>521</a>    /// let reply_to_address = UUri::try_from("//my-cloud/BA4C/1/0")?;
+<a href=#522 id=522 data-nosnippet>522</a>    /// let request_msg_id = UUID::build();
+<a href=#523 id=523 data-nosnippet>523</a>    /// // a service implementation would normally use
+<a href=#524 id=524 data-nosnippet>524</a>    /// // `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+<a href=#525 id=525 data-nosnippet>525</a>    /// let message = UMessageBuilder::response(reply_to_address, request_msg_id, invoked_method)
+<a href=#526 id=526 data-nosnippet>526</a>    ///                     .with_ttl(2000)
+<a href=#527 id=527 data-nosnippet>527</a>    ///                     .build()?;
+<a href=#528 id=528 data-nosnippet>528</a>    /// assert_eq!(message.ttl_unchecked(), 2000);
+<a href=#529 id=529 data-nosnippet>529</a>    /// # Ok(())
+<a href=#530 id=530 data-nosnippet>530</a>    /// # }
+<a href=#531 id=531 data-nosnippet>531</a>    /// ```
+<a href=#532 id=532 data-nosnippet>532</a>    </span><span class="kw">pub fn </span>with_ttl(<span class="kw-2">&amp;mut </span><span class="self">self</span>, ttl: u32) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+<a href=#533 id=533 data-nosnippet>533</a>        <span class="self">self</span>.common.ttl = <span class="prelude-val">Some</span>(ttl);
+<a href=#534 id=534 data-nosnippet>534</a>        <span class="self">self
+<a href=#535 id=535 data-nosnippet>535</a>    </span>}
+<a href=#536 id=536 data-nosnippet>536</a>
+<a href=#537 id=537 data-nosnippet>537</a>    <span class="doccomment">/// Sets the identifier of the W3C Trace Context to convey in the message.
+<a href=#538 id=538 data-nosnippet>538</a>    ///
+<a href=#539 id=539 data-nosnippet>539</a>    /// # Arguments
+<a href=#540 id=540 data-nosnippet>540</a>    ///
+<a href=#541 id=541 data-nosnippet>541</a>    /// * `traceparent` - The identifier.
+<a href=#542 id=542 data-nosnippet>542</a>    ///
+<a href=#543 id=543 data-nosnippet>543</a>    /// # Returns
+<a href=#544 id=544 data-nosnippet>544</a>    ///
+<a href=#545 id=545 data-nosnippet>545</a>    /// The builder.
+<a href=#546 id=546 data-nosnippet>546</a>    ///
+<a href=#547 id=547 data-nosnippet>547</a>    /// # Examples
+<a href=#548 id=548 data-nosnippet>548</a>    ///
+<a href=#549 id=549 data-nosnippet>549</a>    /// ```rust
+<a href=#550 id=550 data-nosnippet>550</a>    /// use up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+<a href=#551 id=551 data-nosnippet>551</a>    ///
+<a href=#552 id=552 data-nosnippet>552</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#553 id=553 data-nosnippet>553</a>    /// let topic = UUri::try_from("//my-vehicle/4210/1/B24D")?;
+<a href=#554 id=554 data-nosnippet>554</a>    /// let traceparent = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
+<a href=#555 id=555 data-nosnippet>555</a>    /// let message = UMessageBuilder::publish(topic.clone())
+<a href=#556 id=556 data-nosnippet>556</a>    ///                    .with_traceparent(traceparent)
+<a href=#557 id=557 data-nosnippet>557</a>    ///                    .build_with_payload("closed", UPayloadFormat::Text)?;
+<a href=#558 id=558 data-nosnippet>558</a>    /// assert_eq!(message.traceparent(), Some(traceparent));
+<a href=#559 id=559 data-nosnippet>559</a>    /// # Ok(())
+<a href=#560 id=560 data-nosnippet>560</a>    /// # }
+<a href=#561 id=561 data-nosnippet>561</a>    </span><span class="kw">pub fn </span>with_traceparent&lt;T: Into&lt;String&gt;&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, traceparent: T) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+<a href=#562 id=562 data-nosnippet>562</a>        <span class="comment">// [impl-&gt;dsn~up-attributes-traceparent~1]
+<a href=#563 id=563 data-nosnippet>563</a>        </span><span class="self">self</span>.common.traceparent = <span class="prelude-val">Some</span>(traceparent.into());
+<a href=#564 id=564 data-nosnippet>564</a>        <span class="self">self
+<a href=#565 id=565 data-nosnippet>565</a>    </span>}
+<a href=#566 id=566 data-nosnippet>566</a>
+<a href=#567 id=567 data-nosnippet>567</a>    <span class="doccomment">/// Creates the message based on the builder's state.
+<a href=#568 id=568 data-nosnippet>568</a>    ///
+<a href=#569 id=569 data-nosnippet>569</a>    /// # Returns
+<a href=#570 id=570 data-nosnippet>570</a>    ///
+<a href=#571 id=571 data-nosnippet>571</a>    /// A message ready to be sent using [`crate::UTransport::send`].
+<a href=#572 id=572 data-nosnippet>572</a>    ///
+<a href=#573 id=573 data-nosnippet>573</a>    /// # Errors
+<a href=#574 id=574 data-nosnippet>574</a>    ///
+<a href=#575 id=575 data-nosnippet>575</a>    /// If the properties set on the builder do not represent a consistent set of [`UAttributes`],
+<a href=#576 id=576 data-nosnippet>576</a>    /// a [`UMessageError::AttributesValidationError`] is returned.
+<a href=#577 id=577 data-nosnippet>577</a>    ///
+<a href=#578 id=578 data-nosnippet>578</a>    /// # Examples
+<a href=#579 id=579 data-nosnippet>579</a>    ///
+<a href=#580 id=580 data-nosnippet>580</a>    /// ## Not setting `id` explicitly with [`UMessageBuilder::with_message_id`]
+<a href=#581 id=581 data-nosnippet>581</a>    ///
+<a href=#582 id=582 data-nosnippet>582</a>    /// The recommended way to use the `UMessageBuilder`.
+<a href=#583 id=583 data-nosnippet>583</a>    ///
+<a href=#584 id=584 data-nosnippet>584</a>    /// ```rust
+<a href=#585 id=585 data-nosnippet>585</a>    /// use up_rust::{UAttributes, UAttributesValidators, UMessageBuilder, UMessageError, UMessageType, UPriority, UUID, UUri};
+<a href=#586 id=586 data-nosnippet>586</a>    ///
+<a href=#587 id=587 data-nosnippet>587</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#588 id=588 data-nosnippet>588</a>    /// let invoked_method = UUri::try_from("//my-vehicle/4210/5/64AB")?;
+<a href=#589 id=589 data-nosnippet>589</a>    /// let reply_to_address = UUri::try_from("//my-cloud/BA4C/1/0")?;
+<a href=#590 id=590 data-nosnippet>590</a>    /// // a service implementation would normally use
+<a href=#591 id=591 data-nosnippet>591</a>    /// // `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+<a href=#592 id=592 data-nosnippet>592</a>    /// let result = UMessageBuilder::response(reply_to_address, UUID::build(), invoked_method)
+<a href=#593 id=593 data-nosnippet>593</a>    ///                     .build();
+<a href=#594 id=594 data-nosnippet>594</a>    /// assert!(result.is_ok());
+<a href=#595 id=595 data-nosnippet>595</a>    /// # Ok(())
+<a href=#596 id=596 data-nosnippet>596</a>    /// # }
+<a href=#597 id=597 data-nosnippet>597</a>    /// ```
+<a href=#598 id=598 data-nosnippet>598</a>    ///
+<a href=#599 id=599 data-nosnippet>599</a>    /// ## Setting `id` explicitly with [`UMessageBuilder::with_message_id`]
+<a href=#600 id=600 data-nosnippet>600</a>    ///
+<a href=#601 id=601 data-nosnippet>601</a>    /// Note that explicitly using [`UMessageBuilder::with_message_id`] is not required as shown
+<a href=#602 id=602 data-nosnippet>602</a>    /// above.
+<a href=#603 id=603 data-nosnippet>603</a>    ///
+<a href=#604 id=604 data-nosnippet>604</a>    /// ```rust
+<a href=#605 id=605 data-nosnippet>605</a>    /// use up_rust::{UMessageBuilder, UMessageType, UPriority, UUID, UUri};
+<a href=#606 id=606 data-nosnippet>606</a>    ///
+<a href=#607 id=607 data-nosnippet>607</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#608 id=608 data-nosnippet>608</a>    /// let invoked_method = UUri::try_from("//my-vehicle/4210/5/64AB")?;
+<a href=#609 id=609 data-nosnippet>609</a>    /// let reply_to_address = UUri::try_from("//my-cloud/BA4C/1/0")?;
+<a href=#610 id=610 data-nosnippet>610</a>    /// let message_id = UUID::build();
+<a href=#611 id=611 data-nosnippet>611</a>    /// // a service implementation would normally use
+<a href=#612 id=612 data-nosnippet>612</a>    /// // `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+<a href=#613 id=613 data-nosnippet>613</a>    /// let message = UMessageBuilder::response(reply_to_address, UUID::build(), invoked_method)
+<a href=#614 id=614 data-nosnippet>614</a>    ///                     .with_message_id(message_id.clone())
+<a href=#615 id=615 data-nosnippet>615</a>    ///                     .build()?;
+<a href=#616 id=616 data-nosnippet>616</a>    /// assert_eq!(message.id(), &amp;message_id);
+<a href=#617 id=617 data-nosnippet>617</a>    /// # Ok(())
+<a href=#618 id=618 data-nosnippet>618</a>    /// # }
+<a href=#619 id=619 data-nosnippet>619</a>    /// ```
+<a href=#620 id=620 data-nosnippet>620</a>    </span><span class="kw">pub fn </span>build(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;UMessage, UMessageError&gt; {
+<a href=#621 id=621 data-nosnippet>621</a>        <span class="comment">// [impl-&gt;dsn~up-attributes-id~1]
+<a href=#622 id=622 data-nosnippet>622</a>        </span><span class="kw">let </span>message_id = <span class="self">self
+<a href=#623 id=623 data-nosnippet>623</a>            </span>.common
+<a href=#624 id=624 data-nosnippet>624</a>            .message_id
+<a href=#625 id=625 data-nosnippet>625</a>            .as_ref()
+<a href=#626 id=626 data-nosnippet>626</a>            .map_or_else(UUID::build, |id| id.clone());
+<a href=#627 id=627 data-nosnippet>627</a>        <span class="kw">let </span><span class="kw-2">mut </span>attributes = UAttributes {
+<a href=#628 id=628 data-nosnippet>628</a>            type_: <span class="self">self</span>.common.message_type,
+<a href=#629 id=629 data-nosnippet>629</a>            id: message_id,
+<a href=#630 id=630 data-nosnippet>630</a>            source: <span class="self">self</span>.common.source.to_owned(),
+<a href=#631 id=631 data-nosnippet>631</a>            sink: <span class="self">self</span>.common.sink.to_owned(),
+<a href=#632 id=632 data-nosnippet>632</a>            ttl: <span class="self">self</span>.common.ttl,
+<a href=#633 id=633 data-nosnippet>633</a>            priority: <span class="self">self</span>.common.priority,
+<a href=#634 id=634 data-nosnippet>634</a>            traceparent: <span class="self">self</span>.common.traceparent.to_owned(),
+<a href=#635 id=635 data-nosnippet>635</a>            payload_format: <span class="self">self</span>.common.payload_format,
+<a href=#636 id=636 data-nosnippet>636</a>            token: <span class="prelude-val">None</span>, <span class="comment">// token is only relevant for request messages and is set via the RequestBuilderState
+<a href=#637 id=637 data-nosnippet>637</a>            </span>payload_encoding: <span class="self">self
+<a href=#638 id=638 data-nosnippet>638</a>                </span>.common
+<a href=#639 id=639 data-nosnippet>639</a>                .open_payload_encoding
+<a href=#640 id=640 data-nosnippet>640</a>                .as_ref()
+<a href=#641 id=641 data-nosnippet>641</a>                .and_then(|e| e.literal_id().map(str::to_owned)),
+<a href=#642 id=642 data-nosnippet>642</a>            payload_encoding_registry_id: <span class="self">self
+<a href=#643 id=643 data-nosnippet>643</a>                </span>.common
+<a href=#644 id=644 data-nosnippet>644</a>                .open_payload_encoding
+<a href=#645 id=645 data-nosnippet>645</a>                .as_ref()
+<a href=#646 id=646 data-nosnippet>646</a>                .and_then(<span class="kw">crate</span>::PayloadEncoding::registry_id),
+<a href=#647 id=647 data-nosnippet>647</a>            payload_content_type: <span class="self">self
+<a href=#648 id=648 data-nosnippet>648</a>                </span>.common
+<a href=#649 id=649 data-nosnippet>649</a>                .open_payload_encoding
+<a href=#650 id=650 data-nosnippet>650</a>                .as_ref()
+<a href=#651 id=651 data-nosnippet>651</a>                .and_then(|e| e.content_type().map(str::to_owned)),
+<a href=#652 id=652 data-nosnippet>652</a>            permission_level: <span class="prelude-val">None</span>, <span class="comment">// permission_level is only relevant for request messages and is set via the RequestBuilderState
+<a href=#653 id=653 data-nosnippet>653</a>            </span>commstatus: <span class="prelude-val">None</span>, <span class="comment">// commstatus is only relevant for response messages and is set via the ResponseBuilderState
+<a href=#654 id=654 data-nosnippet>654</a>            </span>reqid: <span class="prelude-val">None</span>, <span class="comment">// reqid is only relevant for response messages and is set via the ResponseBuilderState
+<a href=#655 id=655 data-nosnippet>655</a>        </span>};
+<a href=#656 id=656 data-nosnippet>656</a>        <span class="comment">// add state-specific attributes
+<a href=#657 id=657 data-nosnippet>657</a>        </span><span class="self">self</span>.extra.merge_into_attributes(<span class="kw-2">&amp;mut </span>attributes);
+<a href=#658 id=658 data-nosnippet>658</a>        <span class="comment">// make sure that we have created a valid set of attributes before creating the final message
+<a href=#659 id=659 data-nosnippet>659</a>        </span><span class="self">self</span>.common
+<a href=#660 id=660 data-nosnippet>660</a>            .validator
+<a href=#661 id=661 data-nosnippet>661</a>            .validate(<span class="kw-2">&amp;</span>attributes)
+<a href=#662 id=662 data-nosnippet>662</a>            .map_err(UMessageError::from)
+<a href=#663 id=663 data-nosnippet>663</a>            .and_then(|<span class="kw">_</span>| UMessage::new(attributes, <span class="self">self</span>.common.payload.clone()))
+<a href=#664 id=664 data-nosnippet>664</a>    }
+<a href=#665 id=665 data-nosnippet>665</a>
+<a href=#666 id=666 data-nosnippet>666</a>    <span class="doccomment">/// Creates the message based on the builder's state and a payload labeled
+<a href=#667 id=667 data-nosnippet>667</a>    /// with an open payload-encoding identity.
+<a href=#668 id=668 data-nosnippet>668</a>    ///
+<a href=#669 id=669 data-nosnippet>669</a>    /// Reserved-range encodings produce the same attributes as
+<a href=#670 id=670 data-nosnippet>670</a>    /// [`Self::build_with_payload`]. Other encodings populate the open
+<a href=#671 id=671 data-nosnippet>671</a>    /// payload-encoding identity fields and leave `payload_format` unspecified.
+<a href=#672 id=672 data-nosnippet>672</a>    ///
+<a href=#673 id=673 data-nosnippet>673</a>    /// # Errors
+<a href=#674 id=674 data-nosnippet>674</a>    ///
+<a href=#675 id=675 data-nosnippet>675</a>    /// If the properties set on the builder do not represent a consistent set
+<a href=#676 id=676 data-nosnippet>676</a>    /// of [`UAttributes`], a [`UMessageError::AttributesValidationError`] is
+<a href=#677 id=677 data-nosnippet>677</a>    /// returned.
+<a href=#678 id=678 data-nosnippet>678</a>    </span><span class="kw">pub fn </span>build_with_payload_encoding&lt;T: Into&lt;Bytes&gt;&gt;(
+<a href=#679 id=679 data-nosnippet>679</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#680 id=680 data-nosnippet>680</a>        payload: T,
+<a href=#681 id=681 data-nosnippet>681</a>        encoding: <span class="kw">crate</span>::PayloadEncoding,
+<a href=#682 id=682 data-nosnippet>682</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;UMessage, UMessageError&gt; {
+<a href=#683 id=683 data-nosnippet>683</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(format) = encoding.to_legacy_format() {
+<a href=#684 id=684 data-nosnippet>684</a>            <span class="kw">return </span><span class="self">self</span>.build_with_payload(payload, format);
+<a href=#685 id=685 data-nosnippet>685</a>        }
+<a href=#686 id=686 data-nosnippet>686</a>
+<a href=#687 id=687 data-nosnippet>687</a>        <span class="self">self</span>.common.payload = <span class="prelude-val">Some</span>(payload.into());
+<a href=#688 id=688 data-nosnippet>688</a>        <span class="self">self</span>.common.payload_format = <span class="prelude-val">Some</span>(UPayloadFormat::Unspecified);
+<a href=#689 id=689 data-nosnippet>689</a>        <span class="self">self</span>.common.open_payload_encoding = <span class="prelude-val">Some</span>(encoding);
+<a href=#690 id=690 data-nosnippet>690</a>        <span class="self">self</span>.build()
+<a href=#691 id=691 data-nosnippet>691</a>    }
+<a href=#692 id=692 data-nosnippet>692</a>
+<a href=#693 id=693 data-nosnippet>693</a>    <span class="doccomment">/// Creates the message based on the builder's state and some payload.
+<a href=#694 id=694 data-nosnippet>694</a>    ///
+<a href=#695 id=695 data-nosnippet>695</a>    /// # Arguments
+<a href=#696 id=696 data-nosnippet>696</a>    ///
+<a href=#697 id=697 data-nosnippet>697</a>    /// * `payload` - The data to set as payload.
+<a href=#698 id=698 data-nosnippet>698</a>    /// * `format` - The payload format.
+<a href=#699 id=699 data-nosnippet>699</a>    ///
+<a href=#700 id=700 data-nosnippet>700</a>    /// # Returns
+<a href=#701 id=701 data-nosnippet>701</a>    ///
+<a href=#702 id=702 data-nosnippet>702</a>    /// A message ready to be sent using [`crate::UTransport::send`].
+<a href=#703 id=703 data-nosnippet>703</a>    ///
+<a href=#704 id=704 data-nosnippet>704</a>    /// # Errors
+<a href=#705 id=705 data-nosnippet>705</a>    ///
+<a href=#706 id=706 data-nosnippet>706</a>    /// If the properties set on the builder do not represent a consistent set of [`UAttributes`],
+<a href=#707 id=707 data-nosnippet>707</a>    /// a [`UMessageError::AttributesValidationError`] is returned.
+<a href=#708 id=708 data-nosnippet>708</a>    ///
+<a href=#709 id=709 data-nosnippet>709</a>    /// # Examples
+<a href=#710 id=710 data-nosnippet>710</a>    ///
+<a href=#711 id=711 data-nosnippet>711</a>    /// ```rust
+<a href=#712 id=712 data-nosnippet>712</a>    /// use up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+<a href=#713 id=713 data-nosnippet>713</a>    ///
+<a href=#714 id=714 data-nosnippet>714</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#715 id=715 data-nosnippet>715</a>    /// let topic = UUri::try_from("//my-vehicle/4210/1/B24D")?;
+<a href=#716 id=716 data-nosnippet>716</a>    /// let message = UMessageBuilder::publish(topic)
+<a href=#717 id=717 data-nosnippet>717</a>    ///                    .build_with_payload("locked", UPayloadFormat::Text)?;
+<a href=#718 id=718 data-nosnippet>718</a>    /// assert!(message.payload().is_some());
+<a href=#719 id=719 data-nosnippet>719</a>    /// # Ok(())
+<a href=#720 id=720 data-nosnippet>720</a>    /// # }
+<a href=#721 id=721 data-nosnippet>721</a>    /// ```
+<a href=#722 id=722 data-nosnippet>722</a>    </span><span class="kw">pub fn </span>build_with_payload&lt;T: Into&lt;Bytes&gt;&gt;(
+<a href=#723 id=723 data-nosnippet>723</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#724 id=724 data-nosnippet>724</a>        payload: T,
+<a href=#725 id=725 data-nosnippet>725</a>        format: UPayloadFormat,
+<a href=#726 id=726 data-nosnippet>726</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;UMessage, UMessageError&gt; {
+<a href=#727 id=727 data-nosnippet>727</a>        <span class="self">self</span>.common.payload = <span class="prelude-val">Some</span>(payload.into());
+<a href=#728 id=728 data-nosnippet>728</a>        <span class="comment">// [impl-&gt;dsn~up-attributes-payload-format~1]
+<a href=#729 id=729 data-nosnippet>729</a>        </span><span class="self">self</span>.common.payload_format = <span class="prelude-val">Some</span>(format);
+<a href=#730 id=730 data-nosnippet>730</a>        <span class="self">self</span>.common.open_payload_encoding = <span class="prelude-val">None</span>;
+<a href=#731 id=731 data-nosnippet>731</a>
+<a href=#732 id=732 data-nosnippet>732</a>        <span class="self">self</span>.build()
+<a href=#733 id=733 data-nosnippet>733</a>    }
+<a href=#734 id=734 data-nosnippet>734</a>
+<a href=#735 id=735 data-nosnippet>735</a>    <span class="doccomment">/// Creates the message based on the builder's state and some payload.
+<a href=#736 id=736 data-nosnippet>736</a>    ///
+<a href=#737 id=737 data-nosnippet>737</a>    /// # Arguments
+<a href=#738 id=738 data-nosnippet>738</a>    ///
+<a href=#739 id=739 data-nosnippet>739</a>    /// * `payload` - The data to set as payload.
+<a href=#740 id=740 data-nosnippet>740</a>    ///
+<a href=#741 id=741 data-nosnippet>741</a>    /// # Returns
+<a href=#742 id=742 data-nosnippet>742</a>    ///
+<a href=#743 id=743 data-nosnippet>743</a>    /// A message ready to be sent using [`crate::UTransport::send`]. The message will have
+<a href=#744 id=744 data-nosnippet>744</a>    /// [`UPayloadFormat::Protobuf`] set as its payload format.
+<a href=#745 id=745 data-nosnippet>745</a>    ///
+<a href=#746 id=746 data-nosnippet>746</a>    /// # Errors
+<a href=#747 id=747 data-nosnippet>747</a>    ///
+<a href=#748 id=748 data-nosnippet>748</a>    /// If the given payload cannot be serialized into a protobuf byte array, a [`UMessageError::DataSerializationError`] is returned.
+<a href=#749 id=749 data-nosnippet>749</a>    /// If the properties set on the builder do not represent a consistent set of [`UAttributes`],
+<a href=#750 id=750 data-nosnippet>750</a>    /// a [`UMessageError::AttributesValidationError`] is returned.
+<a href=#751 id=751 data-nosnippet>751</a>    ///
+<a href=#752 id=752 data-nosnippet>752</a>    /// # Examples
+<a href=#753 id=753 data-nosnippet>753</a>    ///
+<a href=#754 id=754 data-nosnippet>754</a>    /// ```rust
+<a href=#755 id=755 data-nosnippet>755</a>    /// use protobuf::well_known_types::wrappers::StringValue;
+<a href=#756 id=756 data-nosnippet>756</a>    /// use up_rust::{UCode, UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UStatus, UUID, UUri};
+<a href=#757 id=757 data-nosnippet>757</a>    ///
+<a href=#758 id=758 data-nosnippet>758</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#759 id=759 data-nosnippet>759</a>    /// let invoked_method = UUri::try_from("//my-vehicle/4210/5/64AB")?;
+<a href=#760 id=760 data-nosnippet>760</a>    /// let reply_to_address = UUri::try_from("//my-cloud/BA4C/1/0")?;
+<a href=#761 id=761 data-nosnippet>761</a>    /// let payload = StringValue::new();
+<a href=#762 id=762 data-nosnippet>762</a>    /// let request_id = UUID::build();
+<a href=#763 id=763 data-nosnippet>763</a>    /// // a service implementation would normally use
+<a href=#764 id=764 data-nosnippet>764</a>    /// // `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+<a href=#765 id=765 data-nosnippet>765</a>    /// let message = UMessageBuilder::response(reply_to_address, request_id, invoked_method)
+<a href=#766 id=766 data-nosnippet>766</a>    ///                    .with_comm_status(UCode::InvalidArgument)
+<a href=#767 id=767 data-nosnippet>767</a>    ///                    .build_with_protobuf_payload(&amp;payload)?;
+<a href=#768 id=768 data-nosnippet>768</a>    /// assert!(message.payload().is_some());
+<a href=#769 id=769 data-nosnippet>769</a>    /// assert_eq!(message.payload_format_unchecked(), UPayloadFormat::Protobuf);
+<a href=#770 id=770 data-nosnippet>770</a>    /// # Ok(())
+<a href=#771 id=771 data-nosnippet>771</a>    /// # }
+<a href=#772 id=772 data-nosnippet>772</a>    /// ```
+<a href=#773 id=773 data-nosnippet>773</a>    </span><span class="attr">#[cfg(feature = <span class="string">"protobuf-support"</span>)]
+<a href=#774 id=774 data-nosnippet>774</a>    </span><span class="kw">pub fn </span>build_with_protobuf_payload&lt;T: ProtobufMappable&gt;(
+<a href=#775 id=775 data-nosnippet>775</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#776 id=776 data-nosnippet>776</a>        payload: <span class="kw-2">&amp;</span>T,
+<a href=#777 id=777 data-nosnippet>777</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;UMessage, UMessageError&gt; {
+<a href=#778 id=778 data-nosnippet>778</a>        payload
+<a href=#779 id=779 data-nosnippet>779</a>            .write_to_protobuf_bytes()
+<a href=#780 id=780 data-nosnippet>780</a>            .map_err(UMessageError::from)
+<a href=#781 id=781 data-nosnippet>781</a>            .and_then(|serialized_payload| {
+<a href=#782 id=782 data-nosnippet>782</a>                <span class="self">self</span>.build_with_payload(serialized_payload, UPayloadFormat::Protobuf)
+<a href=#783 id=783 data-nosnippet>783</a>            })
+<a href=#784 id=784 data-nosnippet>784</a>    }
+<a href=#785 id=785 data-nosnippet>785</a>
+<a href=#786 id=786 data-nosnippet>786</a>    <span class="doccomment">/// Creates the message based on the builder's state and some payload.
+<a href=#787 id=787 data-nosnippet>787</a>    ///
+<a href=#788 id=788 data-nosnippet>788</a>    /// # Arguments
+<a href=#789 id=789 data-nosnippet>789</a>    ///
+<a href=#790 id=790 data-nosnippet>790</a>    /// * `payload` - The data to set as payload.
+<a href=#791 id=791 data-nosnippet>791</a>    ///
+<a href=#792 id=792 data-nosnippet>792</a>    /// # Returns
+<a href=#793 id=793 data-nosnippet>793</a>    ///
+<a href=#794 id=794 data-nosnippet>794</a>    /// A message ready to be sent using [`crate::UTransport::send`]. The message will have
+<a href=#795 id=795 data-nosnippet>795</a>    /// [`UPayloadFormat::ProtobufWrappedInAny`] set as its payload format.
+<a href=#796 id=796 data-nosnippet>796</a>    ///
+<a href=#797 id=797 data-nosnippet>797</a>    /// # Errors
+<a href=#798 id=798 data-nosnippet>798</a>    ///
+<a href=#799 id=799 data-nosnippet>799</a>    /// If the given payload cannot be serialized into a protobuf byte array, a [`UMessageError::DataSerializationError`] is returned.
+<a href=#800 id=800 data-nosnippet>800</a>    /// If the properties set on the builder do not represent a consistent set of [`UAttributes`],
+<a href=#801 id=801 data-nosnippet>801</a>    /// a [`UMessageError::AttributesValidationError`] is returned.
+<a href=#802 id=802 data-nosnippet>802</a>    ///
+<a href=#803 id=803 data-nosnippet>803</a>    /// # Examples
+<a href=#804 id=804 data-nosnippet>804</a>    ///
+<a href=#805 id=805 data-nosnippet>805</a>    /// ```rust
+<a href=#806 id=806 data-nosnippet>806</a>    /// use protobuf::well_known_types::wrappers::StringValue;
+<a href=#807 id=807 data-nosnippet>807</a>    /// use up_rust::{UCode, UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UStatus, UUID, UUri};
+<a href=#808 id=808 data-nosnippet>808</a>    ///
+<a href=#809 id=809 data-nosnippet>809</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#810 id=810 data-nosnippet>810</a>    /// let invoked_method = UUri::try_from("//my-vehicle/4210/5/64AB")?;
+<a href=#811 id=811 data-nosnippet>811</a>    /// let reply_to_address = UUri::try_from("//my-cloud/BA4C/1/0")?;
+<a href=#812 id=812 data-nosnippet>812</a>    /// let payload = StringValue::new();
+<a href=#813 id=813 data-nosnippet>813</a>    /// let request_id = UUID::build();
+<a href=#814 id=814 data-nosnippet>814</a>    /// // a service implementation would normally use
+<a href=#815 id=815 data-nosnippet>815</a>    /// // `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+<a href=#816 id=816 data-nosnippet>816</a>    /// let message = UMessageBuilder::response(reply_to_address, request_id, invoked_method)
+<a href=#817 id=817 data-nosnippet>817</a>    ///                    .with_comm_status(UCode::InvalidArgument)
+<a href=#818 id=818 data-nosnippet>818</a>    ///                    .build_with_wrapped_protobuf_payload(&amp;payload)?;
+<a href=#819 id=819 data-nosnippet>819</a>    /// assert!(message.payload().is_some());
+<a href=#820 id=820 data-nosnippet>820</a>    /// assert_eq!(message.payload_format_unchecked(), UPayloadFormat::ProtobufWrappedInAny);
+<a href=#821 id=821 data-nosnippet>821</a>    /// # Ok(())
+<a href=#822 id=822 data-nosnippet>822</a>    /// # }
+<a href=#823 id=823 data-nosnippet>823</a>    /// ```
+<a href=#824 id=824 data-nosnippet>824</a>    </span><span class="attr">#[cfg(feature = <span class="string">"protobuf-support"</span>)]
+<a href=#825 id=825 data-nosnippet>825</a>    </span><span class="kw">pub fn </span>build_with_wrapped_protobuf_payload&lt;T: ProtobufMappable&gt;(
+<a href=#826 id=826 data-nosnippet>826</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#827 id=827 data-nosnippet>827</a>        payload: <span class="kw-2">&amp;</span>T,
+<a href=#828 id=828 data-nosnippet>828</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;UMessage, UMessageError&gt; {
+<a href=#829 id=829 data-nosnippet>829</a>        payload
+<a href=#830 id=830 data-nosnippet>830</a>            .write_to_packed_protobuf_bytes()
+<a href=#831 id=831 data-nosnippet>831</a>            .map_err(UMessageError::from)
+<a href=#832 id=832 data-nosnippet>832</a>            .and_then(|serialized_payload| {
+<a href=#833 id=833 data-nosnippet>833</a>                <span class="self">self</span>.build_with_payload(serialized_payload, UPayloadFormat::ProtobufWrappedInAny)
+<a href=#834 id=834 data-nosnippet>834</a>            })
+<a href=#835 id=835 data-nosnippet>835</a>    }
+<a href=#836 id=836 data-nosnippet>836</a>}
+<a href=#837 id=837 data-nosnippet>837</a>
+<a href=#838 id=838 data-nosnippet>838</a><span class="kw">impl </span>UMessageBuilder&lt;RequestBuilderState&gt; {
+<a href=#839 id=839 data-nosnippet>839</a>    <span class="doccomment">/// Sets the message's authorization token used for TAP.
+<a href=#840 id=840 data-nosnippet>840</a>    ///
+<a href=#841 id=841 data-nosnippet>841</a>    /// # Arguments
+<a href=#842 id=842 data-nosnippet>842</a>    ///
+<a href=#843 id=843 data-nosnippet>843</a>    /// * `token` - The token.
+<a href=#844 id=844 data-nosnippet>844</a>    ///
+<a href=#845 id=845 data-nosnippet>845</a>    /// # Returns
+<a href=#846 id=846 data-nosnippet>846</a>    ///
+<a href=#847 id=847 data-nosnippet>847</a>    /// The builder.
+<a href=#848 id=848 data-nosnippet>848</a>    ///
+<a href=#849 id=849 data-nosnippet>849</a>    /// # Examples
+<a href=#850 id=850 data-nosnippet>850</a>    ///
+<a href=#851 id=851 data-nosnippet>851</a>    /// ```rust
+<a href=#852 id=852 data-nosnippet>852</a>    /// use up_rust::{UMessageBuilder, UMessageType, UPayloadFormat, UPriority, UUri};
+<a href=#853 id=853 data-nosnippet>853</a>    ///
+<a href=#854 id=854 data-nosnippet>854</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#855 id=855 data-nosnippet>855</a>    /// let method_to_invoke = UUri::try_from("//my-vehicle/4210/5/64AB")?;
+<a href=#856 id=856 data-nosnippet>856</a>    /// let reply_to_address = UUri::try_from("//my-cloud/BA4C/1/0")?;
+<a href=#857 id=857 data-nosnippet>857</a>    /// let token = "this-is-my-token";
+<a href=#858 id=858 data-nosnippet>858</a>    /// let message = UMessageBuilder::request(method_to_invoke, reply_to_address, 5000)
+<a href=#859 id=859 data-nosnippet>859</a>    ///                     .with_token(token)
+<a href=#860 id=860 data-nosnippet>860</a>    ///                     .build_with_payload("lock", UPayloadFormat::Text)?;
+<a href=#861 id=861 data-nosnippet>861</a>    /// assert_eq!(message.token(), Some(token));
+<a href=#862 id=862 data-nosnippet>862</a>    /// # Ok(())
+<a href=#863 id=863 data-nosnippet>863</a>    /// # }
+<a href=#864 id=864 data-nosnippet>864</a>    /// ```
+<a href=#865 id=865 data-nosnippet>865</a>    </span><span class="comment">// [impl-&gt;dsn~up-attributes-request-token~1]
+<a href=#866 id=866 data-nosnippet>866</a>    </span><span class="kw">pub fn </span>with_token&lt;T: Into&lt;String&gt;&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, token: T) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+<a href=#867 id=867 data-nosnippet>867</a>        <span class="self">self</span>.extra.token = <span class="prelude-val">Some</span>(token.into());
+<a href=#868 id=868 data-nosnippet>868</a>        <span class="self">self
+<a href=#869 id=869 data-nosnippet>869</a>    </span>}
+<a href=#870 id=870 data-nosnippet>870</a>
+<a href=#871 id=871 data-nosnippet>871</a>    <span class="doccomment">/// Sets the message's permission level.
+<a href=#872 id=872 data-nosnippet>872</a>    ///
+<a href=#873 id=873 data-nosnippet>873</a>    /// # Arguments
+<a href=#874 id=874 data-nosnippet>874</a>    ///
+<a href=#875 id=875 data-nosnippet>875</a>    /// * `level` - The level.
+<a href=#876 id=876 data-nosnippet>876</a>    ///
+<a href=#877 id=877 data-nosnippet>877</a>    /// # Returns
+<a href=#878 id=878 data-nosnippet>878</a>    ///
+<a href=#879 id=879 data-nosnippet>879</a>    /// The builder.
+<a href=#880 id=880 data-nosnippet>880</a>    ///
+<a href=#881 id=881 data-nosnippet>881</a>    /// # Examples
+<a href=#882 id=882 data-nosnippet>882</a>    ///
+<a href=#883 id=883 data-nosnippet>883</a>    /// ```rust
+<a href=#884 id=884 data-nosnippet>884</a>    /// use up_rust::{UCode, UMessageBuilder, UPayloadFormat, UPriority, UUri};
+<a href=#885 id=885 data-nosnippet>885</a>    ///
+<a href=#886 id=886 data-nosnippet>886</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#887 id=887 data-nosnippet>887</a>    /// let method_to_invoke = UUri::try_from("//my-vehicle/4210/5/64AB")?;
+<a href=#888 id=888 data-nosnippet>888</a>    /// let reply_to_address = UUri::try_from("//my-cloud/BA4C/1/0")?;
+<a href=#889 id=889 data-nosnippet>889</a>    /// let message = UMessageBuilder::request(method_to_invoke, reply_to_address, 5000)
+<a href=#890 id=890 data-nosnippet>890</a>    ///                     .with_permission_level(12)
+<a href=#891 id=891 data-nosnippet>891</a>    ///                     .build_with_payload("lock", UPayloadFormat::Text)?;
+<a href=#892 id=892 data-nosnippet>892</a>    /// assert_eq!(message.permission_level(), Some(12));
+<a href=#893 id=893 data-nosnippet>893</a>    /// # Ok(())
+<a href=#894 id=894 data-nosnippet>894</a>    /// # }
+<a href=#895 id=895 data-nosnippet>895</a>    /// ```
+<a href=#896 id=896 data-nosnippet>896</a>    </span><span class="comment">// [impl-&gt;dsn~up-attributes-permission-level~1]
+<a href=#897 id=897 data-nosnippet>897</a>    </span><span class="kw">pub fn </span>with_permission_level(<span class="kw-2">&amp;mut </span><span class="self">self</span>, level: u32) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+<a href=#898 id=898 data-nosnippet>898</a>        <span class="self">self</span>.extra.permission_level = <span class="prelude-val">Some</span>(level);
+<a href=#899 id=899 data-nosnippet>899</a>        <span class="self">self
+<a href=#900 id=900 data-nosnippet>900</a>    </span>}
+<a href=#901 id=901 data-nosnippet>901</a>}
+<a href=#902 id=902 data-nosnippet>902</a>
+<a href=#903 id=903 data-nosnippet>903</a><span class="kw">impl </span>UMessageBuilder&lt;ResponseBuilderState&gt; {
+<a href=#904 id=904 data-nosnippet>904</a>    <span class="doccomment">/// Sets the message's communication status.
+<a href=#905 id=905 data-nosnippet>905</a>    ///
+<a href=#906 id=906 data-nosnippet>906</a>    /// # Arguments
+<a href=#907 id=907 data-nosnippet>907</a>    ///
+<a href=#908 id=908 data-nosnippet>908</a>    /// * `comm_status` - The status.
+<a href=#909 id=909 data-nosnippet>909</a>    ///
+<a href=#910 id=910 data-nosnippet>910</a>    /// # Returns
+<a href=#911 id=911 data-nosnippet>911</a>    ///
+<a href=#912 id=912 data-nosnippet>912</a>    /// The builder.
+<a href=#913 id=913 data-nosnippet>913</a>    ///
+<a href=#914 id=914 data-nosnippet>914</a>    /// # Examples
+<a href=#915 id=915 data-nosnippet>915</a>    ///
+<a href=#916 id=916 data-nosnippet>916</a>    /// ```rust
+<a href=#917 id=917 data-nosnippet>917</a>    /// use up_rust::{UCode, UMessageBuilder, UPriority, UUID, UUri};
+<a href=#918 id=918 data-nosnippet>918</a>    ///
+<a href=#919 id=919 data-nosnippet>919</a>    /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+<a href=#920 id=920 data-nosnippet>920</a>    /// let invoked_method = UUri::try_from("//my-vehicle/4210/5/64AB")?;
+<a href=#921 id=921 data-nosnippet>921</a>    /// let reply_to_address = UUri::try_from("//my-cloud/BA4C/1/0")?;
+<a href=#922 id=922 data-nosnippet>922</a>    /// let request_msg_id = UUID::build();
+<a href=#923 id=923 data-nosnippet>923</a>    /// // a service implementation would normally use
+<a href=#924 id=924 data-nosnippet>924</a>    /// // `UMessageBuilder::response_for_request(&amp;request_message.attributes)` instead
+<a href=#925 id=925 data-nosnippet>925</a>    /// let message = UMessageBuilder::response(reply_to_address, request_msg_id, invoked_method)
+<a href=#926 id=926 data-nosnippet>926</a>    ///                     .with_comm_status(UCode::Ok)
+<a href=#927 id=927 data-nosnippet>927</a>    ///                     .build()?;
+<a href=#928 id=928 data-nosnippet>928</a>    /// assert_eq!(message.commstatus_unchecked(), UCode::Ok);
+<a href=#929 id=929 data-nosnippet>929</a>    /// # Ok(())
+<a href=#930 id=930 data-nosnippet>930</a>    /// # }
+<a href=#931 id=931 data-nosnippet>931</a>    /// ```
+<a href=#932 id=932 data-nosnippet>932</a>    </span><span class="kw">pub fn </span>with_comm_status(<span class="kw-2">&amp;mut </span><span class="self">self</span>, comm_status: UCode) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+<a href=#933 id=933 data-nosnippet>933</a>        <span class="self">self</span>.extra.comm_status = <span class="prelude-val">Some</span>(comm_status);
+<a href=#934 id=934 data-nosnippet>934</a>        <span class="self">self
+<a href=#935 id=935 data-nosnippet>935</a>    </span>}
+<a href=#936 id=936 data-nosnippet>936</a>}
+<a href=#937 id=937 data-nosnippet>937</a>
+<a href=#938 id=938 data-nosnippet>938</a><span class="attr">#[cfg(test)]
+<a href=#939 id=939 data-nosnippet>939</a></span><span class="kw">mod </span>tests {
+<a href=#940 id=940 data-nosnippet>940</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#941 id=941 data-nosnippet>941</a>    <span class="attr">#[cfg(feature = <span class="string">"up-core-types"</span>)]
+<a href=#942 id=942 data-nosnippet>942</a>    </span><span class="kw">use </span><span class="kw">crate</span>::ProtobufMappable;
+<a href=#943 id=943 data-nosnippet>943</a>
+<a href=#944 id=944 data-nosnippet>944</a>    <span class="kw">use </span>test_case::test_case;
+<a href=#945 id=945 data-nosnippet>945</a>
+<a href=#946 id=946 data-nosnippet>946</a>    <span class="kw">const </span>METHOD_TO_INVOKE: <span class="kw-2">&amp;</span>str = <span class="string">"//my-vehicle/4D123/2/6FA3"</span>;
+<a href=#947 id=947 data-nosnippet>947</a>    <span class="kw">const </span>REPLY_TO_ADDRESS: <span class="kw-2">&amp;</span>str = <span class="string">"//my-cloud/9CB3/1/0"</span>;
+<a href=#948 id=948 data-nosnippet>948</a>    <span class="kw">const </span>TOPIC: <span class="kw-2">&amp;</span>str = <span class="string">"//my-vehicle/4210/1/B24D"</span>;
+<a href=#949 id=949 data-nosnippet>949</a>
+<a href=#950 id=950 data-nosnippet>950</a>    <span class="attr">#[test_case(UPriority::CS0; <span class="string">"with priority CS0"</span>)]
+<a href=#951 id=951 data-nosnippet>951</a>    #[test_case(UPriority::CS1; <span class="string">"with priority CS1"</span>)]
+<a href=#952 id=952 data-nosnippet>952</a>    #[test_case(UPriority::CS2; <span class="string">"with priority CS2"</span>)]
+<a href=#953 id=953 data-nosnippet>953</a>    #[test_case(UPriority::CS3; <span class="string">"with priority CS3"</span>)]
+<a href=#954 id=954 data-nosnippet>954</a>    </span><span class="comment">// [utest-&gt;dsn~up-attributes-request-priority~1]
+<a href=#955 id=955 data-nosnippet>955</a>    </span><span class="kw">fn </span>test_rpc_message_builders_fail(priority: UPriority) {
+<a href=#956 id=956 data-nosnippet>956</a>        <span class="kw">let </span>request_id = UUID::build();
+<a href=#957 id=957 data-nosnippet>957</a>        <span class="kw">let </span>method_to_invoke = UUri::try_from(METHOD_TO_INVOKE)
+<a href=#958 id=958 data-nosnippet>958</a>            .expect(<span class="string">"should have been able to create destination UUri"</span>);
+<a href=#959 id=959 data-nosnippet>959</a>        <span class="kw">let </span>reply_to_address = UUri::try_from(REPLY_TO_ADDRESS)
+<a href=#960 id=960 data-nosnippet>960</a>            .expect(<span class="string">"should have been able to create reply-to UUri"</span>);
+<a href=#961 id=961 data-nosnippet>961</a>        <span class="macro">assert!</span>(
+<a href=#962 id=962 data-nosnippet>962</a>            UMessageBuilder::request(method_to_invoke.clone(), reply_to_address.clone(), <span class="number">5000</span>)
+<a href=#963 id=963 data-nosnippet>963</a>                .with_priority(priority)
+<a href=#964 id=964 data-nosnippet>964</a>                .build()
+<a href=#965 id=965 data-nosnippet>965</a>                .is_err()
+<a href=#966 id=966 data-nosnippet>966</a>        );
+<a href=#967 id=967 data-nosnippet>967</a>        <span class="macro">assert!</span>(
+<a href=#968 id=968 data-nosnippet>968</a>            UMessageBuilder::response(reply_to_address, request_id, method_to_invoke)
+<a href=#969 id=969 data-nosnippet>969</a>                .with_priority(priority)
+<a href=#970 id=970 data-nosnippet>970</a>                .build()
+<a href=#971 id=971 data-nosnippet>971</a>                .is_err()
+<a href=#972 id=972 data-nosnippet>972</a>        );
+<a href=#973 id=973 data-nosnippet>973</a>    }
+<a href=#974 id=974 data-nosnippet>974</a>
+<a href=#975 id=975 data-nosnippet>975</a>    <span class="attr">#[test]
+<a href=#976 id=976 data-nosnippet>976</a>    </span><span class="kw">fn </span>test_build_supports_repeated_invocation() {
+<a href=#977 id=977 data-nosnippet>977</a>        <span class="kw">let </span>topic = UUri::try_from(TOPIC).expect(<span class="string">"should have been able to create UUri"</span>);
+<a href=#978 id=978 data-nosnippet>978</a>        <span class="kw">let </span><span class="kw-2">mut </span>builder = UMessageBuilder::publish(topic);
+<a href=#979 id=979 data-nosnippet>979</a>        <span class="kw">let </span>message_one = builder
+<a href=#980 id=980 data-nosnippet>980</a>            .with_message_id(UUID::build())
+<a href=#981 id=981 data-nosnippet>981</a>            .build_with_payload(<span class="string">"locked"</span>, UPayloadFormat::Text)
+<a href=#982 id=982 data-nosnippet>982</a>            .expect(<span class="string">"should have been able to create message"</span>);
+<a href=#983 id=983 data-nosnippet>983</a>        <span class="kw">let </span>message_two = builder
+<a href=#984 id=984 data-nosnippet>984</a>            .with_message_id(UUID::build())
+<a href=#985 id=985 data-nosnippet>985</a>            .build_with_payload(<span class="string">"unlocked"</span>, UPayloadFormat::Text)
+<a href=#986 id=986 data-nosnippet>986</a>            .expect(<span class="string">"should have been able to create message"</span>);
+<a href=#987 id=987 data-nosnippet>987</a>        <span class="macro">assert_eq!</span>(message_one.attributes.type_, message_two.attributes.type_);
+<a href=#988 id=988 data-nosnippet>988</a>        <span class="macro">assert_ne!</span>(message_one.attributes.id, message_two.attributes.id);
+<a href=#989 id=989 data-nosnippet>989</a>        <span class="macro">assert_eq!</span>(message_one.attributes.source, message_two.attributes.source);
+<a href=#990 id=990 data-nosnippet>990</a>        <span class="macro">assert_ne!</span>(message_one.payload, message_two.payload);
+<a href=#991 id=991 data-nosnippet>991</a>    }
+<a href=#992 id=992 data-nosnippet>992</a>
+<a href=#993 id=993 data-nosnippet>993</a>    <span class="attr">#[test]
+<a href=#994 id=994 data-nosnippet>994</a>    </span><span class="kw">fn </span>test_build_with_payload_resets_open_payload_encoding() {
+<a href=#995 id=995 data-nosnippet>995</a>        <span class="kw">let </span>topic = UUri::try_from(TOPIC).expect(<span class="string">"should have been able to create UUri"</span>);
+<a href=#996 id=996 data-nosnippet>996</a>        <span class="kw">let </span>encoding =
+<a href=#997 id=997 data-nosnippet>997</a>            <span class="kw">crate</span>::PayloadEncoding::custom(<span class="string">"up.xcdr-v2"</span>, <span class="string">"application/vnd.uprotocol.xcdr-v2"</span>)
+<a href=#998 id=998 data-nosnippet>998</a>                .expect(<span class="string">"valid payload encoding"</span>);
+<a href=#999 id=999 data-nosnippet>999</a>        <span class="kw">let </span><span class="kw-2">mut </span>builder = UMessageBuilder::publish(topic);
+<a href=#1000 id=1000 data-nosnippet>1000</a>
+<a href=#1001 id=1001 data-nosnippet>1001</a>        builder
+<a href=#1002 id=1002 data-nosnippet>1002</a>            .build_with_payload_encoding(<span class="string">"open"</span>, encoding)
+<a href=#1003 id=1003 data-nosnippet>1003</a>            .expect(<span class="string">"should have built open-encoding message"</span>);
+<a href=#1004 id=1004 data-nosnippet>1004</a>
+<a href=#1005 id=1005 data-nosnippet>1005</a>        <span class="kw">let </span>message = builder
+<a href=#1006 id=1006 data-nosnippet>1006</a>            .build_with_payload(<span class="string">"legacy"</span>, UPayloadFormat::Text)
+<a href=#1007 id=1007 data-nosnippet>1007</a>            .expect(<span class="string">"legacy payload should replace the open encoding"</span>);
+<a href=#1008 id=1008 data-nosnippet>1008</a>
+<a href=#1009 id=1009 data-nosnippet>1009</a>        <span class="macro">assert_eq!</span>(message.payload_format(), <span class="prelude-val">Some</span>(UPayloadFormat::Text));
+<a href=#1010 id=1010 data-nosnippet>1010</a>        <span class="macro">assert_eq!</span>(
+<a href=#1011 id=1011 data-nosnippet>1011</a>            message.attributes().open_payload_encoding_parts(),
+<a href=#1012 id=1012 data-nosnippet>1012</a>            (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)
+<a href=#1013 id=1013 data-nosnippet>1013</a>        );
+<a href=#1014 id=1014 data-nosnippet>1014</a>    }
+<a href=#1015 id=1015 data-nosnippet>1015</a>
+<a href=#1016 id=1016 data-nosnippet>1016</a>    <span class="attr">#[test]
+<a href=#1017 id=1017 data-nosnippet>1017</a>    </span><span class="comment">// [utest-&gt;req~uattributes-data-model-impl~1]
+<a href=#1018 id=1018 data-nosnippet>1018</a>    // [utest-&gt;req~umessage-data-model-impl~1]
+<a href=#1019 id=1019 data-nosnippet>1019</a>    </span><span class="kw">fn </span>test_build_retains_all_publish_attributes() {
+<a href=#1020 id=1020 data-nosnippet>1020</a>        <span class="kw">let </span>message_id = UUID::build();
+<a href=#1021 id=1021 data-nosnippet>1021</a>        <span class="kw">let </span>traceparent = <span class="string">"traceparent"</span>;
+<a href=#1022 id=1022 data-nosnippet>1022</a>        <span class="kw">let </span>topic = UUri::try_from(TOPIC).expect(<span class="string">"should have been able to create UUri"</span>);
+<a href=#1023 id=1023 data-nosnippet>1023</a>        <span class="kw">let </span>message = UMessageBuilder::publish(topic.clone())
+<a href=#1024 id=1024 data-nosnippet>1024</a>            .with_message_id(message_id.clone())
+<a href=#1025 id=1025 data-nosnippet>1025</a>            .with_ttl(<span class="number">5000</span>)
+<a href=#1026 id=1026 data-nosnippet>1026</a>            .with_traceparent(traceparent)
+<a href=#1027 id=1027 data-nosnippet>1027</a>            .build_with_payload(<span class="string">"locked"</span>, UPayloadFormat::Text)
+<a href=#1028 id=1028 data-nosnippet>1028</a>            .expect(<span class="string">"should have been able to create message"</span>);
+<a href=#1029 id=1029 data-nosnippet>1029</a>
+<a href=#1030 id=1030 data-nosnippet>1030</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-id~1]
+<a href=#1031 id=1031 data-nosnippet>1031</a>        </span><span class="macro">assert_eq!</span>(message.id(), <span class="kw-2">&amp;</span>message_id);
+<a href=#1032 id=1032 data-nosnippet>1032</a>        <span class="macro">assert!</span>(message.priority().is_none());
+<a href=#1033 id=1033 data-nosnippet>1033</a>        <span class="macro">assert_eq!</span>(message.source(), <span class="kw-2">&amp;</span>topic);
+<a href=#1034 id=1034 data-nosnippet>1034</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-publish-sink~1]
+<a href=#1035 id=1035 data-nosnippet>1035</a>        </span><span class="macro">assert!</span>(message.sink().is_none());
+<a href=#1036 id=1036 data-nosnippet>1036</a>        <span class="macro">assert_eq!</span>(message.ttl_unchecked(), <span class="number">5000</span>);
+<a href=#1037 id=1037 data-nosnippet>1037</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-traceparent~1]
+<a href=#1038 id=1038 data-nosnippet>1038</a>        </span><span class="macro">assert_eq!</span>(message.traceparent(), <span class="prelude-val">Some</span>(traceparent));
+<a href=#1039 id=1039 data-nosnippet>1039</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-publish-type~1]
+<a href=#1040 id=1040 data-nosnippet>1040</a>        </span><span class="macro">assert_eq!</span>(message.type_(), UMessageType::Publish);
+<a href=#1041 id=1041 data-nosnippet>1041</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-payload-format~1]
+<a href=#1042 id=1042 data-nosnippet>1042</a>        </span><span class="macro">assert_eq!</span>(message.payload_format_unchecked(), UPayloadFormat::Text);
+<a href=#1043 id=1043 data-nosnippet>1043</a>
+<a href=#1044 id=1044 data-nosnippet>1044</a>        <span class="macro">assert!</span>(message.commstatus().is_none());
+<a href=#1045 id=1045 data-nosnippet>1045</a>        <span class="macro">assert!</span>(message.permission_level().is_none());
+<a href=#1046 id=1046 data-nosnippet>1046</a>        <span class="macro">assert!</span>(message.token().is_none());
+<a href=#1047 id=1047 data-nosnippet>1047</a>
+<a href=#1048 id=1048 data-nosnippet>1048</a>        <span class="attr">#[cfg(feature = <span class="string">"up-core-types"</span>)]
+<a href=#1049 id=1049 data-nosnippet>1049</a>        </span>{
+<a href=#1050 id=1050 data-nosnippet>1050</a>            <span class="comment">// [utest-&gt;req~uattributes-data-model-proto~1]
+<a href=#1051 id=1051 data-nosnippet>1051</a>            // [utest-&gt;req~umessage-data-model-proto~1]
+<a href=#1052 id=1052 data-nosnippet>1052</a>            </span><span class="kw">let </span>proto = message
+<a href=#1053 id=1053 data-nosnippet>1053</a>                .write_to_protobuf_bytes()
+<a href=#1054 id=1054 data-nosnippet>1054</a>                .expect(<span class="string">"failed to serialize to protobuf"</span>);
+<a href=#1055 id=1055 data-nosnippet>1055</a>            <span class="kw">let </span>deserialized_message = UMessage::parse_from_protobuf_bytes(proto.as_slice())
+<a href=#1056 id=1056 data-nosnippet>1056</a>                .expect(<span class="string">"failed to deserialize protobuf"</span>);
+<a href=#1057 id=1057 data-nosnippet>1057</a>            <span class="macro">assert_eq!</span>(message, deserialized_message);
+<a href=#1058 id=1058 data-nosnippet>1058</a>        }
+<a href=#1059 id=1059 data-nosnippet>1059</a>    }
+<a href=#1060 id=1060 data-nosnippet>1060</a>
+<a href=#1061 id=1061 data-nosnippet>1061</a>    <span class="attr">#[test]
+<a href=#1062 id=1062 data-nosnippet>1062</a>    </span><span class="comment">// [utest-&gt;req~uattributes-data-model-impl~1]
+<a href=#1063 id=1063 data-nosnippet>1063</a>    // [utest-&gt;req~umessage-data-model-impl~1]
+<a href=#1064 id=1064 data-nosnippet>1064</a>    </span><span class="kw">fn </span>test_build_retains_all_notification_attributes() {
+<a href=#1065 id=1065 data-nosnippet>1065</a>        <span class="kw">let </span>message_id = UUID::build();
+<a href=#1066 id=1066 data-nosnippet>1066</a>        <span class="kw">let </span>traceparent = <span class="string">"traceparent"</span>;
+<a href=#1067 id=1067 data-nosnippet>1067</a>        <span class="kw">let </span>origin = UUri::try_from(TOPIC).expect(<span class="string">"should have been able to create UUri"</span>);
+<a href=#1068 id=1068 data-nosnippet>1068</a>        <span class="kw">let </span>destination =
+<a href=#1069 id=1069 data-nosnippet>1069</a>            UUri::try_from(REPLY_TO_ADDRESS).expect(<span class="string">"should have been able to create UUri"</span>);
+<a href=#1070 id=1070 data-nosnippet>1070</a>        <span class="kw">let </span>message = UMessageBuilder::notification(origin.clone(), destination.clone())
+<a href=#1071 id=1071 data-nosnippet>1071</a>            .with_message_id(message_id.clone())
+<a href=#1072 id=1072 data-nosnippet>1072</a>            .with_priority(UPriority::CS2)
+<a href=#1073 id=1073 data-nosnippet>1073</a>            .with_ttl(<span class="number">5000</span>)
+<a href=#1074 id=1074 data-nosnippet>1074</a>            .with_traceparent(traceparent)
+<a href=#1075 id=1075 data-nosnippet>1075</a>            .build_with_payload(<span class="string">"locked"</span>, UPayloadFormat::Text)
+<a href=#1076 id=1076 data-nosnippet>1076</a>            .expect(<span class="string">"should have been able to create message"</span>);
+<a href=#1077 id=1077 data-nosnippet>1077</a>
+<a href=#1078 id=1078 data-nosnippet>1078</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-id~1]
+<a href=#1079 id=1079 data-nosnippet>1079</a>        </span><span class="macro">assert_eq!</span>(message.id(), <span class="kw-2">&amp;</span>message_id);
+<a href=#1080 id=1080 data-nosnippet>1080</a>        <span class="macro">assert_eq!</span>(message.priority_unchecked(), UPriority::CS2);
+<a href=#1081 id=1081 data-nosnippet>1081</a>        <span class="macro">assert_eq!</span>(message.source(), <span class="kw-2">&amp;</span>origin);
+<a href=#1082 id=1082 data-nosnippet>1082</a>        <span class="macro">assert_eq!</span>(message.sink_unchecked(), <span class="kw-2">&amp;</span>destination);
+<a href=#1083 id=1083 data-nosnippet>1083</a>        <span class="macro">assert_eq!</span>(message.ttl_unchecked(), <span class="number">5000</span>);
+<a href=#1084 id=1084 data-nosnippet>1084</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-traceparent~1]
+<a href=#1085 id=1085 data-nosnippet>1085</a>        </span><span class="macro">assert_eq!</span>(message.traceparent(), <span class="prelude-val">Some</span>(traceparent));
+<a href=#1086 id=1086 data-nosnippet>1086</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-notification-type~1]
+<a href=#1087 id=1087 data-nosnippet>1087</a>        </span><span class="macro">assert!</span>(message.is_notification());
+<a href=#1088 id=1088 data-nosnippet>1088</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-payload-format~1]
+<a href=#1089 id=1089 data-nosnippet>1089</a>        </span><span class="macro">assert_eq!</span>(message.payload_format_unchecked(), UPayloadFormat::Text);
+<a href=#1090 id=1090 data-nosnippet>1090</a>
+<a href=#1091 id=1091 data-nosnippet>1091</a>        <span class="macro">assert!</span>(message.commstatus().is_none());
+<a href=#1092 id=1092 data-nosnippet>1092</a>        <span class="macro">assert!</span>(message.permission_level().is_none());
+<a href=#1093 id=1093 data-nosnippet>1093</a>        <span class="macro">assert!</span>(message.token().is_none());
+<a href=#1094 id=1094 data-nosnippet>1094</a>
+<a href=#1095 id=1095 data-nosnippet>1095</a>        <span class="attr">#[cfg(feature = <span class="string">"up-core-types"</span>)]
+<a href=#1096 id=1096 data-nosnippet>1096</a>        </span>{
+<a href=#1097 id=1097 data-nosnippet>1097</a>            <span class="comment">// [utest-&gt;req~uattributes-data-model-proto~1]
+<a href=#1098 id=1098 data-nosnippet>1098</a>            // [utest-&gt;req~umessage-data-model-proto~1]
+<a href=#1099 id=1099 data-nosnippet>1099</a>            </span><span class="kw">let </span>proto = message
+<a href=#1100 id=1100 data-nosnippet>1100</a>                .write_to_protobuf_bytes()
+<a href=#1101 id=1101 data-nosnippet>1101</a>                .expect(<span class="string">"failed to serialize to protobuf"</span>);
+<a href=#1102 id=1102 data-nosnippet>1102</a>            <span class="kw">let </span>deserialized_message = UMessage::parse_from_protobuf_bytes(proto.as_slice())
+<a href=#1103 id=1103 data-nosnippet>1103</a>                .expect(<span class="string">"failed to deserialize protobuf"</span>);
+<a href=#1104 id=1104 data-nosnippet>1104</a>            <span class="macro">assert_eq!</span>(message, deserialized_message);
+<a href=#1105 id=1105 data-nosnippet>1105</a>        }
+<a href=#1106 id=1106 data-nosnippet>1106</a>    }
+<a href=#1107 id=1107 data-nosnippet>1107</a>
+<a href=#1108 id=1108 data-nosnippet>1108</a>    <span class="attr">#[test]
+<a href=#1109 id=1109 data-nosnippet>1109</a>    </span><span class="comment">// [utest-&gt;req~uattributes-data-model-impl~1]
+<a href=#1110 id=1110 data-nosnippet>1110</a>    // [utest-&gt;req~umessage-data-model-impl~1]
+<a href=#1111 id=1111 data-nosnippet>1111</a>    </span><span class="kw">fn </span>test_build_retains_all_request_attributes() {
+<a href=#1112 id=1112 data-nosnippet>1112</a>        <span class="kw">let </span>message_id = UUID::build();
+<a href=#1113 id=1113 data-nosnippet>1113</a>        <span class="kw">let </span>token = <span class="string">"token"</span>;
+<a href=#1114 id=1114 data-nosnippet>1114</a>        <span class="kw">let </span>traceparent = <span class="string">"traceparent"</span>;
+<a href=#1115 id=1115 data-nosnippet>1115</a>        <span class="kw">let </span>method_to_invoke = UUri::try_from(METHOD_TO_INVOKE)
+<a href=#1116 id=1116 data-nosnippet>1116</a>            .expect(<span class="string">"should have been able to create destination UUri"</span>);
+<a href=#1117 id=1117 data-nosnippet>1117</a>        <span class="kw">let </span>reply_to_address = UUri::try_from(REPLY_TO_ADDRESS)
+<a href=#1118 id=1118 data-nosnippet>1118</a>            .expect(<span class="string">"should have been able to create reply-to UUri"</span>);
+<a href=#1119 id=1119 data-nosnippet>1119</a>        <span class="kw">let </span>message =
+<a href=#1120 id=1120 data-nosnippet>1120</a>            UMessageBuilder::request(method_to_invoke.clone(), reply_to_address.clone(), <span class="number">5000</span>)
+<a href=#1121 id=1121 data-nosnippet>1121</a>                .with_message_id(message_id.clone())
+<a href=#1122 id=1122 data-nosnippet>1122</a>                .with_permission_level(<span class="number">5</span>)
+<a href=#1123 id=1123 data-nosnippet>1123</a>                .with_priority(UPriority::CS4)
+<a href=#1124 id=1124 data-nosnippet>1124</a>                .with_token(token)
+<a href=#1125 id=1125 data-nosnippet>1125</a>                .with_traceparent(traceparent)
+<a href=#1126 id=1126 data-nosnippet>1126</a>                .build_with_payload(<span class="string">"unlock"</span>, UPayloadFormat::Text)
+<a href=#1127 id=1127 data-nosnippet>1127</a>                .expect(<span class="string">"should have been able to create message"</span>);
+<a href=#1128 id=1128 data-nosnippet>1128</a>
+<a href=#1129 id=1129 data-nosnippet>1129</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-id~1]
+<a href=#1130 id=1130 data-nosnippet>1130</a>        </span><span class="macro">assert_eq!</span>(message.id(), <span class="kw-2">&amp;</span>message_id);
+<a href=#1131 id=1131 data-nosnippet>1131</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-permission-level~1]
+<a href=#1132 id=1132 data-nosnippet>1132</a>        </span><span class="macro">assert_eq!</span>(message.permission_level(), <span class="prelude-val">Some</span>(<span class="number">5</span>));
+<a href=#1133 id=1133 data-nosnippet>1133</a>        <span class="macro">assert_eq!</span>(message.priority_unchecked(), UPriority::CS4);
+<a href=#1134 id=1134 data-nosnippet>1134</a>        <span class="macro">assert_eq!</span>(message.sink_unchecked(), <span class="kw-2">&amp;</span>method_to_invoke);
+<a href=#1135 id=1135 data-nosnippet>1135</a>        <span class="macro">assert_eq!</span>(message.source(), <span class="kw-2">&amp;</span>reply_to_address);
+<a href=#1136 id=1136 data-nosnippet>1136</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-request-token~1]
+<a href=#1137 id=1137 data-nosnippet>1137</a>        </span><span class="macro">assert_eq!</span>(message.token(), <span class="prelude-val">Some</span>(token));
+<a href=#1138 id=1138 data-nosnippet>1138</a>        <span class="macro">assert_eq!</span>(message.ttl_unchecked(), <span class="number">5000</span>);
+<a href=#1139 id=1139 data-nosnippet>1139</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-traceparent~1]
+<a href=#1140 id=1140 data-nosnippet>1140</a>        </span><span class="macro">assert_eq!</span>(message.traceparent(), <span class="prelude-val">Some</span>(traceparent));
+<a href=#1141 id=1141 data-nosnippet>1141</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-request-type~1]
+<a href=#1142 id=1142 data-nosnippet>1142</a>        </span><span class="macro">assert!</span>(message.is_request());
+<a href=#1143 id=1143 data-nosnippet>1143</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-payload-format~1]
+<a href=#1144 id=1144 data-nosnippet>1144</a>        </span><span class="macro">assert_eq!</span>(message.payload_format_unchecked(), UPayloadFormat::Text);
+<a href=#1145 id=1145 data-nosnippet>1145</a>
+<a href=#1146 id=1146 data-nosnippet>1146</a>        <span class="macro">assert!</span>(message.commstatus().is_none());
+<a href=#1147 id=1147 data-nosnippet>1147</a>        <span class="macro">assert!</span>(message.request_id().is_none());
+<a href=#1148 id=1148 data-nosnippet>1148</a>
+<a href=#1149 id=1149 data-nosnippet>1149</a>        <span class="comment">// [utest-&gt;req~uattributes-data-model-proto~1]
+<a href=#1150 id=1150 data-nosnippet>1150</a>        // [utest-&gt;req~umessage-data-model-proto~1]
+<a href=#1151 id=1151 data-nosnippet>1151</a>        </span><span class="attr">#[cfg(feature = <span class="string">"up-core-types"</span>)]
+<a href=#1152 id=1152 data-nosnippet>1152</a>        </span>{
+<a href=#1153 id=1153 data-nosnippet>1153</a>            <span class="kw">let </span>proto = message
+<a href=#1154 id=1154 data-nosnippet>1154</a>                .write_to_protobuf_bytes()
+<a href=#1155 id=1155 data-nosnippet>1155</a>                .expect(<span class="string">"failed to serialize to protobuf"</span>);
+<a href=#1156 id=1156 data-nosnippet>1156</a>            <span class="kw">let </span>deserialized_message = UMessage::parse_from_protobuf_bytes(proto.as_slice())
+<a href=#1157 id=1157 data-nosnippet>1157</a>                .expect(<span class="string">"failed to deserialize protobuf"</span>);
+<a href=#1158 id=1158 data-nosnippet>1158</a>            <span class="macro">assert_eq!</span>(message, deserialized_message);
+<a href=#1159 id=1159 data-nosnippet>1159</a>        }
+<a href=#1160 id=1160 data-nosnippet>1160</a>    }
+<a href=#1161 id=1161 data-nosnippet>1161</a>
+<a href=#1162 id=1162 data-nosnippet>1162</a>    <span class="attr">#[test]
+<a href=#1163 id=1163 data-nosnippet>1163</a>    #[should_panic]
+<a href=#1164 id=1164 data-nosnippet>1164</a>    </span><span class="kw">fn </span>test_response_for_request_panics_for_non_request_attributes() {
+<a href=#1165 id=1165 data-nosnippet>1165</a>        <span class="kw">let </span>message_id = UUID::build();
+<a href=#1166 id=1166 data-nosnippet>1166</a>        <span class="kw">let </span>topic = UUri::try_from(TOPIC).expect(<span class="string">"should have been able to create UUri"</span>);
+<a href=#1167 id=1167 data-nosnippet>1167</a>        <span class="kw">let </span>request_message = UMessageBuilder::publish(topic.clone())
+<a href=#1168 id=1168 data-nosnippet>1168</a>            .with_message_id(message_id.clone())
+<a href=#1169 id=1169 data-nosnippet>1169</a>            .build()
+<a href=#1170 id=1170 data-nosnippet>1170</a>            .expect(<span class="string">"should have been able to create message"</span>);
+<a href=#1171 id=1171 data-nosnippet>1171</a>
+<a href=#1172 id=1172 data-nosnippet>1172</a>        <span class="kw">let _ </span>= UMessageBuilder::response_for_request(<span class="kw-2">&amp;</span>request_message.attributes).build();
+<a href=#1173 id=1173 data-nosnippet>1173</a>    }
+<a href=#1174 id=1174 data-nosnippet>1174</a>
+<a href=#1175 id=1175 data-nosnippet>1175</a>    <span class="attr">#[test]
+<a href=#1176 id=1176 data-nosnippet>1176</a>    </span><span class="kw">fn </span>test_builder_copies_request_attributes() {
+<a href=#1177 id=1177 data-nosnippet>1177</a>        <span class="kw">let </span>request_message_id = UUID::build();
+<a href=#1178 id=1178 data-nosnippet>1178</a>        <span class="kw">let </span>response_message_id = UUID::build();
+<a href=#1179 id=1179 data-nosnippet>1179</a>        <span class="kw">let </span>method_to_invoke = UUri::try_from(METHOD_TO_INVOKE)
+<a href=#1180 id=1180 data-nosnippet>1180</a>            .expect(<span class="string">"should have been able to create destination UUri"</span>);
+<a href=#1181 id=1181 data-nosnippet>1181</a>        <span class="kw">let </span>reply_to_address = UUri::try_from(REPLY_TO_ADDRESS)
+<a href=#1182 id=1182 data-nosnippet>1182</a>            .expect(<span class="string">"should have been able to create reply-to UUri"</span>);
+<a href=#1183 id=1183 data-nosnippet>1183</a>        <span class="kw">let </span>request_message =
+<a href=#1184 id=1184 data-nosnippet>1184</a>            UMessageBuilder::request(method_to_invoke.clone(), reply_to_address.clone(), <span class="number">5000</span>)
+<a href=#1185 id=1185 data-nosnippet>1185</a>                .with_message_id(request_message_id.clone())
+<a href=#1186 id=1186 data-nosnippet>1186</a>                .with_priority(UPriority::CS5)
+<a href=#1187 id=1187 data-nosnippet>1187</a>                .build()
+<a href=#1188 id=1188 data-nosnippet>1188</a>                .expect(<span class="string">"should have been able to create message"</span>);
+<a href=#1189 id=1189 data-nosnippet>1189</a>        <span class="kw">let </span>message = UMessageBuilder::response_for_request(<span class="kw-2">&amp;</span>request_message.attributes)
+<a href=#1190 id=1190 data-nosnippet>1190</a>            .with_message_id(response_message_id.clone())
+<a href=#1191 id=1191 data-nosnippet>1191</a>            .with_comm_status(UCode::DeadlineExceeded)
+<a href=#1192 id=1192 data-nosnippet>1192</a>            .build()
+<a href=#1193 id=1193 data-nosnippet>1193</a>            .expect(<span class="string">"should have been able to create message"</span>);
+<a href=#1194 id=1194 data-nosnippet>1194</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-id~1]
+<a href=#1195 id=1195 data-nosnippet>1195</a>        </span><span class="macro">assert_eq!</span>(message.id(), <span class="kw-2">&amp;</span>response_message_id);
+<a href=#1196 id=1196 data-nosnippet>1196</a>        <span class="macro">assert_eq!</span>(message.commstatus_unchecked(), UCode::DeadlineExceeded);
+<a href=#1197 id=1197 data-nosnippet>1197</a>        <span class="macro">assert_eq!</span>(
+<a href=#1198 id=1198 data-nosnippet>1198</a>            message.priority_unchecked(),
+<a href=#1199 id=1199 data-nosnippet>1199</a>            request_message.priority_unchecked()
+<a href=#1200 id=1200 data-nosnippet>1200</a>        );
+<a href=#1201 id=1201 data-nosnippet>1201</a>        <span class="macro">assert_eq!</span>(message.request_id_unchecked(), <span class="kw-2">&amp;</span>request_message_id);
+<a href=#1202 id=1202 data-nosnippet>1202</a>        <span class="macro">assert_eq!</span>(message.sink_unchecked(), <span class="kw-2">&amp;</span>reply_to_address);
+<a href=#1203 id=1203 data-nosnippet>1203</a>        <span class="macro">assert_eq!</span>(message.source(), <span class="kw-2">&amp;</span>method_to_invoke);
+<a href=#1204 id=1204 data-nosnippet>1204</a>        <span class="macro">assert_eq!</span>(message.ttl_unchecked(), <span class="number">5000</span>);
+<a href=#1205 id=1205 data-nosnippet>1205</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-response-type~1]
+<a href=#1206 id=1206 data-nosnippet>1206</a>        </span><span class="macro">assert!</span>(message.is_response());
+<a href=#1207 id=1207 data-nosnippet>1207</a>        <span class="macro">assert!</span>(message.payload_format().is_none());
+<a href=#1208 id=1208 data-nosnippet>1208</a>        <span class="macro">assert!</span>(message.payload.is_none());
+<a href=#1209 id=1209 data-nosnippet>1209</a>
+<a href=#1210 id=1210 data-nosnippet>1210</a>        <span class="macro">assert!</span>(message.permission_level().is_none());
+<a href=#1211 id=1211 data-nosnippet>1211</a>        <span class="macro">assert!</span>(message.token().is_none());
+<a href=#1212 id=1212 data-nosnippet>1212</a>    }
+<a href=#1213 id=1213 data-nosnippet>1213</a>
+<a href=#1214 id=1214 data-nosnippet>1214</a>    <span class="attr">#[test]
+<a href=#1215 id=1215 data-nosnippet>1215</a>    </span><span class="comment">// [utest-&gt;req~uattributes-data-model-impl~1]
+<a href=#1216 id=1216 data-nosnippet>1216</a>    // [utest-&gt;req~umessage-data-model-impl~1]
+<a href=#1217 id=1217 data-nosnippet>1217</a>    </span><span class="kw">fn </span>test_build_retains_all_response_attributes() {
+<a href=#1218 id=1218 data-nosnippet>1218</a>        <span class="kw">let </span>message_id = UUID::build();
+<a href=#1219 id=1219 data-nosnippet>1219</a>        <span class="kw">let </span>request_id = UUID::build();
+<a href=#1220 id=1220 data-nosnippet>1220</a>        <span class="kw">let </span>traceparent = <span class="string">"traceparent"</span>;
+<a href=#1221 id=1221 data-nosnippet>1221</a>        <span class="kw">let </span>method_to_invoke = UUri::try_from(METHOD_TO_INVOKE)
+<a href=#1222 id=1222 data-nosnippet>1222</a>            .expect(<span class="string">"should have been able to create destination UUri"</span>);
+<a href=#1223 id=1223 data-nosnippet>1223</a>        <span class="kw">let </span>reply_to_address = UUri::try_from(REPLY_TO_ADDRESS)
+<a href=#1224 id=1224 data-nosnippet>1224</a>            .expect(<span class="string">"should have been able to create reply-to UUri"</span>);
+<a href=#1225 id=1225 data-nosnippet>1225</a>        <span class="kw">let </span>message = UMessageBuilder::response(
+<a href=#1226 id=1226 data-nosnippet>1226</a>            reply_to_address.clone(),
+<a href=#1227 id=1227 data-nosnippet>1227</a>            request_id.clone(),
+<a href=#1228 id=1228 data-nosnippet>1228</a>            method_to_invoke.clone(),
+<a href=#1229 id=1229 data-nosnippet>1229</a>        )
+<a href=#1230 id=1230 data-nosnippet>1230</a>        .with_message_id(message_id.clone())
+<a href=#1231 id=1231 data-nosnippet>1231</a>        .with_comm_status(UCode::DeadlineExceeded)
+<a href=#1232 id=1232 data-nosnippet>1232</a>        .with_priority(UPriority::CS5)
+<a href=#1233 id=1233 data-nosnippet>1233</a>        .with_ttl(<span class="number">4000</span>)
+<a href=#1234 id=1234 data-nosnippet>1234</a>        .with_traceparent(traceparent)
+<a href=#1235 id=1235 data-nosnippet>1235</a>        .build()
+<a href=#1236 id=1236 data-nosnippet>1236</a>        .expect(<span class="string">"should have been able to create message"</span>);
+<a href=#1237 id=1237 data-nosnippet>1237</a>
+<a href=#1238 id=1238 data-nosnippet>1238</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-id~1]
+<a href=#1239 id=1239 data-nosnippet>1239</a>        </span><span class="macro">assert_eq!</span>(message.id(), <span class="kw-2">&amp;</span>message_id);
+<a href=#1240 id=1240 data-nosnippet>1240</a>        <span class="macro">assert_eq!</span>(message.commstatus_unchecked(), UCode::DeadlineExceeded);
+<a href=#1241 id=1241 data-nosnippet>1241</a>        <span class="macro">assert_eq!</span>(message.priority_unchecked(), UPriority::CS5);
+<a href=#1242 id=1242 data-nosnippet>1242</a>        <span class="macro">assert_eq!</span>(message.request_id_unchecked(), <span class="kw-2">&amp;</span>request_id);
+<a href=#1243 id=1243 data-nosnippet>1243</a>        <span class="macro">assert_eq!</span>(message.sink_unchecked(), <span class="kw-2">&amp;</span>reply_to_address);
+<a href=#1244 id=1244 data-nosnippet>1244</a>        <span class="macro">assert_eq!</span>(message.source(), <span class="kw-2">&amp;</span>method_to_invoke);
+<a href=#1245 id=1245 data-nosnippet>1245</a>        <span class="macro">assert_eq!</span>(message.ttl_unchecked(), <span class="number">4000</span>);
+<a href=#1246 id=1246 data-nosnippet>1246</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-traceparent~1]
+<a href=#1247 id=1247 data-nosnippet>1247</a>        </span><span class="macro">assert_eq!</span>(message.traceparent(), <span class="prelude-val">Some</span>(traceparent));
+<a href=#1248 id=1248 data-nosnippet>1248</a>        <span class="comment">// [utest-&gt;dsn~up-attributes-response-type~1]
+<a href=#1249 id=1249 data-nosnippet>1249</a>        </span><span class="macro">assert!</span>(message.is_response());
+<a href=#1250 id=1250 data-nosnippet>1250</a>        <span class="macro">assert!</span>(message.payload_format().is_none());
+<a href=#1251 id=1251 data-nosnippet>1251</a>        <span class="macro">assert!</span>(message.payload.is_none());
+<a href=#1252 id=1252 data-nosnippet>1252</a>
+<a href=#1253 id=1253 data-nosnippet>1253</a>        <span class="macro">assert!</span>(message.permission_level().is_none());
+<a href=#1254 id=1254 data-nosnippet>1254</a>        <span class="macro">assert!</span>(message.token().is_none());
+<a href=#1255 id=1255 data-nosnippet>1255</a>
+<a href=#1256 id=1256 data-nosnippet>1256</a>        <span class="comment">// [utest-&gt;req~uattributes-data-model-proto~1]
+<a href=#1257 id=1257 data-nosnippet>1257</a>        // [utest-&gt;req~umessage-data-model-proto~1]
+<a href=#1258 id=1258 data-nosnippet>1258</a>        </span><span class="attr">#[cfg(feature = <span class="string">"up-core-types"</span>)]
+<a href=#1259 id=1259 data-nosnippet>1259</a>        </span>{
+<a href=#1260 id=1260 data-nosnippet>1260</a>            <span class="kw">let </span>proto = message
+<a href=#1261 id=1261 data-nosnippet>1261</a>                .write_to_protobuf_bytes()
+<a href=#1262 id=1262 data-nosnippet>1262</a>                .expect(<span class="string">"failed to serialize to protobuf"</span>);
+<a href=#1263 id=1263 data-nosnippet>1263</a>            <span class="kw">let </span>deserialized_message = UMessage::parse_from_protobuf_bytes(proto.as_slice())
+<a href=#1264 id=1264 data-nosnippet>1264</a>                .expect(<span class="string">"failed to deserialize protobuf"</span>);
+<a href=#1265 id=1265 data-nosnippet>1265</a>            <span class="macro">assert_eq!</span>(message, deserialized_message);
+<a href=#1266 id=1266 data-nosnippet>1266</a>        }
+<a href=#1267 id=1267 data-nosnippet>1267</a>    }
+<a href=#1268 id=1268 data-nosnippet>1268</a>}</code></pre></div></section></main></body></html>

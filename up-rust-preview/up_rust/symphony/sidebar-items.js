@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["METHOD_DELETE_RESOURCE_ID","METHOD_GET_RESOURCE_ID","METHOD_UPDATE_RESOURCE_ID"],"fn":["register_target_provider_endpoints"],"mod":["__mock_MockDeploymentTarget","__mock_MockDeploymentTarget_DeploymentTarget"],"struct":["MockDeploymentTarget"],"trait":["DeploymentTarget"]};
