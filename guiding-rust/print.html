@@ -1,0 +1,2552 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Guiding Rust 🦀</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="A two-day course on Rust architecture and design patterns for engineers who read, review, and steer LLM-generated Rust.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="theme/css/speaker-notes-a0b2db65.css">
+        <link rel="stylesheet" href="theme/css/course-305d6d99.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-e2fa7ee4.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-1e65b337.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Guiding Rust 🦀</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="welcome-to-guiding-rust-"><a class="header" href="#welcome-to-guiding-rust-">Welcome to Guiding Rust 🦀</a></h1>
+<p>This is a two-day course on Rust architecture and design patterns. It’s
+for engineers who read, review, and steer Rust rather than typing every
+line themselves. That situation is common now. Google said in October
+2024 that more than a quarter of its new code was AI-generated, and the
+share has only grown since. This course is built for that setting.</p>
+<p>The course assumes you’ve completed the first three days of
+<a href="https://google.github.io/comprehensive-rust/">Comprehensive Rust</a> or know the equivalent material. It follows the same
+conventions: short pages and one idea per page.</p>
+<p>We’ll practice three skills:</p>
+<ul>
+<li>Specifying architecture in types and signatures before code is generated.</li>
+<li>Recognizing design problems in generated code quickly.</li>
+<li>Turning a review finding into a prompt that fixes the design.</li>
+</ul>
+<h2 id="schedule"><a class="header" href="#schedule">Schedule</a></h2>
+<p>Including breaks, each half-day session takes about 4 hours:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Session</th><th>Segment</th></tr>
+</thead>
+<tbody>
+<tr><td>Day 1 Morning</td><td>Patterns for reading and steering Rust</td></tr>
+<tr><td>Day 1 Afternoon</td><td>Project A: <code>canscan</code>, a CLI built with your agent</td></tr>
+<tr><td>Day 2 Morning</td><td>Project B: <code>framecache</code>, a library built skeleton-first</td></tr>
+<tr><td>Day 2 Afternoon</td><td>Project C: <code>guardian</code>, testing a stochastic system</td></tr>
+</tbody>
+</table>
+</div>
+<p>Day 1 morning is the only lecture block. The rest of the course is project
+work in pairs, using your own coding agent.</p>
+<h2 id="target-audience"><a class="header" href="#target-audience">Target audience</a></h2>
+<p>Engineers with a few years of experience in another language: C, C++,
+Java, Python, or Go. You can read Rust with some effort. You work in a
+setting where an LLM produces much of the Rust source and humans are
+responsible
+for its architecture, correctness, and maintainability.</p>
+<h2 id="non-goals"><a class="header" href="#non-goals">Non-goals</a></h2>
+<ul>
+<li>Typing practice. You’ll write little Rust by hand in this course.</li>
+<li>Prompt engineering. Prompts appear only as the way to deliver a design
+decision you’ve already made.</li>
+<li>Covering all of <a href="https://google.github.io/comprehensive-rust/idiomatic/welcome.html">Idiomatic Rust</a>. We select the patterns that matter most
+for reviewing generated code and spend the remaining time on practice.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="welcome-to-day-1"><a class="header" href="#welcome-to-day-1">Welcome to Day 1</a></h1>
+<p>This morning is patterns: the things you’ll look for when you review
+and steer generated Rust. This afternoon you’ll use all of them on the
+first project.</p>
+<h2 id="day-1-at-a-glance"><a class="header" href="#day-1-at-a-glance">Day 1 at a glance</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Block</th><th>Duration</th></tr>
+</thead>
+<tbody>
+<tr><td>Morning session</td><td>4 hours 30 minutes</td></tr>
+<tr><td>Lunch</td><td>1 hour</td></tr>
+<tr><td>Afternoon session</td><td>3 hours 30 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="day-1-morning-schedule"><a class="header" href="#day-1-morning-schedule">Day 1 Morning schedule</a></h2>
+<p>Including a 10 minute break, this session should take about 4 hours and
+30 minutes. It contains:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Segment</th><th>Duration</th></tr>
+</thead>
+<tbody>
+<tr><td>Roles: Architect, Author, Reviewer</td><td>15 minutes</td></tr>
+<tr><td>Rust Refresher for Readers</td><td>30 minutes</td></tr>
+<tr><td>Build Your Own Guardrails</td><td>20 minutes</td></tr>
+<tr><td>Signature-Driven Design</td><td>70 minutes</td></tr>
+<tr><td>Break</td><td>10 minutes</td></tr>
+<tr><td>Types That Enforce</td><td>45 minutes</td></tr>
+<tr><td>Errors as a Review Signal</td><td>25 minutes</td></tr>
+<tr><td>The Smell Catalog</td><td>55 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="day-1-afternoon-schedule"><a class="header" href="#day-1-afternoon-schedule">Day 1 Afternoon schedule</a></h2>
+<p>Including a 10 minute break, this session should take about 3 hours and
+30 minutes. It contains:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Segment</th><th>Duration</th></tr>
+</thead>
+<tbody>
+<tr><td>Project A brief: <code>canscan</code></td><td>10 minutes</td></tr>
+<tr><td>Project work (pairs), part one</td><td>1 hour 15 minutes</td></tr>
+<tr><td>Break</td><td>10 minutes</td></tr>
+<tr><td>Project work (pairs), part two</td><td>1 hour 15 minutes</td></tr>
+<tr><td>Debrief</td><td>40 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="roles-architect-author-reviewer"><a class="header" href="#roles-architect-author-reviewer">Roles: Architect, Author, Reviewer</a></h1>
+<p>An agent-assisted workflow has three roles, and the agent only fills
+one of them:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Role</th><th>Who</th><th>Main artifact</th></tr>
+</thead>
+<tbody>
+<tr><td>Architect</td><td>You</td><td>Types, signatures, module boundaries, the spec</td></tr>
+<tr><td>Author</td><td>The agent</td><td>Function bodies, boilerplate, first-draft tests</td></tr>
+<tr><td>Reviewer</td><td>You</td><td>The verdict, and the next prompt</td></tr>
+</tbody>
+</table>
+</div>
+<p>Two things fall out of that:</p>
+<ul>
+<li>Design happens before generation, in types. You specify the architecture
+in structs, enums, function signatures, and trait signatures, and the
+compiler enforces it while the agent fills in bodies. A review can catch problems in
+the bodies, but it can’t add a design that was never made.</li>
+<li>A review finding is complete when it becomes a prompt. “This is wrong” isn’t
+actionable on its own. “This violates principle P, regenerate with instruction Q”
+can actually be acted on. The course teaches each pattern in that form:
+smell, then principle, then prompt.</li>
+</ul>
+<p>Rust is a good fit for this workflow because the architect’s intent
+gets machine-checked. Put an ownership decision, a state machine, or an
+error contract into types, and it stops being a convention the agent
+can drift from. Generated code that ignores it doesn’t compile.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="rust-refresher-for-readers"><a class="header" href="#rust-refresher-for-readers">Rust Refresher for Readers</a></h1>
+<p>This refresher is about reading, not writing: what a construct tells you
+when you see it in a review.</p>
+<h2 id="ownership"><a class="header" href="#ownership">Ownership</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>You see</th><th>It means</th></tr>
+</thead>
+<tbody>
+<tr><td><code>fn f(x: Thing)</code></td><td><code>f</code> takes ownership. The caller can’t use <code>x</code> afterwards.</td></tr>
+<tr><td><code>fn f(x: &amp;Thing)</code></td><td><code>f</code> borrows <code>x</code> read-only. The caller keeps ownership.</td></tr>
+<tr><td><code>fn f(x: &amp;mut Thing)</code></td><td><code>f</code> mutates <code>x</code> in place, with exclusive access.</td></tr>
+<tr><td><code>let y = x.clone()</code></td><td>A copy. Sometimes deliberate, sometimes not (see the <a href="#the-smell-catalog">Smell Catalog</a>).</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="traits"><a class="header" href="#traits">Traits</a></h2>
+<ul>
+<li>A trait is a named capability: “this type can be displayed”, “this
+type can be iterated”, that kind of thing.</li>
+<li><code>impl Trait for Type</code> says the type has the capability. A bound
+<code>T: Trait</code> says the caller needs it.</li>
+<li><code>dyn Trait</code> selects the concrete type at runtime. Generics select it at
+compile time.</li>
+</ul>
+<h2 id="two-questions-for-any-rust-file"><a class="header" href="#two-questions-for-any-rust-file">Two questions for any Rust file</a></h2>
+<ol>
+<li>Who owns which data, and for how long? Look at the types: which ones
+hold data and which ones only reference it.</li>
+<li>What can fail, and where does the failure surface? Look at the
+<code>Result</code>s. If the design is honest, fallibility is visible in the
+signatures.</li>
+</ol>
+<h2 id="warm-up"><a class="header" href="#warm-up">Warm-up</a></h2>
+<p>Answer the two questions for this code:</p>
+<pre><code class="language-rust ignore">use std::collections::HashMap;
+
+pub struct Inventory {
+    parts: HashMap&lt;String, u32&gt;,
+}
+
+pub struct OutOfStock;
+
+impl Inventory {
+    pub fn part_count(&amp;self, part: &amp;str) -&gt; Option&lt;u32&gt; {
+        self.parts.get(part).copied()
+    }
+
+    pub fn take(&amp;mut self, part: &amp;str, n: u32) -&gt; Result&lt;(), OutOfStock&gt; {
+        match self.parts.get_mut(part) {
+            Some(count) if *count &gt;= n =&gt; {
+                *count -= n;
+                Ok(())
+            }
+            _ =&gt; Err(OutOfStock),
+        }
+    }
+
+    pub fn into_report(self) -&gt; String {
+        let mut lines: Vec&lt;String&gt; = self
+            .parts
+            .iter()
+            .map(|(name, count)| format!("{name}: {count}"))
+            .collect();
+        lines.sort();
+        lines.join("\n")
+    }
+}</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="build-your-own-guardrails"><a class="header" href="#build-your-own-guardrails">Build Your Own Guardrails</a></h1>
+<p>You’re going to spend two days reviewing code you didn’t write. The
+reviewing is manual. Enforcing what you find doesn’t have to be. Rust’s
+tooling can turn a review finding into a check that runs on every
+build. And the agent that wrote the code is good at writing that
+configuration too.</p>
+<p>The pattern:</p>
+<ol>
+<li>A review catches a problem: an <code>unwrap()</code> on input, a dependency
+nobody vetted, a test that asserts nothing.</li>
+<li>You fix the instance.</li>
+<li>You ask the agent to add a check that rejects the whole class from
+now on.</li>
+</ol>
+<p>A prompt for step 3 looks like this:</p>
+<blockquote>
+<p>Add a Clippy configuration that rejects this class of code. Show me
+the lint names, set the levels in the crate root, and add a
+<code>clippy.toml</code> with <code>disallowed-methods</code> for the calls we banned in
+review.</p>
+</blockquote>
+<p>The agent knows the lint tables better than most of us do. You decide
+what must never happen. The tooling checks it on every change after
+that, including the agent’s own.</p>
+<h2 id="tools-well-use-or-mention"><a class="header" href="#tools-well-use-or-mention">Tools we’ll use or mention</a></h2>
+<ul>
+<li><strong>Clippy with a project configuration.</strong> Running default Clippy is a
+start. A per-project policy does more: lint levels in the crate root
+(<code>#![warn(clippy::unwrap_used)]</code> and similar), a <code>clippy.toml</code> with
+<code>disallowed-methods</code> and <code>disallowed-types</code> for calls your review
+banned, and <code>--deny warnings</code> in CI. Project A sets one up for the
+parser this afternoon.</li>
+<li><strong>Miri</strong> interprets your code and detects undefined behavior and
+memory errors that tests can miss. Run it whenever <code>unsafe</code> appears.
+It’s also cheap to run when none does. <code>cargo +nightly miri test</code>
+on Project B takes about two minutes.</li>
+<li><strong>mutest-rs</strong> mutates your code and reruns your tests. A mutant that
+survives marks a spot where the suite asserts nothing. This is how
+you check whether the agent’s green tests verify anything. Project
+C’s metrics tests are a good target.</li>
+<li><strong>Loom</strong> checks concurrent code by exploring thread interleavings.
+Nothing in this course is concurrent, so we only mention it: know
+that it exists, and reach for it when threads arrive.</li>
+<li><strong>Kani</strong> proves properties by bounded model checking. A passing test
+says “we found no failing input”. A Kani proof says “no input up to
+this size can fail”. Writing one proof for the Project C arbiter is
+a stretch goal.</li>
+<li><strong>Verus</strong> extends Rust with machine-checked specifications. We’ll
+not use it in this course. It’s worth knowing about for contracts
+that matter enough to verify fully.</li>
+</ul>
+<h2 id="why-this-works-in-rust"><a class="header" href="#why-this-works-in-rust">Why this works in Rust</a></h2>
+<p>Every tool on that list leans on the same property: in Rust the
+contracts live in the types, and the toolchain can be programmed
+against them. A lint you configure today enforces a review decision on
+every line written after it, including the ones the agent writes next
+week. So when you ask the agent for code, ask for the guardrail in the
+same prompt.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="signature-driven-design"><a class="header" href="#signature-driven-design">Signature-Driven Design</a></h1>
+<p>This segment should take about 70 minutes. It contains:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Slide / Exercise</th><th>Duration</th></tr>
+</thead>
+<tbody>
+<tr><td>The Skeleton Is the Spec</td><td>10 minutes</td></tr>
+<tr><td>Getting to a Skeleton: The Design Interview</td><td>10 minutes</td></tr>
+<tr><td>Reading a Signature as a Contract</td><td>3 minutes</td></tr>
+<tr><td>The Promises in a Signature</td><td>5 minutes</td></tr>
+<tr><td>Ownership in Signatures</td><td>10 minutes</td></tr>
+<tr><td>Fallibility in Signatures</td><td>7 minutes</td></tr>
+<tr><td>Flexibility in Signatures</td><td>10 minutes</td></tr>
+<tr><td>Traits as Extension Points</td><td>5 minutes</td></tr>
+<tr><td>Exercise: One Task, Two Skeletons</td><td>10 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<p>In an agent-assisted codebase, the most valuable artifact a human writes is
+the skeleton: the structs, enums, function signatures, and trait
+signatures, with bodies left as <code>todo!()</code>. In this segment we look at how each part of a signature constrains
+generated code, and how to review signatures before reviewing bodies.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="the-skeleton-is-the-spec"><a class="header" href="#the-skeleton-is-the-spec">The Skeleton Is the Spec</a></h1>
+<p>A prose spec constrains the agent weakly. A skeleton of types and
+signatures constrains it mechanically:</p>
+<pre><code class="language-rust ignore">/// Decodes raw frames into engineering-unit signal values.
+pub struct SignalDecoder { /* fields to be decided */ }
+
+impl SignalDecoder {
+    /// Parse a decoder from a signal database. Rejects malformed input.
+    pub fn from_dbc(src: &amp;str) -&gt; Result&lt;Self, DbcParseError&gt; { todo!() }
+
+    /// Decode one frame. A frame for an unknown message is not an error.
+    pub fn decode(&amp;self, frame: &amp;Frame) -&gt; Option&lt;DecodedSignals&gt; { todo!() }
+}</code></pre>
+<p>These nine lines already rule out several kinds of generated code:</p>
+<ul>
+<li>A decoder built from a partially parsed database. <code>Result</code> forces the
+question of what happens on bad input.</li>
+<li>Treating an unknown frame as an error or a crash. <code>Option</code> declares it a
+normal outcome.</li>
+<li>Mutating the decoder while decoding. <code>&amp;self</code> forbids it, which also
+keeps decoding shareable across threads.</li>
+<li>An improvised error strategy. <code>DbcParseError</code> is a type you defined.</li>
+</ul>
+<p>The workflow is a loop, and the division of labor in it doesn’t change:
+bodies are generated, skeletons are written by hand. A skeleton is a page
+of code at most, so typing it’s the cheap part. The decisions it records
+are the work, and a generated skeleton is a set of decisions nobody made.</p>
+<ol>
+<li>You write the skeleton.</li>
+<li>The agent fills in the bodies.</li>
+<li>You review the bodies.</li>
+<li>When a review finding recurs, you change the skeleton so that the whole
+class of defect no longer compiles, and regenerate.</li>
+</ol>
+<p>Step 4, concretely: a review that keeps finding <code>unwrap</code> on lookups
+changes the signature the bodies are generated against.</p>
+<pre><code class="language-rust ignore">// before: bodies keep unwrapping the miss
+pub fn scale_for(&amp;self, id: CanId) -&gt; f64 { todo!() }
+
+// after: the miss is in the type; unwrapping it is now visible
+pub fn scale_for(&amp;self, id: CanId) -&gt; Option&lt;f64&gt; { todo!() }</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="getting-to-a-skeleton-the-design-interview"><a class="header" href="#getting-to-a-skeleton-the-design-interview">Getting to a Skeleton: The Design Interview</a></h1>
+<p>The previous page assumes you can already answer the design questions a
+skeleton encodes. Often you can’t yet, and staring at an empty <code>lib.rs</code>
+doesn’t produce the answers. The agent can help here too, in a different
+role: before the session where it writes code, run a session where it
+asks you questions.</p>
+<h2 id="the-setup"><a class="header" href="#the-setup">The setup</a></h2>
+<p>Start a separate session with a prompt like this:</p>
+<blockquote>
+<p>You’re helping me design a Rust module before any code is written. Do
+not write code in this session. Interview me, one question at a time,
+about the decisions my type and signature skeleton depends on. Cover at
+least: the environment (std or no_std, threads or async, target
+platform), performance (data sizes, throughput, latency budgets, and
+whether zero-copy is justified by a measurement), ownership (which data
+lives where, for how long, and who may mutate it), failure policy (what
+can fail, which failures callers react to, and what may panic), and
+change (which sets of variants are closed, and where new
+implementations must plug in). Challenge vague answers. When I don’t
+know an answer, record it as an open spec question instead of assuming
+one. Stop after roughly ten to twelve questions or twenty minutes,
+whichever comes first. At the end, produce two lists: the decisions we
+made and the open questions.</p>
+</blockquote>
+<p>Two rules while it runs:</p>
+<ul>
+<li>You answer; the agent asks. If it starts proposing code, remind it:
+no code in this session.</li>
+<li>End after roughly ten to twelve questions or twenty minutes, then require
+the two lists. The cap keeps the interview useful without letting it
+replace engineering judgment or the skeleton work.</li>
+<li>“I don’t know” is a legitimate answer. It goes on the open-questions
+list and becomes a question for whoever owns the spec, instead of a
+guess buried in a signature.</li>
+</ul>
+<h2 id="from-answers-to-skeleton"><a class="header" href="#from-answers-to-skeleton">From answers to skeleton</a></h2>
+<p>Here’s the interview that produces the <code>SignalDecoder</code> skeleton from the
+previous page:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>The agent asks</th><th>You answer</th><th>The decision</th></tr>
+</thead>
+<tbody>
+<tr><td>How large is a signal database, and how often is it loaded?</td><td>Tens of kilobytes, once at startup.</td><td>Parse to owned data. Startup cost is irrelevant, so no zero-copy in <code>from_dbc</code>.</td></tr>
+<tr><td>Who calls decode, and from how many threads?</td><td>Several reader threads, on the hot path.</td><td><code>decode</code> takes <code>&amp;self</code> with no interior mutability, so a decoder is shareable.</td></tr>
+<tr><td>What happens on a frame whose id isn’t in the database?</td><td>Common; the bus carries messages we don’t model.</td><td><code>Option</code>. Absence is a normal outcome, not an error.</td></tr>
+<tr><td>Do callers react differently to different database load errors?</td><td>The config tooling shows them to a person.</td><td>An error enum with a <code>source()</code> chain, so the report reads as a path.</td></tr>
+<tr><td>Is the set of signal value types closed?</td><td>Numeric only for now; strings are possible later.</td><td>An enum for decoded values. Adding a variant later is a compile-checked change.</td></tr>
+</tbody>
+</table>
+</div>
+<p>The skeleton on the previous page is the record of these answers. Write
+it, freeze it, and start a fresh session for generation: the new session
+receives the skeleton and its doc comments, not the interview transcript.
+If a decision exists only in the transcript, it’s not in the spec yet.</p>
+<p>The division of labor is the same in both sessions: the agent asks
+questions or fills in bodies. The skeleton is yours to write.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="reading-a-signature-as-a-contract"><a class="header" href="#reading-a-signature-as-a-contract">Reading a Signature as a Contract</a></h1>
+<p>Every element of a Rust signature is a promise to the caller. Consider
+this method, without its body:</p>
+<pre><code class="language-rust ignore">pub fn arm(&amp;mut self) -&gt; Result&lt;ArmedToken, ArmError&gt;</code></pre>
+<p>How many promises can you read out of it?</p>
+<p>List as many as you can before looking at the next page.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="the-promises-in-a-signature"><a class="header" href="#the-promises-in-a-signature">The Promises in a Signature</a></h1>
+<pre><code class="language-rust ignore">pub fn arm(&amp;mut self) -&gt; Result&lt;ArmedToken, ArmError&gt;</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Element</th><th>The promise</th></tr>
+</thead>
+<tbody>
+<tr><td><code>pub</code></td><td>This is API. Callers you can’t see may depend on it.</td></tr>
+<tr><td><code>&amp;mut self</code></td><td>Arming changes this object and needs exclusive access.</td></tr>
+<tr><td><code>Result&lt;..&gt;</code></td><td>Arming can fail, and the caller must handle that.</td></tr>
+<tr><td><code>ArmedToken</code></td><td>Success produces a value that later operations will require.</td></tr>
+<tr><td><code>ArmError</code></td><td>The failure modes are enumerated in a type.</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="method-receivers"><a class="header" href="#method-receivers">Method receivers</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Receiver</th><th>Contract</th></tr>
+</thead>
+<tbody>
+<tr><td><code>&amp;self</code></td><td>Observation. No visible state change. Shareable.</td></tr>
+<tr><td><code>&amp;mut self</code></td><td>In-place modification with exclusive access.</td></tr>
+<tr><td><code>self</code></td><td>Consumption. The value transitions or ends, and its old state can’t be used again.</td></tr>
+</tbody>
+</table>
+</div>
+<p>Generated code rarely uses <code>self</code> by value, but it’s the most useful
+receiver for design: it makes a state transition irreversible at compile
+time. The <a href="#typestate-state-machines-that-compile">Typestate</a> page builds on this.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="ownership-in-signatures"><a class="header" href="#ownership-in-signatures">Ownership in Signatures</a></h1>
+<p>Parameter and return types state the ownership policy of a function. When
+you write the skeleton you set the policy. When you review, you check that
+the generated body matches it.</p>
+<h2 id="parameters"><a class="header" href="#parameters">Parameters</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>The function takes</th><th>It’s saying</th></tr>
+</thead>
+<tbody>
+<tr><td><code>s: &amp;str</code></td><td>“I only need to read this.” The default for read-only use.</td></tr>
+<tr><td><code>s: String</code></td><td>“I need to keep this”: storing it, sending it, or consuming it.</td></tr>
+<tr><td><code>s: impl Into&lt;String&gt;</code></td><td>“I need to keep it, and I will do the conversion so callers don’t have to.”</td></tr>
+<tr><td><code>s: &amp;mut String</code></td><td>“I will edit this string in place.” Rare, and should be deliberate.</td></tr>
+<tr><td><code>s: Cow&lt;'_, str&gt;</code></td><td>“I sometimes need to keep it. Don’t copy until necessary.”</td></tr>
+</tbody>
+</table>
+</div>
+<p>A useful review check: does the parameter type match what the body does
+with the data? A function that takes <code>String</code> but only reads it forces
+every caller to give up or clone a value for no reason. A function that
+takes <code>&amp;str</code> and calls <code>.to_string()</code> on the first line has moved the copy
+decision to the wrong place.</p>
+<h2 id="returns"><a class="header" href="#returns">Returns</a></h2>
+<ul>
+<li>Returning <code>String</code> or <code>Vec&lt;T&gt;</code>: the function produces owned data.</li>
+<li>Returning <code>&amp;str</code> borrowed from a parameter: no copy, but the output now
+lives only as long as the input. This is a real design decision. The
+<a href="#lifetime-smells">Lifetime Smells</a> page covers when it’s the wrong one.</li>
+<li>Returning <code>impl Iterator&lt;Item = ..&gt;</code>: the caller decides whether and
+when to collect.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="fallibility-in-signatures"><a class="header" href="#fallibility-in-signatures">Fallibility in Signatures</a></h1>
+<p>Three return shapes, three meanings:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Shape</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>T</code></td><td>“This doesn’t fail”, or “failure here’s a bug, and a documented one”. The reviewer should believe it or flag it.</td></tr>
+<tr><td><code>Option&lt;T&gt;</code></td><td>“Absence is a normal outcome.” Lookup misses, exhausted iterators.</td></tr>
+<tr><td><code>Result&lt;T, E&gt;</code></td><td>“This can fail, and <code>E</code> says how.”</td></tr>
+</tbody>
+</table>
+</div>
+<p>Panics are a fourth shape. A documented panic on a violated
+precondition is a legitimate contract: slice indexing works this way, and
+so does <code>RefCell::borrow</code>. A function that returns <code>T</code> but panics on
+ordinary input has a dishonest signature: that failure path belongs in
+the type.</p>
+<h2 id="absence-or-failure"><a class="header" href="#absence-or-failure">Absence or failure?</a></h2>
+<p>The same operation can be modeled either way:</p>
+<pre><code class="language-rust ignore">fn signal(&amp;self, name: &amp;str) -&gt; Option&lt;&amp;SignalDef&gt;;               // a miss is normal
+fn signal(&amp;self, name: &amp;str) -&gt; Result&lt;&amp;SignalDef, UnknownSignal&gt;; // a miss is a defect</code></pre>
+<p>Which is right depends on the callers: do they probe for signals that may
+not exist, or do they name signals that must exist? Decide this in the
+skeleton. If you don’t, the agent decides it for you, module by
+module, with no guarantee the modules agree.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="flexibility-in-signatures"><a class="header" href="#flexibility-in-signatures">Flexibility in Signatures</a></h1>
+<p>Rust has several ways to write code that works with more than one type.
+Each is a different design commitment:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Mechanism</th><th>Dispatch</th><th>Set of types</th><th>Reads as</th></tr>
+</thead>
+<tbody>
+<tr><td><code>enum</code></td><td><code>match</code></td><td>Closed: you list the variants</td><td>“These, and only these.”</td></tr>
+<tr><td>Generics <code>&lt;T: Trait&gt;</code></td><td>Static</td><td>Open, fixed at compile time</td><td>“Anything with this capability, known now.”</td></tr>
+<tr><td><code>dyn Trait</code></td><td>Dynamic</td><td>Open, chosen at runtime</td><td>“Anything with this capability, chosen later.”</td></tr>
+<tr><td>Composition</td><td>None</td><td>Not polymorphism</td><td>“This is made of parts.”</td></tr>
+</tbody>
+</table>
+</div>
+<p>A decision procedure, usable in review and in prompts:</p>
+<ol>
+<li>Do you control the full set of variants, and is it small and stable?
+Use an enum. As long as matches avoid <code>_</code> arms, adding a variant
+produces a compile error everywhere it’s not handled.</li>
+<li>Do downstream users need to plug in their own types? Use a trait.
+Prefer generics; use <code>dyn</code> for heterogeneous collections or to keep
+type parameters out of a public signature.</li>
+<li>Is the relationship just “has-a”? Use composition.</li>
+</ol>
+<h2 id="in-trait-definitions"><a class="header" href="#in-trait-definitions">In trait definitions</a></h2>
+<ul>
+<li>A generic parameter on the trait (<code>trait Store&lt;V&gt;</code>) allows one type to
+implement the trait several times, once per <code>V</code>.</li>
+<li>An associated type (<code>trait Store { type V; }</code>) allows one implementation
+with one choice of <code>V</code>. This is usually what you want.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="traits-as-extension-points"><a class="header" href="#traits-as-extension-points">Traits as Extension Points</a></h1>
+<p>A trait in a skeleton is a hole that someone else will fill: the agent
+now, or another team later. It needs the same care as the types around
+it.</p>
+<pre><code class="language-rust ignore">/// A sink for decoded signal values. Implementations must be cheap to
+/// call. Batching and I/O belong behind the trait, not in front of it.
+pub trait SignalSink {
+    /// Called once per decoded frame, in arrival order.
+    fn accept(&amp;mut self, signals: &amp;DecodedSignals) -&gt; Result&lt;(), SinkError&gt;;
+}</code></pre>
+<p>Properties of a well-designed extension point:</p>
+<ul>
+<li>It has as few methods as possible. Each method is a burden on every
+implementor, and an agent will happily generate many methods if the
+trait invites it.</li>
+<li>Its doc comments state the contract: ordering, threading, and
+performance expectations. Implementors, including agents, rely on them.</li>
+<li>It’s sealed unless external implementations are intended. The sealed
+trait pattern lets outside code name the trait but not implement it,
+which keeps your options open.</li>
+</ul>
+<p>A useful review question for any trait: does it need to exist? A trait
+with one implementation and no test double can often be replaced by the
+concrete type, or by a function.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="exercise-one-task-two-skeletons"><a class="header" href="#exercise-one-task-two-skeletons">Exercise: One Task, Two Skeletons</a></h1>
+<p>An experiment you can run with any agent. Same task, same prompt, two
+different skeletons.</p>
+<p>The task for both runs: “Implement the bodies: record a vehicle test
+session, add distance samples, mark completion, and report total distance
+in km.”</p>
+<h2 id="skeleton-a"><a class="header" href="#skeleton-a">Skeleton A</a></h2>
+<pre><code class="language-rust ignore">pub struct Session {
+    pub id: String,
+    pub state: String,          // "created" | "running" | "done"
+    pub samples: Vec&lt;f64&gt;,      // unit not stated
+    pub done: bool,
+}
+
+pub fn add_sample(s: &amp;mut Session, v: f64) -&gt; bool { todo!() }
+pub fn finish(s: &amp;mut Session) -&gt; bool { todo!() }
+pub fn total_km(s: &amp;Session) -&gt; f64 { todo!() }</code></pre>
+<h2 id="skeleton-b"><a class="header" href="#skeleton-b">Skeleton B</a></h2>
+<pre><code class="language-rust ignore">pub struct Meters(pub f64);
+pub struct SessionId(u64);
+
+pub struct Running { id: SessionId, samples: Vec&lt;Meters&gt; }
+pub struct Finished { id: SessionId, total: Meters }
+
+impl Running {
+    pub fn add_sample(&amp;mut self, d: Meters) { todo!() }
+    pub fn finish(self) -&gt; Finished { todo!() }   // consumes the session
+}
+
+impl Finished {
+    pub fn total_km(&amp;self) -&gt; f64 { todo!() }
+}</code></pre>
+<p>In pairs: list every defect that’s possible in the code generated for A
+and impossible in B. Work through the lifecycle of a session: creation,
+sampling, finishing, reporting.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="types-that-enforce"><a class="header" href="#types-that-enforce">Types That Enforce</a></h1>
+<p>This segment should take about 45 minutes. It contains:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Slide</th><th>Duration</th></tr>
+</thead>
+<tbody>
+<tr><td>Newtypes: Parse, Don’t Validate</td><td>12 minutes</td></tr>
+<tr><td>Enums: Illegal States, Unrepresentable</td><td>12 minutes</td></tr>
+<tr><td>Typestate: State Machines That Compile</td><td>12 minutes</td></tr>
+<tr><td>RAII, Guards, and Drop Bombs</td><td>9 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<p>Four patterns with one purpose: move a runtime check into the type system,
+so generated code doesn’t need to remember to perform it.</p>
+<p>For a reviewer, these patterns are also a signal. Their presence suggests
+the codebase was designed. Their absence, with validation scattered
+through bodies and states tracked in booleans, suggests it accumulated.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="newtypes-parse-dont-validate"><a class="header" href="#newtypes-parse-dont-validate">Newtypes: Parse, Don’t Validate</a></h1>
+<p>A newtype wraps a primitive to give it identity and rules:</p>
+<pre><code class="language-rust ignore">pub struct CanId(u16);   // 11-bit standard CAN identifier
+
+impl CanId {
+    pub fn new(raw: u16) -&gt; Result&lt;Self, InvalidCanId&gt; {
+        if raw &lt;= 0x7FF { Ok(Self(raw)) } else { Err(InvalidCanId(raw)) }
+    }
+}</code></pre>
+<p>Outside its module, the constructor is the only way to create one, so any <code>CanId</code> that
+exists is valid by construction, and no function that receives one needs
+to check it again.</p>
+<p>Two approaches to input checking:</p>
+<ul>
+<li>Validate: inspect the data, return <code>bool</code>, and keep passing the raw type
+around. That the data was checked isn’t recorded anywhere the
+compiler can see.</li>
+<li>Parse: inspect the data once, at the boundary, and produce a richer type
+as proof. The fact is now in the type system, visible to every function,
+every reviewer, and every generation run.</li>
+</ul>
+<p>In review, follow any primitive (<code>String</code>, <code>u16</code>, <code>f64</code>) that crosses
+more than one function boundary. If its validity is checked more
+than once, or never, a newtype belongs there. The prompt follows directly:
+“introduce <code>CanId</code> with a fallible constructor, and don’t pass raw <code>u16</code>
+beyond the parse boundary.”</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="enums-illegal-states-unrepresentable"><a class="header" href="#enums-illegal-states-unrepresentable">Enums: Illegal States, Unrepresentable</a></h1>
+<p>A struct that accumulated one flag at a time:</p>
+<pre><code class="language-rust ignore">pub struct Connection {
+    pub connected: bool,
+    pub connecting: bool,
+    pub addr: Option&lt;SocketAddr&gt;,   // Some iff connected?
+    pub retry_count: Option&lt;u32&gt;,   // Some iff connecting?
+    pub error: Option&lt;String&gt;,
+}</code></pre>
+<p>Five fields allow 32 combinations, of which perhaps 4 mean anything. Every
+function that touches this struct must handle, or mishandle unnoticed, the
+other 28.</p>
+<p>The same states as an enum:</p>
+<pre><code class="language-rust ignore">pub enum Connection {
+    Disconnected,
+    Connecting { retry_count: u32 },
+    Connected { addr: SocketAddr },
+    Failed { error: ConnectError },
+}</code></pre>
+<p>The 28 meaningless states can no longer be written down. And as long as
+matches avoid <code>_</code> arms, adding a <code>Draining</code> variant later produces a
+compile error everywhere it’s not handled.</p>
+<p>In review, count the <code>bool</code>s and <code>Option</code>s in a generated struct and ask
+whether they are independent or one state machine spread across fields. If combinations of them are meaningless, the fix is an enum whose
+variants carry their own data.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="typestate-state-machines-that-compile"><a class="header" href="#typestate-state-machines-that-compile">Typestate: State Machines That Compile</a></h1>
+<p>How do we prevent a method from being called in the wrong state? Take the
+enum idea one step further: give each state its own type, and
+make transitions consume the old state.</p>
+<pre><code class="language-rust ignore">pub struct Unarmed(SafetyMonitor);
+pub struct Armed(SafetyMonitor);
+
+impl Unarmed {
+    pub fn arm(self, checks: PreflightReport) -&gt; Result&lt;Armed, ArmError&gt; {
+        todo!()  // consumes self; the Unarmed value is gone on success
+    }
+}
+
+impl Armed {
+    pub fn trigger(&amp;mut self) -&gt; Action { todo!() }
+    pub fn disarm(self) -&gt; Unarmed { todo!() }
+}</code></pre>
+<p>There’s no way to call <code>trigger</code> on an unarmed monitor. The method
+doesn’t exist on that type, so the mistake is caught while the code is
+being generated rather than when it runs.</p>
+<p>When to use it:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Use typestate when</th><th>Use a plain enum when</th></tr>
+</thead>
+<tbody>
+<tr><td>Wrong-state calls are costly (safety, money, data loss)</td><td>States change often at runtime and are inspected together</td></tr>
+<tr><td>The state graph is small and stable</td><td>The graph is large or data-driven</td></tr>
+<tr><td>Compile-time proof is worth some API weight</td><td>Mixed states must live in one collection</td></tr>
+</tbody>
+</table>
+</div>
+<p>Builders with required fields are a common everyday form of this pattern:
+<code>build()</code> only exists once the required fields are set.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="raii-guards-and-drop-bombs"><a class="header" href="#raii-guards-and-drop-bombs">RAII, Guards, and Drop Bombs</a></h1>
+<p>In Rust, cleanup is the type’s job rather than the caller’s. <code>Drop</code> runs
+when a value goes out of scope, on every path, including early returns and
+<code>?</code>.</p>
+<p>Three uses, in increasing strength:</p>
+<ol>
+<li>
+<p>Resource cleanup. Files close, sockets shut down, and locks release
+when their owners are dropped. Generated code inherits this if
+resources are modeled as owned values instead of raw handles with
+paired <code>open</code> and <code>close</code> calls.</p>
+</li>
+<li>
+<p>Scope guards. Run something on exit, whatever exit looks like:</p>
+</li>
+</ol>
+<pre><code class="language-rust ignore">pub struct BusQuiet&lt;'a&gt;(&amp;'a BusController);   // constructor pauses traffic
+
+impl Drop for BusQuiet&lt;'_&gt; {
+    fn drop(&amp;mut self) { self.0.resume(); }   // resume cannot be forgotten
+}</code></pre>
+<ol start="3">
+<li>Drop bombs. A guard that panics if dropped without being defused. It
+says: this transaction must be explicitly committed or rolled back, not
+forgotten. It’s an assertion about the caller’s control flow.</li>
+</ol>
+<p>In review, search generated code for paired manual calls, such as <code>begin</code>
+and <code>end</code>, <code>acquire</code> and <code>release</code>, or <code>pause</code> and <code>resume</code>, where the
+caller must remember to call the second one. Any early return or <code>?</code>
+between the paired calls skips the second one. The prompt: “return a guard from <code>begin</code> whose <code>Drop</code> performs
+<code>end</code>, and remove the manual <code>end</code>.”</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="errors-as-a-review-signal"><a class="header" href="#errors-as-a-review-signal">Errors as a Review Signal</a></h1>
+<p>This segment should take about 25 minutes. It contains:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Slide</th><th>Duration</th></tr>
+</thead>
+<tbody>
+<tr><td>Designing Errors</td><td>13 minutes</td></tr>
+<tr><td>Thirty-Second Error Review</td><td>12 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<p>Error handling shows quickly whether a generated codebase is ready for
+production. It’s where happy-path generation is most visible, and a few
+skeleton decisions go a long way.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="designing-errors"><a class="header" href="#designing-errors">Designing Errors</a></h1>
+<p>Two questions decide an error design. Both should be answered in the
+skeleton, not left to the agent.</p>
+<h2 id="will-callers-react-to-specific-failures-or-only-report-them"><a class="header" href="#will-callers-react-to-specific-failures-or-only-report-them">Will callers react to specific failures, or only report them?</a></h2>
+<p>If callers need to react to specific failures, they need an enum to
+match on:</p>
+<pre><code class="language-rust ignore">#[derive(Debug)]
+pub enum DecodeError {
+    UnknownMessage(CanId),
+    Truncated { need: usize, got: usize },
+    Db(DbcParseError),                // the cause travels in the variant
+}
+
+impl std::fmt::Display for DecodeError { /* one line per variant */ }
+
+impl std::error::Error for DecodeError {
+    fn source(&amp;self) -&gt; Option&lt;&amp;(dyn std::error::Error + 'static)&gt; {
+        match self {
+            DecodeError::Db(e) =&gt; Some(e),  // preserved in the chain
+            _ =&gt; None,
+        }
+    }
+}</code></pre>
+<p>If callers will only report the failure (log it, show it, abort the
+request), an opaque error such as <code>Box&lt;dyn Error + Send + Sync&gt;</code>, with
+good context attached, is a reasonable and cheap choice.</p>
+<p>A common rule of thumb: libraries enumerate, applications aggregate. A
+library can’t know what its callers will match on. An application
+usually knows that nothing will.</p>
+<h2 id="where-does-context-attach"><a class="header" href="#where-does-context-attach">Where does context attach?</a></h2>
+<p>An error should pick up a line of context at each boundary it crosses.
+The crossing wraps the cause in a variant that adds what the boundary
+knows (which profile, which file), and it exposes the cause through
+<code>source()</code>.
+The final report then reads as a chain, for example “failed to load
+profile: dbc parse error: truncated line 41”, rather than a leaf error
+with no path back to the operation that failed.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="thirty-second-error-review"><a class="header" href="#thirty-second-error-review">Thirty-Second Error Review</a></h1>
+<p>You can assess a module’s error handling from its types, before reading
+any bodies:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>You see</th><th>Likely conclusion</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Result&lt;T, ModuleError&gt;</code> with a dedicated enum</td><td>The failure modes were designed.</td></tr>
+<tr><td>An opaque error type in application code</td><td>A reasonable default. Check that context is attached at boundaries.</td></tr>
+<tr><td>An opaque error type in a library API</td><td>Callers can’t match on failures. Flag it.</td></tr>
+<tr><td><code>Result&lt;T, String&gt;</code></td><td>The error path wasn’t designed.</td></tr>
+<tr><td><code>-&gt; T</code> with <code>unwrap()</code> or <code>expect()</code> inside</td><td>Read the messages. A panic on a documented invariant is a contract; a panic on input is a failure path hidden as a crash.</td></tr>
+<tr><td>Several of the above in one crate</td><td>Modules were generated separately with no shared convention.</td></tr>
+</tbody>
+</table>
+</div>
+<p>The last row is the most characteristic of generated codebases. In that
+case the inconsistency is the main finding: one convention applied
+uniformly is easier to review than a mixture of individually good ones.</p>
+<p>The prompt that fixes a poorly graded module is usually structural:
+“define one <code>XError</code> enum for this module, implementing
+<code>std::error::Error</code>; convert all <code>String</code> and boxed-error returns to it, and attach context at each
+<code>?</code> that crosses a module boundary.”</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="the-smell-catalog"><a class="header" href="#the-smell-catalog">The Smell Catalog</a></h1>
+<p>This segment should take about 55 minutes. It contains:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Slide / Exercise</th><th>Duration</th></tr>
+</thead>
+<tbody>
+<tr><td>Clone Confetti</td><td>7 minutes</td></tr>
+<tr><td>Arc&lt;Mutex&lt;Everything&gt;&gt;</td><td>7 minutes</td></tr>
+<tr><td>Stringly-Typed Code</td><td>5 minutes</td></tr>
+<tr><td>unwrap() on External Input</td><td>5 minutes</td></tr>
+<tr><td>Over-Abstraction</td><td>7 minutes</td></tr>
+<tr><td>Lifetime Smells</td><td>12 minutes</td></tr>
+<tr><td>Exercise: Smell Catalog v1</td><td>12 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<p>A smell isn’t a bug. It’s an easy-to-spot surface feature that often
+indicates a harder-to-spot design problem. Smells let a reviewer triage a
+large amount of generated code quickly.</p>
+<p>Each page in this catalog has the same structure:</p>
+<ul>
+<li>Smell: what you see, usually greppable.</li>
+<li>Why generation produces it: the agent’s tendency.</li>
+<li>Principle: what good design does instead.</li>
+<li>Prompt: the instruction that regenerates it correctly.</li>
+</ul>
+<p>One rule applies to the whole catalog: every smell here has legitimate
+uses. The question in review isn’t “is this construct present?” but “did
+someone decide to use it?”</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="clone-confetti"><a class="header" href="#clone-confetti">Clone Confetti</a></h1>
+<p><strong>Smell.</strong> <code>.clone()</code> scattered through the code: clones whose result is
+immediately passed by reference, clones inside loops, and clones of large
+collections added to make the code compile.</p>
+<pre><code class="language-rust ignore">for frame in frames.clone() {                  // whole Vec copied
+    let name = decoder.clone().lookup(&amp;frame); // decoder cloned per frame
+    results.push(name.clone());                // name is not used again
+}</code></pre>
+<p><strong>Why generation produces it.</strong> A borrow-check error has two fixes:
+restructure the ownership, which requires understanding the whole design,
+or add a clone, which usually compiles immediately. An agent iterating until the code
+compiles tends to take the second option. Each stray clone marks a borrow
+error that was worked around instead of resolved. The loop, reconstructed:</p>
+<pre><code class="language-rust ignore">let frames = load_frames();
+for frame in frames { handle(frame); }  // `frames` moved into the loop
+let n = frames.len();                   // error[E0382]: borrow of moved value
+
+for frame in frames.clone() { .. }      // the agent's fix: copy everything
+for frame in &amp;frames { .. }             // the structural fix: borrow</code></pre>
+<p><strong>Principle.</strong> A clone is a claim that two owners need independent copies
+of the data. A stray clone is one that fails that test: the second
+owner doesn’t exist. The structural fixes are to pass <code>&amp;T</code> down, end the borrow earlier,
+or move ownership instead of copying.</p>
+<p><strong>Prompt.</strong> “Remove clones that exist only to satisfy the borrow checker.
+Prefer borrowing. Where ownership transfer is the intent, move instead of
+cloning. For each clone that remains, add a one-line comment explaining
+why two independent copies are required.”</p>
+<p>The comment requirement makes each remaining clone carry its own
+justification, for the agent and for the next reviewer. Clones without a
+good justification tend to disappear in the regeneration.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="arcmutexeverything"><a class="header" href="#arcmutexeverything">Arc&lt;Mutex&lt;Everything&gt;&gt;</a></h1>
+<p><strong>Smell.</strong> <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> (or <code>Arc&lt;RwLock&lt;T&gt;&gt;</code>) as the default answer
+whenever two places touch the same data, including places that aren’t
+concurrent. In advanced cases, nested:
+<code>Arc&lt;Mutex&lt;HashMap&lt;String, Arc&lt;Mutex&lt;Entry&gt;&gt;&gt;&gt;&gt;</code>.</p>
+<p><strong>Why generation produces it.</strong> It compiles without restructuring:
+shared and mutable at once. Like cloning, it turns a design question (who
+owns this, who may mutate it, and when) into a local edit. It’s also very
+common in training data.</p>
+<p><strong>Principle.</strong> Try the alternatives before reaching for shared mutable
+state:</p>
+<ol>
+<li>Can one owner mutate, with others reading through short borrows? Use
+plain <code>&amp;mut</code>.</li>
+<li>Is this a pipeline? Move data through channels. Ownership transfers and
+nothing is shared.</li>
+<li>Is it read-mostly configuration? Use <code>Arc&lt;T&gt;</code> without a lock. Immutable
+sharing needs no synchronization.</li>
+<li>Only after these: shared mutable state, with the lock as a decision.
+Choose the granularity, keep hold times short, and document the
+acquisition order.</li>
+</ol>
+<p><strong>Prompt.</strong> “Restructure to avoid shared mutable state: single owner with
+borrowed access where possible, channel-passed ownership for the
+pipeline, <code>Arc</code> without a lock for immutable configuration. If a <code>Mutex</code>
+remains, document which invariant it protects and why the state must be
+both shared and mutable.”</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="stringly-typed-code"><a class="header" href="#stringly-typed-code">Stringly-Typed Code</a></h1>
+<p><strong>Smell.</strong> <code>String</code> doing the job of a type: states (<code>"connected"</code>),
+identifiers, values with units in suffixes (<code>"250ms"</code>), enums by
+convention (<code>kind: String</code>), and <code>HashMap&lt;String, String&gt;</code> as a data
+model. Related: functions taking several <code>bool</code>s, and bare <code>f64</code>s whose
+unit lives in a comment.</p>
+<p><strong>Why generation produces it.</strong> Strings are the shortest path from a prose
+spec to code. If the spec says “the status can be connected or idle”, a
+<code>String</code> transcribes that sentence directly. Defining an enum requires
+interpreting it.</p>
+<p><strong>Principle.</strong> Closed sets are enums, validated values are newtypes, and
+quantities carry units. Every string comparison is a place where a typo
+compiles, and every stringly parameter is an invariant the compiler was
+never told about.</p>
+<p><strong>Prompt.</strong> “Replace stringly-typed values: model <code>status</code> as an enum,
+wrap <code>device_id</code> in a newtype with a fallible constructor, and use
+<code>std::time::Duration</code> for durations. Keep strings only for
+freeform text.”</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="unwrap-on-external-input"><a class="header" href="#unwrap-on-external-input">unwrap() on External Input</a></h1>
+<p><strong>Smell.</strong> <code>unwrap()</code>, <code>expect()</code>, or panicking indexing on paths where
+the input isn’t controlled: parsing external data, network reads, file
+I/O, or lock acquisition in long-running services.</p>
+<p><strong>Why generation produces it.</strong> Training examples unwrap freely, because
+documentation and snippets legitimately do. Unwrap also makes the happy
+path compile immediately, and the tests the agent writes for itself rarely
+feed it bad input.</p>
+<p><strong>Principle.</strong> A panic on input is the dishonest-signature case from the
+<a href="#fallibility-in-signatures">fallibility</a> page. Panics are for broken invariants, that’s, for states
+the design declared impossible. Malformed frames, short reads, and
+missing keys aren’t broken invariants. They are ordinary values from the
+outside world, and the type for ordinary failure is <code>Result</code>.</p>
+<p><strong>Prompt.</strong> “This function handles external input and must not panic.
+Return <code>Result</code> with a typed error for each failure mode. <code>expect()</code> is
+acceptable only for invariants that no input can violate, and each use
+must state in its message why it’s unreachable.”</p>
+<p>The <code>expect</code>-with-justification rule works like the clone rule: every
+remaining use carries its own argument, where the next reviewer can check
+it.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="over-abstraction"><a class="header" href="#over-abstraction">Over-Abstraction</a></h1>
+<p><strong>Smell.</strong> Machinery with one user: a trait with a single implementation
+and no test double, generic parameters only ever instantiated with one
+type, a <code>Box&lt;dyn Strategy&gt;</code> choosing between two behaviors that an <code>if</code>
+could choose, a factory that builds one product, layers that only forward
+calls.</p>
+<pre><code class="language-rust ignore">pub trait FrameSourceFactoryProvider {
+    fn factory(&amp;self) -&gt; Box&lt;dyn FrameSourceFactory&gt;;  // builds one thing
+}</code></pre>
+<p><strong>Why generation produces it.</strong> Abstraction is associated with good
+engineering in the training data, and “make it extensible” in a prompt is
+taken literally. Unlike the other smells, this one comes from trying to do
+well.</p>
+<p><strong>Principle.</strong> Abstraction is a bet on future variation, paid for now in
+indirection. Every layer is another file between the reviewer and the
+behavior. The decision procedure from <a href="#flexibility-in-signatures">Flexibility in Signatures</a>
+applies: closed set, use an enum; genuine extension point, use a trait;
+otherwise, write the function.</p>
+<p><strong>Prompt.</strong> “Remove speculative abstraction: inline traits with a single
+implementation unless they are a test seam or a documented extension
+point. Replace the strategy objects with an enum, since the set of
+variants is closed. Collapse layers that only forward.”</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="lifetime-smells"><a class="header" href="#lifetime-smells">Lifetime Smells</a></h1>
+<p>This is the smell most specific to Rust, and the compiler won’t flag
+it: code with this smell compiles.</p>
+<p>As a rule of thumb, a lifetime in a signature should reflect a design
+decision. If nobody made that decision, treat the lifetime as a smell.</p>
+<h2 id="tier-1-a-lifetime-appears-at-all"><a class="header" href="#tier-1-a-lifetime-appears-at-all">Tier 1: a lifetime appears at all</a></h2>
+<p><strong>Smell.</strong> Explicit <code>&lt;'a&gt;</code> in application-level code:</p>
+<pre><code class="language-rust ignore">pub struct Summary&lt;'a&gt; {
+    hottest_id: &amp;'a str,       // borrowed from what, exactly?
+    window: &amp;'a [Frame&lt;'a&gt;],   // everything above must now outlive this
+}</code></pre>
+<p><strong>Why generation produces it.</strong> The agent started with a borrow-based
+design, hit lifetime errors, and added annotations until the code
+compiled, instead of restructuring. This is the same behavior that
+produces stray clones, taking the other available exit. Neither exit
+answers the design question: who should own this data?</p>
+<p><strong>Principle.</strong> In application code, owned data is the default, and borrows
+are short and local. A named lifetime constrains when one value may be
+dropped relative to another. Taking on that constraint makes sense when zero-copy has been measured
+to matter, and it’s a burden everywhere else.</p>
+<h2 id="tier-2-a-lifetime-crosses-a-module-or-api-boundary"><a class="header" href="#tier-2-a-lifetime-crosses-a-module-or-api-boundary">Tier 2: a lifetime crosses a module or API boundary</a></h2>
+<p><strong>Smell.</strong> A <code>pub</code> type or <code>pub fn</code> in one module exposing a lifetime
+parameter that other modules must carry.</p>
+<p><strong>Why it’s worse.</strong> A boundary-crossing lifetime propagates: every
+containing struct and trait implementation must now thread <code>&lt;'a&gt;</code>, and
+callers inherit the constraint. It also fixes the internal representation into the public
+contract, so moving to owned data later is a breaking change. Borrows
+should live and die within a function or module, and public types should
+own their data, unless the type is one of the deliberate exceptions below.</p>
+<p>Three lines are enough to watch the propagation:</p>
+<pre><code class="language-rust ignore">struct Dashboard&lt;'a&gt; {          // must now carry 'a...
+    latest: Summary&lt;'a&gt;,
+}
+
+struct App&lt;'a&gt; {                // ...and so must everything above it
+    dashboard: Dashboard&lt;'a&gt;,
+    log: Vec&lt;Frame&gt;,            // and what does 'a even borrow from?
+}</code></pre>
+<h2 id="the-legitimate-exceptions"><a class="header" href="#the-legitimate-exceptions">The legitimate exceptions</a></h2>
+<ul>
+<li>View types with an owned counterpart: <code>&amp;str</code> and <code>String</code>, <code>Path</code> and
+<code>PathBuf</code>, <code>BorrowedFd</code> and <code>OwnedFd</code>. The borrow is the purpose of the
+type, and the standard library gives you the owned twin for each.</li>
+<li>Iterators and RAII guards: created from a container or a lock, and
+short-lived by contract.</li>
+<li>Zero-copy parsing, where a measured performance need exists, with an
+owned escape hatch (<code>to_owned()</code>, <code>Cow</code>).</li>
+</ul>
+<p>The exceptions share a property: someone made the decision, the decision
+is visible (documentation, an owned twin, a benchmark), and the borrow’s
+scope is part of the contract.</p>
+<p><strong>Prompt.</strong> “Remove the lifetime parameters from this module’s public API.
+Exported types should own their data, with borrows kept internal and
+short-lived. If the hot path needs zero-copy, provide a borrowed view type
+alongside an owned type, following the <code>Path</code> and <code>PathBuf</code> pattern.”</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="exercise-smell-catalog-v1"><a class="header" href="#exercise-smell-catalog-v1">Exercise: Smell Catalog v1</a></h1>
+<p>You receive the following generated Rust module. It compiles without
+warnings and its test passes. (The same module is in the canscan starter
+at <code>exercises/smell-sample/</code>, if you prefer reading it in an editor.)</p>
+<pre><code class="language-rust ignore">//! telemetry_hub: parses device status lines and caches the latest reading.
+//!
+//! Generated from a prose spec, not yet reviewed.
+//!
+//! Input line format: `&lt;device_id&gt;,&lt;status&gt;,&lt;value&gt;,&lt;unit&gt;`
+//! e.g. `pump-03,connected,42.5,C`
+
+use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
+
+pub mod parser {
+    /// A parsed line. Borrowed straight from the input for efficiency.
+    pub struct ParsedLine&lt;'a&gt; {
+        pub device_id: &amp;'a str,
+        pub status: &amp;'a str,
+        pub value: f64,
+        pub unit: &amp;'a str,
+    }
+
+    /// Parse one line of telemetry input.
+    pub fn parse_line(line: &amp;str) -&gt; ParsedLine&lt;'_&gt; {
+        let parts: Vec&lt;&amp;str&gt; = line.split(',').collect();
+        ParsedLine {
+            device_id: parts[0],
+            status: parts[1],
+            value: parts[2].parse::&lt;f64&gt;().unwrap(),
+            unit: parts[3],
+        }
+    }
+}
+
+/// A reading held by the hub.
+#[derive(Clone, Debug)]
+pub struct Reading {
+    pub device_id: String,
+    pub status: String,
+    pub connected: bool,
+    pub value: f64,
+    pub unit: String,
+    pub stale: bool,
+}
+
+/// Storage abstraction so we can support other backends in the future.
+pub trait StorageBackend {
+    fn put(&amp;mut self, key: String, reading: Reading);
+    fn get(&amp;self, key: &amp;str) -&gt; Option&lt;Reading&gt;;
+    fn keys(&amp;self) -&gt; Vec&lt;String&gt;;
+}
+
+pub struct MemoryBackend {
+    map: HashMap&lt;String, Reading&gt;,
+}
+
+impl StorageBackend for MemoryBackend {
+    fn put(&amp;mut self, key: String, reading: Reading) {
+        self.map.insert(key, reading);
+    }
+    fn get(&amp;self, key: &amp;str) -&gt; Option&lt;Reading&gt; {
+        self.map.get(key).cloned()
+    }
+    fn keys(&amp;self) -&gt; Vec&lt;String&gt; {
+        self.map.keys().cloned().collect()
+    }
+}
+
+/// Factory for storage backends.
+pub fn create_storage_backend(kind: &amp;str) -&gt; Box&lt;dyn StorageBackend&gt; {
+    match kind {
+        "memory" =&gt; Box::new(MemoryBackend { map: HashMap::new() }),
+        _ =&gt; Box::new(MemoryBackend { map: HashMap::new() }),
+    }
+}
+
+pub struct Hub {
+    backend: Box&lt;dyn StorageBackend&gt;,
+    config: Arc&lt;Mutex&lt;HashMap&lt;String, String&gt;&gt;&gt;,
+    devices: Vec&lt;String&gt;,
+}
+
+impl Hub {
+    pub fn new() -&gt; Self {
+        let mut config = HashMap::new();
+        config.insert("stale_after_s".to_string(), "30".to_string());
+        config.insert("mode".to_string(), "normal".to_string());
+        Hub {
+            backend: create_storage_backend("memory"),
+            config: Arc::new(Mutex::new(config)),
+            devices: Vec::new(),
+        }
+    }
+
+    /// Ingest a batch of raw lines.
+    pub fn ingest(&amp;mut self, lines: &amp;[String]) {
+        for line in lines.to_vec().iter() {
+            let parsed = parser::parse_line(line);
+            let device_id = parsed.device_id.to_string();
+            let status = parsed.status.to_string();
+            let reading = Reading {
+                device_id: device_id.clone(),
+                status: status.clone(),
+                connected: status.clone() == "connected",
+                value: parsed.value,
+                unit: parsed.unit.to_string(),
+                stale: false,
+            };
+            if !self.devices.contains(&amp;device_id.clone()) {
+                self.devices.push(device_id.clone());
+            }
+            self.backend.put(device_id.clone(), reading.clone());
+        }
+    }
+
+    /// Latest reading for a device, if any.
+    pub fn latest(&amp;self, device_id: &amp;str) -&gt; Option&lt;Reading&gt; {
+        let mode = self
+            .config
+            .lock()
+            // Invariant, not input: this lock is only ever taken in short
+            // scopes in this module and no holder can panic, so poisoning
+            // is unreachable.
+            .expect("config mutex poisoned: no holder panics while locked")
+            .get("mode")
+            .cloned();
+        if mode == Some("disabled".to_string()) {
+            return None;
+        }
+        self.backend.get(device_id)
+    }
+
+    /// Iterate the known device ids, in first-seen order.
+    pub fn device_ids(&amp;self) -&gt; impl Iterator&lt;Item = &amp;String&gt; {
+        self.devices.iter()
+    }
+}
+
+impl Default for Hub {
+    fn default() -&gt; Self {
+        Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ingest_and_read_back() {
+        let mut hub = Hub::new();
+        hub.ingest(&amp;[
+            "pump-03,connected,42.5,C".to_string(),
+            "valve-07,idle,0.0,bar".to_string(),
+        ]);
+        let r = hub.latest("pump-03").unwrap();
+        assert!(r.connected);
+        assert_eq!(r.value, 42.5);
+        assert_eq!(hub.device_ids().count(), 2);
+    }
+}</code></pre>
+<p>Produce one row per finding:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Smell (line refs)</th><th>Principle violated</th><th>The prompt that fixes it</th></tr>
+</thead>
+<tbody>
+<tr><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+<p>Rules:</p>
+<ol>
+<li>Work in triage order, not file order: error types, then parameter
+types, then flag and <code>Option</code> counts, then a grep pass for <code>clone</code>,
+<code>unwrap</code>, and <code>&lt;'a&gt;</code>. Bodies last, if at all.</li>
+<li>A finding without a prompt is incomplete. Write the sentence you would
+actually send to the agent.</li>
+<li>At least one construct in the sample looks like a smell and is a
+legitimate use. Find it and write down why it stays.</li>
+</ol>
+<p>The merged table from all pairs is your team’s Smell Catalog v1. The
+appendix <a href="#the-review-checklist">Review Checklist</a> is its compact form.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="project-a-canscan"><a class="header" href="#project-a-canscan">Project A: canscan</a></h1>
+<p>Including a 10 minute break, this session should take about 3 hours
+and 30 minutes. It contains:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Segment</th><th>Duration</th></tr>
+</thead>
+<tbody>
+<tr><td>Brief</td><td>10 minutes</td></tr>
+<tr><td>Project work, part one</td><td>1 hour 15 minutes</td></tr>
+<tr><td>Break</td><td>10 minutes</td></tr>
+<tr><td>Project work, part two</td><td>1 hour 15 minutes</td></tr>
+<tr><td>Debrief</td><td>40 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<p>Your first project with the agent. It’s a command-line tool that reads
+CAN bus log files and answers questions about them, small enough to
+finish in an afternoon and realistic enough that everything from this
+morning shows up in it.</p>
+<p>This project practices:</p>
+<ul>
+<li>Crate evaluation. The spec names no crates. Your agent will propose
+some, and deciding whether to accept them is your job.</li>
+<li>Judging toolchain suggestions. <code>clippy</code> and <code>rustc</code> will make
+suggestions. Some are right for this tool and some aren’t. The agent
+tends to accept all of them.</li>
+<li>Spec iteration. The spec is incomplete, like most specs. When reality
+disagrees with it, amend it in writing and regenerate.</li>
+<li>The morning’s material: skeleton first, then smell triage on the output.</li>
+</ul>
+<p>Working agreement: pairs. The less experienced Rust reader drives the
+agent, the more experienced one reviews out loud. Swap at the midpoint. Record
+findings in <code>REVIEW-LOG.md</code> as smell, principle, and prompt. The log is an
+input to the debrief.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="the-specification"><a class="header" href="#the-specification">The Specification</a></h1>
+<p>This is the spec as handed to students, including its gaps. Amendments
+made during the session are part of the deliverable.</p>
+<hr>
+<h2 id="canscan-v01-can-log-inspection-cli"><a class="header" href="#canscan-v01-can-log-inspection-cli">canscan v0.1: CAN log inspection CLI</a></h2>
+<p><code>canscan</code> reads CAN bus capture logs in candump text format and produces
+summaries for an integration engineer.</p>
+<p>One line of candump format:</p>
+<pre><code class="language-text">(1712345678.123456) can0 18FF0102#DEADBEEF11223344
+</code></pre>
+<p>That’s: <code>(timestamp) interface can_id#hex_payload</code>, where <code>can_id</code> is 3
+hex digits (standard, 11-bit) or 8 hex digits (extended, 29-bit), and the
+payload is 0 to 8 bytes of hex.</p>
+<h3 id="commands"><a class="header" href="#commands">Commands</a></h3>
+<pre><code class="language-text">canscan summary &lt;FILE&gt;
+    Frame count, capture duration, distinct IDs, overall frames/sec.
+
+canscan top &lt;FILE&gt; --by count|bytes [--limit N]
+    The top N IDs ranked by frame count or by payload bytes, with
+    per-ID rates. Default limit: 10.
+
+canscan filter &lt;FILE&gt; --id &lt;ID&gt; [--after TS] [--before TS]
+    Print matching frames, preserving input format.
+    If the input is rejected, filter must not have produced partial output.
+</code></pre>
+<h3 id="requirements"><a class="header" href="#requirements">Requirements</a></h3>
+<ol>
+<li>Every command supports <code>--format text|json</code>. JSON output must be stable
+enough to consume from a script.</li>
+<li>Exit code 0 on success, nonzero with a clear message on failure.</li>
+<li><code>summary</code> on the well-formed <code>logs/big.log</code> (4,590,000,000 bytes) must
+complete in under 60 seconds on the classroom machine.</li>
+<li>The tool is the first of a family of internal utilities. Keep the
+parsing and analysis logic reusable.</li>
+</ol>
+<h3 id="fixtures"><a class="header" href="#fixtures">Fixtures</a></h3>
+<p>The starter repo ships pre-generated <code>logs/small.log</code> (1,000 lines) and
+<code>logs/medium.log</code> (100,000 lines). Run <code>make fixtures</code> to build the
+well-formed <code>logs/big.log</code>: exactly 90,000,000 valid candump lines and
+4,590,000,000 bytes. The source archive doesn’t include this file.</p>
+<hr>
+<p>End of spec.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="milestones"><a class="header" href="#milestones">Milestones</a></h1>
+<p>The milestones are ordered so that stopping at any of them still gives a
+useful debrief. Each milestone ends with a review gate that feeds the
+next.</p>
+<p>The project work is 2 hours 30 minutes, split around the afternoon
+break. As a rough budget:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Milestone</th><th>Budget</th></tr>
+</thead>
+<tbody>
+<tr><td>M0: skeleton, by hand</td><td>30 minutes</td></tr>
+<tr><td>M1: <code>summary</code> text/JSON on <code>small.log</code></td><td>25 minutes</td></tr>
+<tr><td>M2: <code>summary</code> on <code>medium.log</code></td><td>40 minutes</td></tr>
+<tr><td>M3: <code>top</code>, <code>filter</code>, JSON, <code>big.log</code></td><td>40 minutes</td></tr>
+<tr><td>M4 (stretch): JSON schema policy</td><td>15 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<p>The budget lands at M3, including requirement 1’s basic JSON output for every
+command. Only 15 of the 150 minutes are left for M4,
+and M2’s review gate is allowed to eat them, because that’s where the
+learning is. If you finish the two days without touching M4, you did
+the project as designed.</p>
+<h2 id="m0-skeleton-before-any-generation"><a class="header" href="#m0-skeleton-before-any-generation">M0: Skeleton, before any generation</a></h2>
+<p>Write the skeleton by hand: the core types (which newtypes?), the parsing
+entry points, and the error types. Bodies are <code>todo!()</code>. If the design answers aren’t clear yet, run
+the design interview from this morning in a separate session first; the
+skeleton itself is still written by hand.</p>
+<p>Run <code>make check</code> before the review; the gate isn’t passed until it’s green.
+Then swap skeletons with another pair and critique for two minutes each way,
+using the morning’s tables.</p>
+<h2 id="m1-summary-works-on-smalllog-in-text-and-json"><a class="header" href="#m1-summary-works-on-smalllog-in-text-and-json">M1: <code>summary</code> works on <code>small.log</code> in text and JSON</a></h2>
+<p>Let the agent fill in bodies and wire up the CLI. Exercise both required
+formats; schema-versioning policy is deferred, not JSON implementation.</p>
+<p>Review gate: run the thirty-second error review on the generated code and
+log the findings.</p>
+<h2 id="m2-summary-handles-mediumlog"><a class="header" href="#m2-summary-handles-mediumlog">M2: <code>summary</code> handles <code>medium.log</code></a></h2>
+<p>“Handles” means correct output, defined behavior for whatever the file
+contains, and a memory profile you can explain.</p>
+<p>Review gate: grep for <code>unwrap</code>, <code>clone</code>, and <code>&lt;'a&gt;</code>. Each hit gets a row
+in the review log: either kept with a justification, or fixed with a
+prompt. For every policy row in your review log, point to the test that
+would fail if the policy broke. A row with no such test is a finding.</p>
+<h3 id="guardrail-step-part-of-m2"><a class="header" href="#guardrail-step-part-of-m2">Guardrail step (part of M2)</a></h3>
+<p>Whatever your M2 review banned (an <code>unwrap()</code> on parse results,
+panicking on bad lines, a helper that reads the whole file into
+memory), ask the same agent for the matching check in the same
+session:</p>
+<blockquote>
+<p>Write a <code>clippy.toml</code> with <code>disallowed-methods</code> covering the calls we
+just banned, set the lint levels in <code>main.rs</code>, and make
+<code>cargo clippy -- --deny warnings</code> pass.</p>
+</blockquote>
+<p>Keep the configuration in the repository. The review made the
+decision once, and <code>cargo clippy</code> now applies it to every future
+change. See <a href="#build-your-own-guardrails">Build Your Own Guardrails</a>.</p>
+<h2 id="m3-top-and-filter-in-both-formats-biglog-under-60-seconds"><a class="header" href="#m3-top-and-filter-in-both-formats-biglog-under-60-seconds">M3: <code>top</code> and <code>filter</code> in both formats; <code>big.log</code> under 60 seconds</a></h2>
+<p>Build in release mode before timing, so compilation is excluded. Use the
+well-formed 90,000,000-line <code>big.log</code>, then record elapsed time and peak
+memory on the classroom machine in the review log.</p>
+<p>Review gate: does the requirement 4 architecture exist? Could a teammate
+add a new subcommand against your core API without touching the parser? Before
+closing M3, run <code>summary</code>, <code>top</code>, and <code>filter</code> with both <code>--format text</code> and
+<code>--format json</code>; basic JSON support is required, not stretch work.</p>
+<h2 id="m4-stretch-json-schema-policy"><a class="header" href="#m4-stretch-json-schema-policy">M4 (stretch): JSON schema policy</a></h2>
+<p>M1 and M3 already implemented the required JSON outputs. Requirement 1 also
+says that JSON must be “stable enough to consume from a script”. Decide what
+compatibility means beyond the working schema, write it down as a spec
+amendment, have the agent harden it, and test it.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="debrief"><a class="header" href="#debrief">Debrief</a></h1>
+<p>The debrief takes about 40 minutes. Have your review log open.</p>
+<h2 id="each-pair-presents-20-minutes"><a class="header" href="#each-pair-presents-20-minutes">Each pair presents (20 minutes)</a></h2>
+<p>Each pair gets three minutes:</p>
+<ol>
+<li>One smell you caught: show the code, name the principle, read the
+prompt that fixed it. Did the fix work?</li>
+<li>One thing you kept: a construct that looked like a smell and survived
+review with a written justification.</li>
+<li>Your spec amendment: what did you add when reality disagreed with the
+spec?</li>
+</ol>
+<h2 id="themes-15-minutes"><a class="header" href="#themes-15-minutes">Themes (15 minutes)</a></h2>
+<ul>
+<li>The dependency trees. One task, several trees. What selection criteria
+did the group converge on for accepting an agent’s crate proposal?</li>
+<li>Clippy. Where was a suggestion right, and where was following it wrong?
+What should the team’s policy be: who may write <code>#[allow]</code>, and what
+must accompany it?</li>
+<li>Reality versus the starting spec. What is the difference between the spec
+you were handed and the spec you finished with, and who on your real team
+owns that difference?</li>
+</ul>
+<h2 id="close-5-minutes"><a class="header" href="#close-5-minutes">Close (5 minutes)</a></h2>
+<p>One sentence per pair: what will you put in the skeleton next time that
+you put in a review comment today?</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="welcome-to-day-2"><a class="header" href="#welcome-to-day-2">Welcome to Day 2</a></h1>
+<p>Yesterday we caught design problems after the code was generated.
+Today we stop them before generation. Then, in the afternoon, we tackle
+a harder question: what does testing even mean when the system’s
+correct behavior is a distribution?</p>
+<h2 id="day-2-at-a-glance"><a class="header" href="#day-2-at-a-glance">Day 2 at a glance</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Block</th><th>Duration</th></tr>
+</thead>
+<tbody>
+<tr><td>Morning session</td><td>3 hours 45 minutes</td></tr>
+<tr><td>Lunch</td><td>1 hour</td></tr>
+<tr><td>Afternoon session</td><td>3 hours 45 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="day-2-morning-schedule"><a class="header" href="#day-2-morning-schedule">Day 2 Morning schedule</a></h2>
+<p>Including a 10 minute break, this session should take about 3 hours and
+45 minutes. It contains:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Segment</th><th>Duration</th></tr>
+</thead>
+<tbody>
+<tr><td>Warm-up: three review calls</td><td>15 minutes</td></tr>
+<tr><td>Project B brief: <code>framecache</code></td><td>15 minutes</td></tr>
+<tr><td>Skeleton workshop + project work, part one</td><td>1 hour 15 minutes</td></tr>
+<tr><td>Break</td><td>10 minutes</td></tr>
+<tr><td>Skeleton workshop + project work, part two</td><td>1 hour 10 minutes</td></tr>
+<tr><td>Debrief</td><td>40 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="day-2-afternoon-schedule"><a class="header" href="#day-2-afternoon-schedule">Day 2 Afternoon schedule</a></h2>
+<p>Including a 10 minute break, this session should take about 3 hours and
+45 minutes. It contains:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Segment</th><th>Duration</th></tr>
+</thead>
+<tbody>
+<tr><td>Project C brief: <code>guardian</code></td><td>15 minutes</td></tr>
+<tr><td>Validating a stochastic system</td><td>25 minutes</td></tr>
+<tr><td>Project work, part one</td><td>1 hour 5 minutes</td></tr>
+<tr><td>Break</td><td>10 minutes</td></tr>
+<tr><td>Project work, part two</td><td>1 hour 5 minutes</td></tr>
+<tr><td>Debrief and course retrospective</td><td>45 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="warm-up-three-review-calls"><a class="header" href="#warm-up-three-review-calls">Warm-up: Three Review Calls</a></h1>
+<p>From here on we assume yesterday’s vocabulary. Three snippets. For
+each one: name the smell, the principle behind it, and the one-sentence
+prompt you’d send.</p>
+<h2 id="1"><a class="header" href="#1">1</a></h2>
+<pre><code class="language-rust ignore">let cfg = config.clone();
+apply(&amp;cfg);</code></pre>
+<h2 id="2"><a class="header" href="#2">2</a></h2>
+<pre><code class="language-rust ignore">pub fn parse(s: &amp;str) -&gt; Config {
+    let port = s.trim().parse().unwrap();
+    Config { port }
+}</code></pre>
+<h2 id="3"><a class="header" href="#3">3</a></h2>
+<pre><code class="language-rust ignore">// `status: String`, and this comparison appears at four call sites:
+if status == "ready" {
+    start_capture();
+}</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="project-b-framecache"><a class="header" href="#project-b-framecache">Project B: framecache</a></h1>
+<p>This one’s a library crate, not a CLI. <code>framecache</code> decodes raw CAN
+frames into named, scaled signal values and keeps a latest-value cache
+that other components query. In real life, several internal teams would
+depend on a crate like this. That’s the kind of pressure we’re
+simulating.</p>
+<p>What we’re practicing:</p>
+<ul>
+<li>Skeleton-first as the working method. Yesterday the skeleton was the
+first milestone. Today it’s a deliverable: written by hand, reviewed,
+and frozen before generation starts.</li>
+<li>Spec review under pressure. This spec, like real specs, was assembled
+from several stakeholders with their own concerns. Part of today’s
+deliverable is whatever your review of it finds, found before
+generation starts, not after.</li>
+<li>The material from yesterday’s <a href="#the-smell-catalog">smell catalog</a>. Keep it at hand.</li>
+</ul>
+<p>Working agreement: same pairs, roles swapped from yesterday’s end. The
+review log continues, with a new section for spec findings: every
+question, gap, or surprise raised against the spec, with its
+resolution in writing.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="the-specification-1"><a class="header" href="#the-specification-1">The Specification</a></h1>
+<p>As handed to students. The requirements are attributed to stakeholders on
+purpose.</p>
+<hr>
+<h2 id="framecache-v01-signal-decode-and-latest-value-cache"><a class="header" href="#framecache-v01-signal-decode-and-latest-value-cache">framecache v0.1: signal decode and latest-value cache</a></h2>
+<p>A reusable crate for tooling and simulation targets (std environment).
+Two capabilities: decode and cache.</p>
+<h3 id="decode"><a class="header" href="#decode">Decode</a></h3>
+<p>A <code>SignalDb</code> describes messages and signals (a simplified DBC: message id
+to signals; each signal has a name, start bit, length, scale, offset, and
+unit). It’s loaded from a TOML file at startup. Given a raw frame (id
+plus up to 8 payload bytes), decoding yields the signal values of that
+message in engineering units.</p>
+<h3 id="cache"><a class="header" href="#cache">Cache</a></h3>
+<p>The cache ingests decoded frames from one ingest thread and serves the
+latest value per signal to multiple reader threads.</p>
+<h3 id="requirements-from-the-stakeholder-workshop"><a class="header" href="#requirements-from-the-stakeholder-workshop">Requirements (from the stakeholder workshop)</a></h3>
+<ol>
+<li>(Platform) Frame payloads must be processed zero-copy: decoding
+reads bytes where the receive buffer placed them, and a cache entry
+keeps using those bytes in place, including after the receive-buffer
+slot they occupy is reused for new frames.</li>
+<li>(Tooling) A cache read returns the signal’s latest value at any time,
+independent of what the ingest thread is doing, and the returned value
+remains valid for as long as the reader holds it.</li>
+<li>(Platform) The receive buffer is a fixed ring. Buffer slots are
+recycled as new frames arrive.</li>
+<li>(Diagnostics) Readers may subscribe to a signal and iterate values as
+they arrive.</li>
+<li>(All) The public API must be documented, and a downstream team must be
+able to mock the cache in their tests.</li>
+</ol>
+<h3 id="deliverables"><a class="header" href="#deliverables">Deliverables</a></h3>
+<p>The <code>framecache</code> crate, and an <code>examples/</code> binary wiring a synthetic
+frame source through decode into the cache with two reader threads.</p>
+<hr>
+<p>End of spec. Log every spec finding. Resolutions must be written down.</p>
+<h2 id="working-the-fill"><a class="header" href="#working-the-fill">Working the fill</a></h2>
+<p>Even with the public surface frozen, fill it in slices, one ask at a
+time. Data types and validation first. Then core behavior. Then
+subscriptions and concurrency. Then tests. Review between slices. One
+everything-at-once commission wipes out the review points this whole
+setup exists to create.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="skeleton-first"><a class="header" href="#skeleton-first">Skeleton First</a></h1>
+<p>The working method for this morning, as a fixed sequence.</p>
+<p>The morning’s project block is 2 hours 25 minutes, split around the
+break. The phases:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Phase</th><th>Budget</th></tr>
+</thead>
+<tbody>
+<tr><td>Phase 1: skeleton workshop</td><td>45 minutes</td></tr>
+<tr><td>Phase 2: cross-review</td><td>15 minutes</td></tr>
+<tr><td>Phase 3: generation under contract</td><td>1 hour 25 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="phase-1-skeleton-workshop-45-minutes-no-agent"><a class="header" href="#phase-1-skeleton-workshop-45-minutes-no-agent">Phase 1: Skeleton workshop (45 minutes, no agent)</a></h2>
+<p>Forty-five minutes is enough because typing a skeleton is cheap.
+Deciding it’s the work, and the deciding is what this phase practices.</p>
+<p>Write by hand, in <code>src/lib.rs</code> and modules:</p>
+<ul>
+<li>Every public type, with fields, or a comment explaining why the fields
+are private and what they will be.</li>
+<li>Every public function and method signature, with <code>todo!()</code> bodies.</li>
+<li>The error enums, one per module, implementing <code>std::error::Error</code>.</li>
+<li>Doc comments carrying the contracts: ordering, threading, blocking
+behavior, and failure semantics.</li>
+</ul>
+<p><code>cargo check</code> must pass. A skeleton that doesn’t compile isn’t
+finished.</p>
+<p>Unlike Project A’s M0, the design interview stays closed here: run its
+questions on yourselves. By Day 2 the questions should be yours.</p>
+<p>As you write, apply yesterday’s tables to your own work: receivers,
+parameter ownership, fallibility shapes, and any lifetime that appears in
+anything <code>pub</code>. For each, ask the question from the lifetime page: who
+decided this, and where is the decision written down?</p>
+<h2 id="phase-2-cross-review-15-minutes"><a class="header" href="#phase-2-cross-review-15-minutes">Phase 2: Cross-review (15 minutes)</a></h2>
+<p>Swap skeletons with another pair. Each side files at least three findings
+in the other pair’s review log. Only signature-level findings are
+possible at this point. A finding made now saves someone from having to
+make it later against two thousand generated lines.</p>
+<h2 id="phase-3-generation-under-contract"><a class="header" href="#phase-3-generation-under-contract">Phase 3: Generation under contract</a></h2>
+<p>Freeze the skeleton. The agent fills in bodies without changing public
+signatures; state that constraint in every prompt. Any signature change
+that turns out to be needed is a design change: it goes through the pair,
+gets a row in the log, and amends the skeleton before regeneration. Keep
+the diff between the frozen skeleton and the final one; it’s a debrief
+artifact.</p>
+<p>Two guardrails belong to this phase (see
+<a href="#build-your-own-guardrails">Build Your Own Guardrails</a>):</p>
+<ul>
+<li>Freeze by lint, not by vigilance. Ask the agent for the Clippy
+configuration that enforces what your review decided (the banned
+calls in <code>clippy.toml</code>’s <code>disallowed-methods</code>, the lint levels at the
+crate root), and require <code>cargo clippy -- --deny warnings</code> green
+before any fill is accepted.</li>
+<li>If any <code>unsafe</code> appears in a fill, it needs two things before
+acceptance: a <code>cargo +nightly miri test</code> run and a written
+justification in the log. The usual outcome is a safe rewrite. Miri
+tells you whether the unsafe block is sound instead of leaving you
+to guess. If time permits, run <code>mutest-rs</code> on the contract tests and
+look at what survives. A suite that no mutant can kill isn’t
+testing anything.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="debrief-1"><a class="header" href="#debrief-1">Debrief</a></h1>
+<p>The debrief takes about 40 minutes. Have your skeleton diff and your
+spec-findings log ready.</p>
+<h2 id="spec-findings-15-minutes"><a class="header" href="#spec-findings-15-minutes">Spec findings (15 minutes)</a></h2>
+<ul>
+<li>Take your log’s most consequential finding. Who found it, and when:
+skeleton, cross-review, or generation? What did
+the discovery cost at each stage?</li>
+<li>Read out the spec amendments and compare resolutions across pairs.</li>
+</ul>
+<h2 id="the-skeleton-diff-15-minutes"><a class="header" href="#the-skeleton-diff-15-minutes">The skeleton diff (15 minutes)</a></h2>
+<ul>
+<li>Each pair: the frozen skeleton against the final one. Every changed
+line is a design decision that arrived late. Could it have been found
+in Phase 1?</li>
+<li>Where did a lifetime try to enter a public signature, and what stopped
+it: your own review, the cross-review, or the compiler?</li>
+<li>Show the doc comment that most visibly steered generation.</li>
+</ul>
+<h2 id="close-10-minutes"><a class="header" href="#close-10-minutes">Close (10 minutes)</a></h2>
+<p>Yesterday’s closing question, extended: what belongs in your team’s
+standard skeleton? Which types, error conventions, and doc-contract
+habits should every new crate start from? Write the answers down.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="project-c-guardian"><a class="header" href="#project-c-guardian">Project C: guardian</a></h1>
+<p>The last project, and the hardest. <code>guardian</code> is a forward-collision
+warning arbiter. It takes noisy object tracks from a simulated
+perception stack, estimates time-to-collision, and every 50 ms cycle it
+picks one of three answers: <code>NoAction</code>, <code>Warn</code>, or <code>Brake</code>.</p>
+<p>Two things make this the hardest project of the course:</p>
+<ol>
+<li>The input is stochastic. The provided sensor simulator is noisy by
+design. The same scenario never plays out twice, so a test that asserts
+an exact outcome passes or fails by chance.</li>
+<li>Correctness is a distribution. The question isn’t “did it warn?” but
+“does it warn often enough, and false-alarm rarely enough, across many
+runs?” That’s also how the real systems in this domain are judged.</li>
+</ol>
+<p>The next page places the project in its ISO 26262 context: the assumed
+ASIL, the decomposition our architecture follows, and where generated
+code may sit inside that structure.</p>
+<p>Before the agent joins, your skeleton has to answer some questions in
+types. Same interview discipline as Projects A and B, pointed at this
+domain. These questions stay out of the starter on purpose: they’re
+for you to answer, not the agent.</p>
+<ul>
+<li>What state does the arbiter carry between cycles, if any, and why?</li>
+<li>What is the signature of one cycle’s decision?</li>
+<li>Which thresholds exist, what are their types and units, and who
+decided their values? Using <code>f64</code> everywhere is also a choice, and
+rarely the right one.</li>
+<li>What can fail, and what counts as absence rather than failure? No
+tracks this cycle and one channel reporting nothing are both normal.</li>
+<li>The two channels report the same world. When they disagree, which
+one does your design believe, and what does it do while one channel
+reports nothing?</li>
+</ul>
+<p>The afternoon’s project block is 2 hours 10 minutes, split around the
+break. As a rough budget:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Stage</th><th>Budget</th></tr>
+</thead>
+<tbody>
+<tr><td>Skeleton, by hand (both channels)</td><td>30 minutes</td></tr>
+<tr><td>Arbiter and metrics, first working pass</td><td>45 minutes</td></tr>
+<tr><td>Measure, revise, re-measure</td><td>40 minutes</td></tr>
+<tr><td>SAFETY-NOTES</td><td>15 minutes</td></tr>
+</tbody>
+</table>
+</div>
+<p>The statistical verdict layer is a stretch goal on top of this, not a
+row in the budget.</p>
+<p>In this project we practice:</p>
+<ul>
+<li>The whole course so far, under domain pressure: the state machine is an
+enum (or typestate), the thresholds are newtypes, and the arbiter’s
+signature is the spec.</li>
+<li>Testing a stochastic system: property-based tests for invariants that
+must always hold, and statistical verdicts, via the provided <a href="https://github.com/mavai-org/feotest"><code>feotest</code></a>, for
+behavior that only exists in aggregate.</li>
+<li>Recognizing when the agent’s tests are green but test nothing that
+matters.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="guardian-in-the-iso-26262-frame"><a class="header" href="#guardian-in-the-iso-26262-frame">Guardian in the ISO 26262 Frame</a></h1>
+<p><code>guardian</code> is a toy, but we place it where its real counterpart would
+live: inside an item developed under ISO 26262. Before writing code, we
+walk the safety structure the code would sit in.</p>
+<h2 id="what-asil-is-this"><a class="header" href="#what-asil-is-this">What ASIL is this?</a></h2>
+<p>An automotive safety integrity level (ASIL; ISO 26262-1:2018, 3.6) is
+assigned per hazardous event by a hazard analysis and risk assessment
+(HARA; ISO 26262-1:2018, 3.76, method in Part 3, Clause 6). The HARA
+classifies severity, exposure, and controllability (S, E, C; Part 3,
+Tables 1, 2, and 3) and reads the result out of the determination table
+(Part 3, Table 4). For a forward collision warning (FCW) function, two
+hazards dominate:</p>
+<ul>
+<li>a missed or late intervention in a real conflict, and</li>
+<li>an unwarranted brake at speed, which is itself a hazard for following
+traffic.</li>
+</ul>
+<p>For this workshop, assume the HARA lands the braking path at ASIL D
+and a warning-only path at ASIL B. The point isn’t these letters; it’s
+that the false-alarm rows in our acceptance table aren’t comfort
+requirements. Both directions of failure are safety-relevant.</p>
+<h2 id="decomposition"><a class="header" href="#decomposition">Decomposition</a></h2>
+<p>An ASIL D requirement doesn’t force every element to be developed at D.
+ISO 26262-9:2018, Clause 5 allows decomposing an initial safety
+requirement into redundant requirements on sufficiently independent
+elements (9, 5.4.3). The schemas are fixed in 5.4.9. For D, the
+options are C(D) + A(D), B(D) + B(D), or D(D) + QM(D), where QM means
+quality management: no ASIL assigned. The notation keeps the original ASIL in
+parentheses, because some obligations follow the original requirement,
+not the decomposed element. These terms and the rest of the safety
+vocabulary are collected in the <a href="#glossary">glossary</a>.</p>
+<p>Our architecture uses the B(D) + B(D) schema, the classic one for
+forward collision systems, with the two decomposed requirements
+allocated to two sensing channels built on different physics:</p>
+<pre><code class="language-text">Safety goal: no unwarranted brake; no missed intervention   [assumed D]
+
+   decompose per ISO 26262-9:2018, 5.4.9 a)
+
+├─ camera channel: detection, tracking, TTC estimate        [B(D)]
+│    strong on classification and lateral position;
+│    degrades in low light, fog, and glare
+├─ radar channel: detection, tracking, TTC estimate         [B(D)]
+│    strong on range and closing speed in all weather;
+│    produces ghosts from multipath and clutter
+└─ combiner: cross-channel agreement and envelope checks       [D]
+     small, dull, hand-written; Brake requires corroboration,
+     and a confident closing track inside the braking envelope
+     implies at least Warn within N cycles
+</code></pre>
+<p>The whole decomposition claim rests on independence, and here’s the
+catch: independence has to be analyzed, not assumed. That’s Part 9,
+Clause 7. Different physics buys you different failure modes. Fog
+degrades the camera but not the radar. The multipath ghost that fools
+the radar is invisible to the camera. What different physics doesn’t
+buy you is freedom from shared causes: common power, a shared clock,
+one housing heating both sensors, one software update train. Or, and
+this is the one that matters for us, the same generated tracking code
+pasted into both channels. Do that and your B(D) + B(D) collapses back
+into a single channel wearing two names.</p>
+<p>The element that merges the channels keeps the original D. Someone
+has to own the decision. Decomposition moves rigor around; it
+never makes the safety goal cheaper. In this exercise both channels are
+real code: every <code>sensor-sim</code> report carries a <code>sensor</code> field, radar
+and camera watching the same world with different noise and
+decorrelated dropouts and ghosts. Your arbiter consumes both streams,
+which makes it the decision element and the combiner at once, and the
+combiner keeps the D. So your SAFETY-NOTES need to say how the design
+weighs the channels when they disagree, and what it does while one of
+them reports nothing. That statement is your independence argument.</p>
+<h2 id="where-the-llm-sits-and-where-the-guarantees-sit"><a class="header" href="#where-the-llm-sits-and-where-the-guarantees-sit">Where the LLM sits, and where the guarantees sit</a></h2>
+<p>The generated code lives inside a decomposed B(D) channel, and the
+letters spell out the cost. B still means the full safety
+lifecycle at B rigor. The (D) means confirmation obligations that
+follow the original requirement around. Decomposition doesn’t exempt
+the agent. It just bounds what one channel’s misbehavior can do. The guarantees live in
+what stays human-owned: the skeleton
+and its types, the monitor, the review (compare the independent
+confirmation measures of ISO 26262-2:2018, 6.4.7 and Table 1), and the
+verification evidence. Our three-layer suite is a miniature of the
+Part 6 verification tables. Example tests are requirements-based
+testing (26262-6:2018, Tables 7 and 8). The properties are the
+plausibility end of those methods. And the statistical layer, with its
+recorded threshold origin, is the shape of evidence the acceptance
+rows demand. A code-generating agent, viewed through Part 8, Clause 11 (tool
+confidence, TCL), is a software tool whose output you either trust
+because its failures are detected downstream or qualify separately
+(8, 11.4.5): our detection
+argument is the skeleton, the monitor, and the suite.</p>
+<h2 id="a-rating-a-regulation-and-a-standard"><a class="header" href="#a-rating-a-regulation-and-a-standard">A rating, a regulation, and a standard</a></h2>
+<p>Three kinds of document govern a system like this, and they argue
+different things. Euro NCAP is a consumer rating: it scripts test
+scenarios (CCRs, CCRm, CCRb), grades each grid cell, and awards FCW
+points when the warning comes at TTC &gt;= 1.70 s.<sup class="footnote-reference" id="fr-ncap2-1"><a href="#footnote-ncap2">1</a></sup> FMVSS No. 127
+is a regulation: FCW required from 10 to 145 km/h when a collision is
+imminent, lead-vehicle avoidance up to 62 mph, on US light vehicles
+from September 2029.<sup class="footnote-reference" id="fr-fmvss2-1"><a href="#footnote-fmvss2">2</a></sup> ISO 26262 is a standard for how you
+develop: it governs the process and the evidence, not the test drive.
+A car is developed under the standard, certified against the
+regulation, and rated by the program. Passing any one of them is not
+the other two.</p>
+<p>One detail from the protocol is worth reading aloud, because it’s the
+industrial twin of what our evaluator does. The protocol defines TAEB,
+the moment braking activates, by signal processing: find the last data
+point where filtered acceleration is below -1 m/s^2, then walk back to
+where it first crossed -0.3 m/s^2. “When did the system act” is a
+definition you write down. Our latency-at-truth-crossing rule is the
+same move at classroom scale.</p>
+<hr>
+<ol class="footnote-definition">
+<li id="footnote-ncap2">
+<p>Euro NCAP, “AEB Car-to-Car Test Protocol” v4.3,
+<a href="https://cdn.euroncap.com/cars/assets/euro_ncap_aeb_c2c_test_protocol_v43_1e6ed06def.pdf">https://cdn.euroncap.com/cars/assets/euro_ncap_aeb_c2c_test_protocol_v43_1e6ed06def.pdf</a>. <a href="#fr-ncap2-1">↩</a></p>
+</li>
+<li id="footnote-fmvss2">
+<p>NHTSA, FMVSS No. 127, final rule May 2024, amended November
+2024, <a href="https://www.federalregister.gov/documents/2024/11/26/2024-27349/federal-motor-vehicle-safety-standards-automatic-emergency-braking-systems-for-light-vehicles">https://www.federalregister.gov/documents/2024/11/26/2024-27349/federal-motor-vehicle-safety-standards-automatic-emergency-braking-systems-for-light-vehicles</a>. <a href="#fr-fmvss2-1">↩</a></p>
+</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="the-specification-2"><a class="header" href="#the-specification-2">The Specification</a></h1>
+<p>As handed to students.</p>
+<hr>
+<h2 id="guardian-v01-forward-collision-warning-arbiter"><a class="header" href="#guardian-v01-forward-collision-warning-arbiter">guardian v0.1: forward collision warning arbiter</a></h2>
+<p>In the decomposed architecture from the safety page, the track stream
+below is the radar channel’s input, and this arbiter is that channel’s
+B(D) decision element.</p>
+<h3 id="input"><a class="header" href="#input">Input</a></h3>
+<p>The starter repo provides <code>sensor-sim</code>, which produces a stream of
+<code>TrackReport</code>s at 20 Hz for scripted scenarios (constant-speed lead
+vehicle, hard-braking lead, cut-in, empty road). Two perception channels
+observe the same world: each report carries a <code>sensor</code> field, radar or
+camera. Reports carry an object id, range (m), range rate (m/s), and a
+confidence in <code>[0, 1]</code>. Reports are noisy, and the channels differ:
+radar’s range rate is precise, the camera’s is much noisier; each
+channel drops tracks for 1 to 3 cycles on its own schedule; and each
+channel produces its own spurious low-confidence ghosts. A cycle may
+carry reports from both channels, one, or neither. Your arbiter consumes
+the merged stream and owns the decision.</p>
+<h3 id="behavior"><a class="header" href="#behavior">Behavior</a></h3>
+<p>Each cycle, <code>guardian</code> ingests the current reports and emits exactly one
+<code>Decision</code>:</p>
+<ul>
+<li><code>Brake</code> when collision is imminent (time-to-collision below a hard
+threshold).</li>
+<li><code>Warn</code> when a collision is plausible soon (time to collision, TTC,
+below a soft threshold).</li>
+<li><code>NoAction</code> otherwise.</li>
+</ul>
+<p>TTC for a closing track is <code>range / closing_speed</code>. Tracks with confidence
+below 0.3 must not, on their own, trigger <code>Brake</code>.</p>
+<h3 id="acceptance-targets-per-scenario-suite-over-many-runs"><a class="header" href="#acceptance-targets-per-scenario-suite-over-many-runs">Acceptance targets (per scenario suite, over many runs)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Metric</th><th>Target</th></tr>
+</thead>
+<tbody>
+<tr><td>Hard-braking-lead scenarios ending in <code>Brake</code></td><td>&gt;= 99%</td></tr>
+<tr><td>Empty-road runs with any <code>Warn</code> or <code>Brake</code> (false alarm)</td><td>&lt;= 2%</td></tr>
+<tr><td>Median cycles from threshold crossing to correct decision</td><td>&lt;= 3</td></tr>
+</tbody>
+</table>
+</div>
+<p>Classification semantics, shared by every evaluator of this table:
+“ending in <code>Brake</code>” means <code>Brake</code> appears within the final 20 cycles
+(one second) of the run. Latency medians are computed over responders
+only; a run that never reaches the required decision is a miss, which
+lowers the corresponding rate row and contributes no latency sample.
+Zero responders reports <code>n/a</code>. Latency output states its response
+coverage (responders over total runs) alongside the median.</p>
+<h3 id="deliverables-1"><a class="header" href="#deliverables-1">Deliverables</a></h3>
+<p>The <code>guardian</code> crate; a runner binary that executes scenario suites and
+reports the metrics; and a test suite you would stake the release on.</p>
+<hr>
+<p>End of spec.</p>
+<h2 id="protocol-alignment-stretch"><a class="header" href="#protocol-alignment-stretch">Protocol alignment (stretch)</a></h2>
+<p>Real FCW systems are tested against published protocols. Two matter
+here, and they’re different kinds of document. Euro NCAP’s AEB
+Car-to-Car protocol is a consumer rating: it scripts rear-end test
+scenarios and awards FCW points when the warning comes at
+TTC &gt;= 1.70 s.<sup class="footnote-reference" id="fr-ncap-1"><a href="#footnote-ncap">1</a></sup> FMVSS No. 127 is a US regulation: it requires
+FCW between 10 and 145 km/h whenever a collision is imminent, and full
+avoidance of a lead vehicle at speeds up to 62 mph, on new light
+vehicles from September 2029.<sup class="footnote-reference" id="fr-fmvss-1"><a href="#footnote-fmvss">2</a></sup></p>
+<p>The protocol’s CCRb scenario is close to this project’s world: two
+vehicles at 50 km/h, then the lead brakes at -2 or -6 m/s^2, from a
+headway of 12 or 40 m. Four cells.</p>
+<p>The sim gives you the mechanism and nothing more:
+<code>Scenario::Scripted(ScriptedLead { .. })</code> takes an initial range, an
+initial closing speed, a start time, a closing acceleration, and a
+closing-speed cap. Building the four CCRb cells out of it is your
+agent’s work, under your review:</p>
+<ol>
+<li>Ask the agent to translate the protocol cells into <code>ScriptedLead</code>
+values. Review the unit conversions and the closing-speed cap (what
+does a stopped lead do to closing speed when both cars started at
+50 km/h?).</li>
+<li>Ask it for a grid runner: N seeded trials per cell, median TTC at
+first <code>Warn</code> per cell, measured against noiseless ground truth.</li>
+<li>Add the acceptance row: median TTC at first warn &gt;= 1.70 s on every
+CCRb cell. This row has a published origin; cite it.</li>
+<li>Then ask the room’s question: your arbiter can pass this row by
+warning constantly. Which other acceptance row stops that?</li>
+</ol>
+<p>Simplifications to note in your SAFETY-NOTES: this world is
+one-dimensional, so the protocol’s lateral overlap grid has no
+meaning here, and the sim applies the lead’s deceleration as a
+constant rather than the protocol’s ramp-in tolerance.</p>
+<h2 id="scope-note"><a class="header" href="#scope-note">Scope note</a></h2>
+<p>The statistical verdict layer (the <code>feotest</code> tests) is stretch work.
+The required finish line is the property-test layer plus a passing
+1,000-trial metrics run with replayable failure seeds. If you get the
+statistical layer standing too, excellent; don’t start it before the
+metrics pass.</p>
+<hr>
+<ol class="footnote-definition">
+<li id="footnote-ncap">
+<p>Euro NCAP, “AEB Car-to-Car Test Protocol” v4.3 and
+“Assessment Protocol, Safety Assist, Collision Avoidance”,
+<a href="https://cdn.euroncap.com/cars/assets/euro_ncap_aeb_c2c_test_protocol_v43_1e6ed06def.pdf">https://cdn.euroncap.com/cars/assets/euro_ncap_aeb_c2c_test_protocol_v43_1e6ed06def.pdf</a>.
+FCW points are awarded at TTC &gt;= 1.70 s. <a href="#fr-ncap-1">↩</a></p>
+</li>
+<li id="footnote-fmvss">
+<p>NHTSA, FMVSS No. 127, final rule May 2024, amended November
+2024, <a href="https://www.federalregister.gov/documents/2024/11/26/2024-27349/federal-motor-vehicle-safety-standards-automatic-emergency-braking-systems-for-light-vehicles">https://www.federalregister.gov/documents/2024/11/26/2024-27349/federal-motor-vehicle-safety-standards-automatic-emergency-braking-systems-for-light-vehicles</a>. <a href="#fr-fmvss-1">↩</a></p>
+</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="validating-a-stochastic-system"><a class="header" href="#validating-a-stochastic-system">Validating a Stochastic System</a></h1>
+<p>Here’s the testing toolbox for a system with random input. Three
+layers, plus a fourth for when a property matters enough to prove.</p>
+<h2 id="layer-1-example-tests"><a class="header" href="#layer-1-example-tests">Layer 1: Example tests</a></h2>
+<p><code>assert_eq!(decide(&amp;reports), Decision::Brake)</code> has a place: golden
+scenarios with noise disabled, pinning the deterministic core. But an
+agent asked for “tests” usually produces only this layer, often by
+seeding or disabling the randomness so the suite passes. Deterministic
+tests of a stochastic system only verify as much as the determinism
+covers.</p>
+<h2 id="layer-2-property-tests"><a class="header" href="#layer-2-property-tests">Layer 2: Property tests</a></h2>
+<p>Some statements have to hold for every input, noise included. That’s
+what a property-testing library is for. The starter ships <code>proptest</code>.
+It generates inputs and, when a property fails, shrinks the failure
+down to a minimal counterexample:</p>
+<pre><code class="language-rust ignore">proptest! {
+    // A strictly closer and faster-closing situation never yields a
+    // less severe decision.
+    #[test]
+    fn severity_is_monotone(base in track_report(), d in 1.0..50.0f64) {
+        let closer = base.closer_by(d);
+        prop_assert!(decide1(&amp;closer) &gt;= decide1(&amp;base));
+    }
+}</code></pre>
+<p>Good properties for <code>guardian</code>: severity monotonicity,
+low-confidence tracks never causing <code>Brake</code> alone, a defined decision (no
+panic) for any report including NaN ranges, and an output present every
+cycle.</p>
+<h2 id="layer-3-statistical-verdicts"><a class="header" href="#layer-3-statistical-verdicts">Layer 3: Statistical verdicts</a></h2>
+<p>The acceptance table says at least 99% of hard-brake scenarios end in
+<code>Brake</code>. That’s not a property of any single run; it’s a claim about a
+pass rate. Testing it by running 20 times and looking at the results
+gives you flaky CI and little confidence. The next page covers treating
+each run as a trial and testing the rate itself.</p>
+<p>The table’s median-latency row needs a different analysis: retain every
+responder latency, report misses separately as response coverage, compute the
+median over responders as specified, and attach a bootstrap or documented
+distribution-free interval. A Bernoulli verdict may evaluate whether a run met
+a latency threshold, but that’s a different claim from the median row.</p>
+<h2 id="layer-4-mutation-testing-and-proofs"><a class="header" href="#layer-4-mutation-testing-and-proofs">Layer 4: Mutation testing and proofs</a></h2>
+<p>Two stretch tasks for pairs with time left. Both come from
+<a href="#build-your-own-guardrails">Build Your Own Guardrails</a>:</p>
+<ul>
+<li><strong>Mutation-test the metrics.</strong> Run <code>mutest-rs</code> over the arbiter and
+metrics code. Each surviving mutant marks a claim your tests never
+check. Ask the agent to explain each survivor, then add a test that
+kills it or write down why it’s equivalent. A green suite is
+evidence only after this step.</li>
+<li><strong>Build the protocol grid.</strong> The SPEC’s protocol alignment section
+has the four Euro NCAP CCRb cells and the sourced warn row. The sim
+gives you <code>Scenario::Scripted</code>; your agent builds the cells and the
+grid runner, and you review the unit conversions. One feotest
+verdict per cell, colour-graded, is the classroom version of the
+protocol’s per-point grading.</li>
+<li><strong>Prove one invariant with Kani.</strong> Pick a property that must hold
+for every input, not only the sampled ones. “An empty report slice
+never yields <code>Warn</code> or <code>Brake</code>” is a good first choice. Ask the
+agent to write the <code>#[kani::proof]</code> for it. The result is stronger
+than a passing test: not “we found no failing input” but “no input
+of this shape exists”. Verus goes further when a contract deserves a
+full specification. Knowing that it exists is enough for today.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="feotest-statistical-verdicts"><a class="header" href="#feotest-statistical-verdicts">feotest: Statistical Verdicts</a></h1>
+<p><a href="https://github.com/mavai-org/feotest"><code>feotest</code></a> is the probabilistic
+testing framework that ships in the starter. The idea: treat each
+execution as a Bernoulli trial, pass or fail against a contract, and
+issue a verdict about the pass rate. It uses Wilson score intervals
+rather than a raw average, which is what you want at these sample
+sizes.</p>
+<p>Use it for the two rate rows in the acceptance table: hard-braking success
+and empty-road false alarms. It also fits the protocol grid from the
+SPEC’s stretch section: one verdict per cell is how Euro NCAP grades
+its test points, at classroom scale. The latency row isn’t Bernoulli. Report latency
+response coverage plus the responder median, and quantify uncertainty with a
+bootstrap confidence interval or another documented distribution-free method.
+Don’t feed a median into a pass/fail-rate tool and call the result evidence for
+the median.</p>
+<p>The entry point fits the runner directly:</p>
+<pre><code class="language-rust ignore">use feotest::model::ContractViolation;
+use feotest::probabilistic_test;
+
+#[probabilistic_test(samples = 100, threshold = 0.99, threshold_origin = "slo")]
+fn hard_braking_lead_ends_in_brake() -&gt; Result&lt;(), ContractViolation&gt; {
+    let outcome = run_scenario(Scenario::HardBrakingLead, Noise::default());
+    if outcome.final_decision == Decision::Brake {
+        Ok(())
+    } else {
+        Err(ContractViolation::new("no-brake", "run ended without Brake"))
+    }
+}</code></pre>
+<p>A single failing run counts as one trial rather than failing the test.
+The verdict is about the rate across all samples, and the threshold’s origin is recorded.
+Recognized origins are <code>"sla"</code>, <code>"slo"</code>, <code>"policy"</code>, and <code>"empirical"</code>;
+other strings are stored as unspecified.</p>
+<h2 id="the-workflow-that-comes-with-the-tool"><a class="header" href="#the-workflow-that-comes-with-the-tool">The workflow that comes with the tool</a></h2>
+<p>feotest’s intended workflow is measure, derive, test: baseline the
+behavior over many trials, derive a statistically grounded threshold from
+the baseline, then verify against it with an affordable sample count. This
+raises the question the acceptance table is really asking: 99% verified with how
+many samples, at what confidence? The framework offers three ways to
+answer (threshold-first, sample-size-first, confidence-first) instead of
+letting “run it 20 times” stand in for an answer.</p>
+<p>Its statistical assumptions are stated in its documentation, and you
+should check them against <code>guardian</code>: trials roughly independent
+and stationary, binary outcomes, controlled conditions.</p>
+<p>Note: feotest is early-stage and its API is marked unstable. Evaluate it
+the way you evaluated crates yesterday. For today it’s pinned in the
+starter’s lockfile.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="debrief-2"><a class="header" href="#debrief-2">Debrief</a></h1>
+<p>The debrief takes about 30 minutes. The course retrospective follows on
+the <a href="#course-close-and-retrospective">next page</a>.</p>
+<h2 id="the-chatter-10-minutes"><a class="header" href="#the-chatter-10-minutes">The chatter (10 minutes)</a></h2>
+<ul>
+<li>Show the worst decision trace of the afternoon. What did you change
+to eliminate it, where does that live in the types, and what did it cost on the
+latency target?</li>
+<li>Which corner of the noise / false-alarm / latency triangle did you
+concede, and who at work should be making that call?</li>
+</ul>
+<h2 id="the-test-suite-15-minutes"><a class="header" href="#the-test-suite-15-minutes">The test suite (15 minutes)</a></h2>
+<ul>
+<li>Each pair: count your suite by layer (example, property, statistical).
+What did the agent’s first suite look like by the same count?</li>
+<li>Show the best property of the day. What bug does it catch that no
+example test could?</li>
+<li>Your statistical verdicts: samples, threshold, confidence, and why
+those numbers. If you hit the flipping-verdict problem, what did it
+teach you about the difference between “we test it” and “we can make a
+claim about it”?</li>
+</ul>
+<h2 id="closing-question-5-minutes"><a class="header" href="#closing-question-5-minutes">Closing question (5 minutes)</a></h2>
+<p>The acceptance table judged <code>guardian</code> in aggregate. The processes that
+judge your real systems work the same way, and increasingly so do the
+ones that judge LLM-produced code. What changes in your team’s definition
+of “tested” on Monday?</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="course-close-and-retrospective"><a class="header" href="#course-close-and-retrospective">Course Close and Retrospective</a></h1>
+<p>The retrospective takes about 15 minutes. Before people scatter,
+collect everything the two days produced into one repository.</p>
+<h2 id="artifacts-produced"><a class="header" href="#artifacts-produced">Artifacts produced</a></h2>
+<ul>
+<li>Smell Catalog v1: the merged table from Day 1, plus what the review logs
+added over the two days.</li>
+<li>The skeleton standard: Project B’s closing list of types, error
+conventions, and doc-contract habits every new crate should start from.
+A <code>cargo generate</code> template is the natural next step.</li>
+<li>The testing ladder: example, property, statistical, with Project C’s
+layer counts as the baseline and the sample-size question as an open
+item.</li>
+<li>A working definition of review: smell, principle, prompt, with the rule
+that a recurring prompt gets promoted into the skeleton.</li>
+</ul>
+<h2 id="the-three-skills-restated"><a class="header" href="#the-three-skills-restated">The three skills, restated</a></h2>
+<ol>
+<li>Specify architecture in types and signatures, by hand. Bodies are
+generated; skeletons are written. The skeleton is the spec, and the
+compiler enforces it.</li>
+<li>Recognize design problems quickly. Triage by signatures, types, and
+smells before bodies. A mix of conventions is a finding on its own.</li>
+<li>Turn findings into prompts, and turn recurring prompts into skeleton
+changes.</li>
+</ol>
+<h2 id="retrospective-one-sentence-per-person-three-rounds"><a class="header" href="#retrospective-one-sentence-per-person-three-rounds">Retrospective (one sentence per person, three rounds)</a></h2>
+<ul>
+<li>Something that clicked.</li>
+<li>A sticking point you hit and will now recognize.</li>
+<li>One practice you’ll introduce in the team’s real workflow this month,
+stated concretely enough that a colleague could check.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="the-review-checklist"><a class="header" href="#the-review-checklist">The Review Checklist</a></h1>
+<p>The course in one printable page. Work top to bottom. Each line is about a
+30-second check.</p>
+<h2 id="signatures-first"><a class="header" href="#signatures-first">Signatures first</a></h2>
+<ul>
+<li><input disabled="" type="checkbox"> Parameter ownership honest? <code>&amp;str</code> to read, <code>String</code> to keep,
+<code>&amp;mut</code> rare and deliberate.</li>
+<li><input disabled="" type="checkbox"> Fallibility honest? <code>Result</code> where failure exists; a <code>-&gt; T</code> that
+can panic does so only on documented invariant violations, never on
+input; <code>Option</code> only where absence is normal.</li>
+<li><input disabled="" type="checkbox"> Receivers meaningful? <code>self</code> by value for transitions, <code>&amp;self</code> for
+observation, interior mutability justified.</li>
+<li><input disabled="" type="checkbox"> Any <code>&lt;'a&gt;</code> in a <code>pub</code> signature: who decided it, and where is the
+decision written down? A boundary-crossing lifetime with no named
+exception (view type with owned twin, iterator, guard, measured
+zero-copy) is a red flag.</li>
+</ul>
+<h2 id="types-second"><a class="header" href="#types-second">Types second</a></h2>
+<ul>
+<li><input disabled="" type="checkbox"> Closed sets modeled as enums, not strings or flag sets. Count the
+<code>bool</code>s and <code>Option</code>s; check whether they are one state machine.</li>
+<li><input disabled="" type="checkbox"> Validated values as newtypes with fallible constructors. Parse at
+the boundary; the type carries the proof.</li>
+<li><input disabled="" type="checkbox"> Quantities carry units. IDs aren’t bare primitives.</li>
+<li><input disabled="" type="checkbox"> Costly wrong-state calls prevented by construction (typestate)
+where the state graph is small and stable.</li>
+<li><input disabled="" type="checkbox"> Paired manual calls (<code>begin</code>/<code>end</code>, <code>acquire</code>/<code>release</code>) replaced
+by guards with <code>Drop</code>.</li>
+</ul>
+<h2 id="errors-third"><a class="header" href="#errors-third">Errors third</a></h2>
+<ul>
+<li><input disabled="" type="checkbox"> One convention per crate: libraries enumerate their errors in
+dedicated enums, applications aggregate into one opaque error
+with context. A mix of conventions is a finding on its own.</li>
+<li><input disabled="" type="checkbox"> Context attached at boundaries; the chain reads causally.</li>
+<li><input disabled="" type="checkbox"> <code>unwrap</code>/<code>expect</code> only on invariants, each with a message saying
+why it’s unreachable. Never where input arrives.</li>
+</ul>
+<h2 id="smells-last-grep-pass"><a class="header" href="#smells-last-grep-pass">Smells last (grep pass)</a></h2>
+<ul>
+<li><input disabled="" type="checkbox"> <code>clone</code>: each survivor has a comment justifying two owners.</li>
+<li><input disabled="" type="checkbox"> <code>Arc&lt;Mutex</code>: each survivor names the invariant it protects and why
+the state is shared and mutable.</li>
+<li><input disabled="" type="checkbox"> <code>dyn </code>, single-implementation traits: survivors are test seams or
+documented extension points.</li>
+<li><input disabled="" type="checkbox"> Tests: count the ladder (example / property / statistical). A green
+suite that can’t detect the regressions you care about isn’t
+evidence.</li>
+</ul>
+<h2 id="always"><a class="header" href="#always">Always</a></h2>
+<ul>
+<li><input disabled="" type="checkbox"> A finding without a prompt is incomplete.</li>
+<li><input disabled="" type="checkbox"> A recurring prompt is a skeleton defect. Promote it.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="prompt-patterns-for-rust"><a class="header" href="#prompt-patterns-for-rust">Prompt Patterns for Rust</a></h1>
+<p>The prompts used in this course, collected. Each one delivers a design
+decision. Make the decision first; the prompt is the delivery.</p>
+<h2 id="setting-the-contract"><a class="header" href="#setting-the-contract">Setting the contract</a></h2>
+<blockquote>
+<p>Fill in the <code>todo!()</code> bodies without changing any public signature or
+type definition. If an implementation seems to require a signature
+change, stop and explain why instead of changing it.</p>
+</blockquote>
+<blockquote>
+<p>Treat the doc comments as requirements. Ordering, threading, and
+failure semantics stated there are contracts, not suggestions.</p>
+</blockquote>
+<h2 id="ownership-and-lifetimes"><a class="header" href="#ownership-and-lifetimes">Ownership and lifetimes</a></h2>
+<blockquote>
+<p>Remove clones that exist only to satisfy the borrow checker. Prefer
+borrowing; move where transfer is the intent. Each remaining clone gets
+a one-line comment justifying two independent owners.</p>
+</blockquote>
+<blockquote>
+<p>Remove lifetime parameters from this module’s public API. Exported
+types own their data; borrows stay internal and short-lived. If the hot
+path needs zero-copy, provide a borrowed view type alongside an owned
+type, following the <code>Path</code> and <code>PathBuf</code> pattern.</p>
+</blockquote>
+<blockquote>
+<p>Restructure to avoid shared mutable state: single owner with borrowed
+access, channel-passed ownership for the pipeline, <code>Arc</code> without a lock
+for immutable configuration. Any remaining <code>Mutex</code> documents the
+invariant it protects.</p>
+</blockquote>
+<h2 id="types"><a class="header" href="#types">Types</a></h2>
+<blockquote>
+<p><code>status</code> is a closed set. Model it as an enum with data on the
+variants, and let <code>match</code> be exhaustive, with no <code>_</code> arm.</p>
+</blockquote>
+<blockquote>
+<p>Introduce <code>CanId</code> as a newtype with a fallible constructor. Raw <code>u16</code>
+must not appear past the parse boundary.</p>
+</blockquote>
+<blockquote>
+<p>These states have costly wrong-state calls. Use the typestate pattern:
+one type per state, transitions consume <code>self</code>.</p>
+</blockquote>
+<blockquote>
+<p><code>begin_maintenance</code> and <code>end_maintenance</code> are a paired-call hazard.
+Return a guard from <code>begin</code> whose <code>Drop</code> performs <code>end</code>, and remove the
+manual <code>end</code>.</p>
+</blockquote>
+<h2 id="errors"><a class="header" href="#errors">Errors</a></h2>
+<blockquote>
+<p>Define one <code>DecodeError</code> enum for this module, implementing
+<code>std::error::Error</code> with a <code>source()</code> chain. Convert
+all <code>String</code> and <code>Box&lt;dyn Error&gt;</code> returns to it, and attach context at
+each <code>?</code> crossing a module boundary.</p>
+</blockquote>
+<blockquote>
+<p>This function handles external input and must not panic. <code>expect()</code>
+only for invariants no input can violate, and each use must state in
+its message why it’s unreachable.</p>
+</blockquote>
+<h2 id="abstraction"><a class="header" href="#abstraction">Abstraction</a></h2>
+<blockquote>
+<p>Remove speculative abstraction: inline single-implementation traits
+unless they are a test seam or a documented extension point. The
+strategy objects become an enum, since the variant set is closed.
+Collapse layers that only forward.</p>
+</blockquote>
+<h2 id="tests"><a class="header" href="#tests">Tests</a></h2>
+<blockquote>
+<p>Produce a three-layer suite: (1) golden example tests with noise
+disabled, pinning the deterministic core; (2) property tests for
+invariants, starting with severity monotonicity and no-panic-on-any-
+input; (3) probabilistic tests for each acceptance-table row, with
+samples, threshold, and threshold origin stated. Use the property and
+probabilistic testing libraries this project already depends on. Do
+not seed or disable randomness in layer 3.</p>
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="glossary"><a class="header" href="#glossary">Glossary</a></h1>
+<p>Safety vocabulary used in Project C, with pointers into ISO 26262:2018.
+Definitions here are paraphrased; the standard’s own wording is in the
+cited entries of ISO 26262-1:2018 (the vocabulary part).</p>
+<h2 id="iso-26262-terms"><a class="header" href="#iso-26262-terms">ISO 26262 terms</a></h2>
+<ul>
+<li><strong>ASIL</strong>, automotive safety integrity level (26262-1, 3.6): one of
+four levels, A through D, D the most demanding, that scales the
+rigor required of an element; assigned per hazardous event by the
+HARA.</li>
+<li><strong>HARA</strong>, hazard analysis and risk assessment (26262-1, 3.76;
+method in 26262-3, Clause 6): the analysis that classifies each
+hazardous event by severity, exposure, and controllability and
+derives an ASIL and a safety goal from them.</li>
+<li><strong>S, E, C</strong>: the three HARA classification axes: severity of harm,
+probability of exposure to the situation, and controllability by the
+people involved (26262-3, Tables 1, 2, and 3; ASIL determination in
+Table 4).</li>
+<li><strong>Safety goal</strong> (26262-1, 3.139): the top-level safety requirement
+for a hazardous event; everything below it refines this.</li>
+<li><strong>Safety mechanism</strong> (26262-1, 3.142): a technical measure that
+detects or controls faults to keep the item in a safe state; our
+monitor element is one.</li>
+<li><strong>ASIL decomposition</strong> (26262-1, 3.3; method in 26262-9, Clause 5):
+splitting a safety requirement into redundant requirements on
+sufficiently independent elements, using the schemas of 26262-9,
+5.4.9.</li>
+<li><strong>X(Y) notation</strong>, as in QM(D) or B(D): the element is developed at
+level X, while the parenthesized Y records the ASIL of the original
+requirement before decomposition, because some obligations still
+follow the original.</li>
+<li><strong>QM</strong>, quality management: no ASIL assigned; the element is handled
+by normal quality processes rather than the safety lifecycle.</li>
+<li><strong>Confirmation review</strong> (26262-2, 6.4.7 and Table 1): a review of a
+key safety work product by someone with a required degree of
+independence from its authors.</li>
+<li><strong>Dependent failures</strong> (analysis per 26262-9, Clause 7): failures of
+supposedly independent elements that aren’t independent in fact,
+from shared causes (power, clock, housing, update train) or cascades;
+the analysis that an ASIL decomposition’s independence claim rests
+on.</li>
+<li><strong>TCL</strong>, tool confidence level (26262-8, Clause 11): the outcome of
+evaluating a software tool: whether its possible malfunctions matter
+and whether they would be detected, which determines if the tool
+needs qualification (26262-8, 11.4.5 and 11.4.6).</li>
+</ul>
+<h2 id="domain-terms"><a class="header" href="#domain-terms">Domain terms</a></h2>
+<ul>
+<li><strong>FCW</strong>, forward collision warning: the vehicle function <code>guardian</code>
+arbitrates for.</li>
+<li><strong>TTC</strong>, time to collision: range divided by closing speed, the
+quantity the arbiter thresholds.</li>
+<li><strong>EMA</strong>, exponential moving average: the smoothing filter in the
+reference decision channel.</li>
+<li><strong>Channel</strong>: one of the redundant sensing-and-decision paths in the
+decomposed architecture; this workshop’s exercise builds the radar
+channel, with the camera channel specified on paper.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="further-reading"><a class="header" href="#further-reading">Further Reading</a></h1>
+<h2 id="the-course-this-one-builds-on"><a class="header" href="#the-course-this-one-builds-on">The course this one builds on</a></h2>
+<ul>
+<li><a href="https://google.github.io/comprehensive-rust/">Comprehensive Rust</a>: the
+fundamentals this course assumes. Its
+<a href="https://google.github.io/comprehensive-rust/idiomatic/welcome.html">Idiomatic Rust</a>
+section covers the patterns from Day 1 morning in more depth, from the
+author’s side.</li>
+</ul>
+<h2 id="patterns"><a class="header" href="#patterns">Patterns</a></h2>
+<ul>
+<li><a href="https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/">Parse, don’t validate</a>
+(Alexis King): makes the case for parsing input into richer types at
+the boundary. The newtype page is based on it.</li>
+<li><a href="https://rust-lang.github.io/api-guidelines/">Rust API Guidelines</a>:
+recommendations on how to design APIs. Useful as a checklist for a
+skeleton’s public surface.</li>
+<li><a href="https://rust-unofficial.github.io/patterns/">Rust Design Patterns</a>:
+covers the newtype pattern, RAII guards, and builders, and includes an
+anti-pattern catalog.</li>
+<li><a href="https://cliffle.com/blog/rust-typestate/">The Typestate Pattern in Rust</a>
+(Cliff Biffle): describes the typestate pattern in depth, with worked
+examples.</li>
+</ul>
+<h2 id="errors-1"><a class="header" href="#errors-1">Errors</a></h2>
+<ul>
+<li><a href="https://docs.rs/thiserror"><code>thiserror</code></a>: derive macros for defining
+error enums.</li>
+<li><a href="https://docs.rs/anyhow"><code>anyhow</code></a>: an opaque error type with context
+chaining, for applications.</li>
+<li><a href="https://blog.burntsushi.net/rust-error-handling/">Error Handling in Rust</a>
+(BurntSushi): covers error handling in detail, from <code>Option</code> and
+<code>Result</code> up to library design.</li>
+</ul>
+<h2 id="testing-stochastic-systems"><a class="header" href="#testing-stochastic-systems">Testing stochastic systems</a></h2>
+<ul>
+<li><a href="https://docs.rs/proptest"><code>proptest</code></a>: property-based testing with
+input generation and shrinking.</li>
+<li><a href="https://github.com/mavai-org/feotest"><code>feotest</code></a>: probabilistic
+testing with statistical verdicts. The README includes a section on
+the statistical basis of the verdicts.</li>
+<li><a href="https://docs.rs/criterion"><code>criterion</code></a>: statistics-driven
+benchmarking. Useful for questions like Project B’s “did zero-copy
+matter here at all?”</li>
+</ul>
+<h2 id="safety-critical-rust"><a class="header" href="#safety-critical-rust">Safety-critical Rust</a></h2>
+<ul>
+<li><a href="https://github.com/rustfoundation/safety-critical-rust-consortium">Safety-Critical Rust Consortium</a>:
+develops coding guidelines and related material for Rust in
+safety-critical systems.</li>
+<li><a href="https://github.com/rust-lang/fls">Ferrocene Language Specification</a>:
+describes the Rust language normatively, for when the meaning of a
+construct needs a precise answer.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="theme/speaker-notes-shim-93ba1f2e.js"></script>
+        <script src="theme/speaker-notes-956dd7dd.js"></script>
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+
+    </div>
+    </body>
+</html>

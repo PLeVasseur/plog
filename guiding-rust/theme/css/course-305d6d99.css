@@ -1,0 +1,29 @@
+/* Course additions on top of Comprehensive Rust's speaker-notes styling. */
+
+.hidden {
+    display: none !important;
+}
+
+/* Facilitator-only pages carry a visible banner. */
+.facilitator-banner {
+    border: 2px solid #b8860b;
+    border-radius: 6px;
+    background: rgba(255, 215, 0, 0.12);
+    padding: 0.6em 1em;
+    font-weight: 600;
+    margin: 1em 0 1.5em 0;
+}
+
+table {
+    margin: 1em 0;
+}
+
+/* The icon shim emits inline <svg> rather than Font Awesome <i> elements,
+   so mirror the pop-out hover rule and align the icon with the text. */
+.content details summary .pop-out svg {
+    vertical-align: -0.125em;
+}
+
+.content details summary .pop-out svg:hover {
+    color: var(--icons-hover);
+}
