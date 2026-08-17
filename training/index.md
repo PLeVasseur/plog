@@ -1,10 +1,8 @@
 ---
 layout: page
-title: Training
+title: Guiding Rust
 permalink: /training/
 ---
-
-# Guiding Rust
 
 Guiding Rust is a two-day course on Rust architecture and design patterns for
 engineers who read, review, and steer LLM-generated Rust.
