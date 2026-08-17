@@ -24,6 +24,7 @@
 
     <nav class="site-links" aria-label="Primary">
       <a href="{{ path_prefix }}index.html"{% if current_url == '/' %} class="is-active"{% endif %}>Home</a>
+      <a href="{{ path_prefix }}training/index.html"{% if current_url == '/training/' or current_url contains '/training/' %} class="is-active"{% endif %}>Training</a>
       <a href="{{ path_prefix }}articles/index.html"{% if current_url == '/articles/' or current_url contains '/articles/' %} class="is-active"{% endif %}>Articles</a>
       <a href="{{ path_prefix }}media/index.html"{% if current_url == '/media/' or current_url contains '/media/' %} class="is-active"{% endif %}>Media</a>
     </nav>
