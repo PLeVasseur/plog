@@ -36,12 +36,3 @@ becomes green after the corresponding participant-owned skeleton milestone.
 - Work in pairs and use one project repository per pair.
 - For Project A, allow at least 6 GB of free disk space before generating the
   optional 4.59 GB performance fixture.
-
-## Workshop Snapshot
-
-The materials for the August 19, 2026 workshop are pinned at
-`workshop-2026-08-19`:
-
-- [`canscan` snapshot](https://github.com/PLeVasseur/guiding-rust-canscan/tree/workshop-2026-08-19)
-- [`framecache` snapshot](https://github.com/PLeVasseur/guiding-rust-framecache/tree/workshop-2026-08-19)
-- [`guardian` snapshot](https://github.com/PLeVasseur/guiding-rust-guardian/tree/workshop-2026-08-19)

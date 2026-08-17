@@ -15,7 +15,6 @@ minima:
 # Header navigation links
 header_pages:
   - index.md
-  - training/index.md
   - articles/index.md
   - media/index.md
 
