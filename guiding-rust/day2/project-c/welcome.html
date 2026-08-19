@@ -37,10 +37,10 @@
             const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../../searchindex-e2fa7ee4.js";
+            window.path_to_searchindex_js = "../../searchindex-6d0f7aa8.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../toc-1e65b337.js"></script>
+        <script src="../../toc-c4540e37.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -209,31 +209,43 @@ tracks this cycle and one channel reporting nothing are both normal.</li>
 one does your design believe, and what does it do while one channel
 reports nothing?</li>
 </ul>
-<p>The afternoon’s project block is 2 hours 10 minutes, split around the
-break. As a rough budget:</p>
+<h2 id="three-hour-workshop-route"><a class="header" href="#three-hour-workshop-route">Three-hour workshop route</a></h2>
+<p>The starter now provides the mechanical multi-seed metrics runner. You review
+its metric semantics, but you do not spend the afternoon writing trial loops,
+CLI parsing, or output formatting. Your work is the arbiter, its policy, its
+tests, and the evidence connecting them.</p>
+<p>The complete afternoon is three hours, including the break and debrief:</p>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>Stage</th><th>Budget</th></tr>
 </thead>
 <tbody>
-<tr><td>Skeleton, by hand (both channels)</td><td>30 minutes</td></tr>
-<tr><td>Arbiter and metrics, first working pass</td><td>45 minutes</td></tr>
-<tr><td>Measure, revise, re-measure</td><td>40 minutes</td></tr>
-<tr><td>SAFETY-NOTES</td><td>15 minutes</td></tr>
+<tr><td>Safety frame and acceptance claims</td><td>10 minutes</td></tr>
+<tr><td>Audit the prepared runner’s metric semantics</td><td>10 minutes</td></tr>
+<tr><td>Skeleton and agent-assisted first pass</td><td>25 minutes</td></tr>
+<tr><td>Deterministic test and 200-trial baseline</td><td>20 minutes</td></tr>
+<tr><td>Replay one bad seed and amend the policy</td><td>15 minutes</td></tr>
+<tr><td>Break</td><td>10 minutes</td></tr>
+<tr><td>Implement one deliberate stateful revision</td><td>30 minutes</td></tr>
+<tr><td>Add or review two properties</td><td>18 minutes</td></tr>
+<tr><td>Final metrics and compact safety case</td><td>12 minutes</td></tr>
+<tr><td>Debrief</td><td>30 minutes</td></tr>
 </tbody>
 </table>
 </div>
-<p>The statistical verdict layer is a stretch goal on top of this, not a
-row in the budget.</p>
+<p>Passing every acceptance row is still the product target, but it is not the
+workshop completion criterion. A measured failure, a replayed seed, a written
+policy amendment, and a defensible evidence gap are useful outcomes. Hiding a
+failure to finish more code is not.</p>
 <p>In this project we practice:</p>
 <ul>
 <li>The whole course so far, under domain pressure: the state machine is an
 enum (or typestate), the thresholds are newtypes, and the arbiter’s
 signature is the spec.</li>
 <li>Testing a stochastic system: property-based tests for invariants that
-must always hold, and statistical verdicts, via the provided <a href="https://github.com/mavai-org/feotest"><code>feotest</code></a>, for
-behavior that only exists in aggregate.</li>
+must always hold, measured behavior over replayable trials, and a clear
+distinction between a measured rate and a statistically supported claim.</li>
 <li>Recognizing when the agent’s tests are green but test nothing that
 matters.</li>
 </ul>

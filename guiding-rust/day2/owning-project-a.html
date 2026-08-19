@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Project A: canscan - Guiding Rust 🦀</title>
+        <title>From Generated Code to Owned Code - Guiding Rust 🦀</title>
 
 
         <!-- Custom HTML head -->
@@ -12,35 +12,35 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../../favicon-de23e50b.svg">
-        <link rel="shortcut icon" href="../../favicon-8114d1fc.png">
-        <link rel="stylesheet" href="../../css/variables-8adf115d.css">
-        <link rel="stylesheet" href="../../css/general-e96d0476.css">
-        <link rel="stylesheet" href="../../css/chrome-d279d366.css">
-        <link rel="stylesheet" href="../../css/print-9e4910d8.css" media="print">
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-e96d0476.css">
+        <link rel="stylesheet" href="../css/chrome-d279d366.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../../fonts/fonts-9644e21d.css">
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="mdbook-highlight-css" href="../../highlight-493f70e1.css">
-        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../../tomorrow-night-4c0ae647.css">
-        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../../ayu-highlight-3fdfc3ac.css">
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="../../theme/css/speaker-notes-a0b2db65.css">
-        <link rel="stylesheet" href="../../theme/css/course-305d6d99.css">
+        <link rel="stylesheet" href="../theme/css/speaker-notes-a0b2db65.css">
+        <link rel="stylesheet" href="../theme/css/course-305d6d99.css">
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../../";
+            const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../../searchindex-6d0f7aa8.js";
+            window.path_to_searchindex_js = "../searchindex-6d0f7aa8.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../toc-c4540e37.js"></script>
+        <script src="../toc-c4540e37.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -107,7 +107,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
             </noscript>
             <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -142,7 +142,7 @@
                     <h1 class="menu-title">Guiding Rust 🦀</h1>
 
                     <div class="right-buttons">
-                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
                         </a>
 
@@ -176,52 +176,178 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="project-a-canscan"><a class="header" href="#project-a-canscan">Project A: canscan</a></h1>
-<p>Including a 10 minute break, this session should take about 3 hours
-and 30 minutes. It contains:</p>
+                        <h1 id="from-generated-code-to-owned-code"><a class="header" href="#from-generated-code-to-owned-code">From Generated Code to Owned Code</a></h1>
+<p>This optional bridge session is for a class that completed Project A but does
+not yet feel able to explain or safely change what the agent produced. It does
+not replace Project B. It gives you another way to spend a morning before
+moving on.</p>
+<p>The goal is not to understand every line. By the end, each pair should be able
+to:</p>
+<ul>
+<li>trace one input from the CLI boundary to output;</li>
+<li>predict one success and one failure before running them;</li>
+<li>connect a requirement to code and a defending test;</li>
+<li>explain one ownership, error-policy, or architecture decision;</li>
+<li>make one small change safely; and</li>
+<li>separate an agent’s explanation from claims verified in the repository.</li>
+</ul>
+<h2 id="working-agreement"><a class="header" href="#working-agreement">Working agreement</a></h2>
+<p>Work in the Project A repository you produced. Create a checkpoint before the
+session and keep the tests green between activities.</p>
+<p>For every investigation:</p>
+<ol>
+<li>Humans predict first.</li>
+<li>The agent may explain second.</li>
+<li>Every explanation claim gets a file and symbol, a test, or the label
+<strong>unverified assumption</strong>.</li>
+<li>The person who did not drive that part of Project A gives the final
+explanation.</li>
+</ol>
+<p>Do not ask the agent for a general tour of the repository. Ask a question with
+an observable boundary.</p>
+<h2 id="suggested-160-minute-session"><a class="header" href="#suggested-160-minute-session">Suggested 160-minute session</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Segment</th><th>Duration</th></tr>
+<tr><th>Time</th><th>Activity</th><th>Output</th></tr>
 </thead>
 <tbody>
-<tr><td>Brief</td><td>10 minutes</td></tr>
-<tr><td>Project work, part one</td><td>1 hour 15 minutes</td></tr>
-<tr><td>Break</td><td>10 minutes</td></tr>
-<tr><td>Project work, part two</td><td>1 hour 15 minutes</td></tr>
-<tr><td>Debrief</td><td>40 minutes</td></tr>
+<tr><td>0-10</td><td>Choose one subsystem and assign roles</td><td>A concrete ownership question</td></tr>
+<tr><td>10-30</td><td>Draw the architecture without the agent</td><td>Modules, dependencies, and ownership arrows</td></tr>
+<tr><td>30-55</td><td>Trace one valid candump line</td><td>A file-and-symbol call chain from CLI to output</td></tr>
+<tr><td>55-75</td><td>Trace one failure</td><td>The malformed-input policy and observable failure behavior</td></tr>
+<tr><td>75-85</td><td>Break</td><td></td></tr>
+<tr><td>85-110</td><td>Perform test archaeology</td><td>One claim, its test, and a mutation the test should catch</td></tr>
+<tr><td>110-135</td><td>Make one reviewed change</td><td>Test first, minimal implementation, and rationale</td></tr>
+<tr><td>135-150</td><td>Cross-pair code defense</td><td>One verified claim, one concern, and one question</td></tr>
+<tr><td>150-160</td><td>Transfer the method to Project C</td><td>A requirements-to-evidence sketch</td></tr>
 </tbody>
 </table>
 </div>
-<p>Your first project with the agent. It’s a command-line tool that reads
-CAN bus log files and answers questions about them, small enough to
-finish in an afternoon and realistic enough that everything from this
-morning shows up in it.</p>
-<p>This project practices:</p>
+<h2 id="1-draw-the-architecture"><a class="header" href="#1-draw-the-architecture">1. Draw the architecture</a></h2>
+<p>Draw boxes for the executable boundary, reusable domain code, parser, policy,
+aggregation, and output formatting. Add arrows for calls and important data.
+Mark where untrusted text first becomes a typed value and where data becomes
+owned.</p>
+<p>Your map must answer:</p>
 <ul>
-<li>Crate evaluation. The spec names no crates. Your agent will propose
-some, and deciding whether to accept them is your job.</li>
-<li>Judging toolchain suggestions. <code>clippy</code> and <code>rustc</code> will make
-suggestions. Some are right for this tool and some aren’t. The agent
-tends to accept all of them.</li>
-<li>Spec iteration. The spec is incomplete, like most specs. When reality
-disagrees with it, amend it in writing and regenerate.</li>
-<li>The morning’s material: skeleton first, then smell triage on the output.</li>
+<li>Can a new subcommand reuse the parser without changing it?</li>
+<li>Does any frame borrow from the input buffer? If so, how long can it live?</li>
+<li>Where does the malformed-line policy live?</li>
+<li>Which module knows about CLI arguments?</li>
+<li>Which operation could grow with the size of the input file?</li>
 </ul>
-<p>Working agreement: pairs. The less experienced Rust reader drives the
-agent, the more experienced one reviews out loud. Swap at the midpoint. Record
-findings in <code>REVIEW-LOG.md</code> as smell, principle, and prompt. The log is an
-input to the debrief.</p>
+<p>The map is a hypothesis until code and tests support it.</p>
+<h2 id="2-trace-a-vertical-slice"><a class="header" href="#2-trace-a-vertical-slice">2. Trace a vertical slice</a></h2>
+<p>Use one known valid line:</p>
+<pre><code class="language-text">(1712345678.123456) can0 18FF0102#DEADBEEF11223344
+</code></pre>
+<p>Before running the program, predict the parsed fields, the command output, and
+the ownership transitions. Then trace the actual symbols in order. Record only
+the shortest chain that explains the behavior.</p>
+<p>Repeat for one malformed line from <code>medium.log</code>. This time include:</p>
+<ul>
+<li>the function that recognizes the failure;</li>
+<li>the error type or policy decision;</li>
+<li>the exit status and diagnostic boundary; and</li>
+<li>whether any output can already have escaped.</li>
+</ul>
+<h2 id="3-build-claimevidence-cards"><a class="header" href="#3-build-claimevidence-cards">3. Build claim/evidence cards</a></h2>
+<p>Complete at least three rows:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Claim</th><th>Code evidence</th><th>Test evidence</th><th>Counterexample or assumption</th></tr>
+</thead>
+<tbody>
+<tr><td>The parser cannot panic on external input</td><td></td><td></td><td></td></tr>
+<tr><td>Processing is streaming rather than whole-file</td><td></td><td></td><td></td></tr>
+<tr><td><code>filter</code> cannot publish a plausible partial result before failure</td><td></td><td></td><td></td></tr>
+<tr><td>JSON output has a deliberate compatibility policy</td><td></td><td></td><td></td></tr>
+<tr><td>A new command can reuse the domain API</td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+<p>It is acceptable for a row to expose missing evidence. That is a finding, not a
+failed exercise.</p>
+<h2 id="4-test-archaeology"><a class="header" href="#4-test-archaeology">4. Test archaeology</a></h2>
+<p>Pick one test that matters. Explain the production behavior it protects, then
+name the smallest mutation that should make it fail. Examples:</p>
+<ul>
+<li>replace a checked parse with <code>unwrap()</code>;</li>
+<li>accept an invalid CAN identifier width;</li>
+<li>collect all input lines before processing;</li>
+<li>emit a matching line before the full input is validated;</li>
+<li>divide by a zero capture duration; or</li>
+<li>silently change a JSON field name.</li>
+</ul>
+<p>Make the mutation on a disposable branch if it is safe to do so. If the test
+does not fail, improve the test before restoring the implementation.</p>
+<p>An especially useful bridge to Project C is a property test asserting that
+arbitrary external input never makes the parser panic.</p>
+<h2 id="5-make-one-small-change"><a class="header" href="#5-make-one-small-change">5. Make one small change</a></h2>
+<p>Choose a change that crosses at least two modules but fits in 25 minutes. Write
+the test first and predict which symbols will change. Afterward, compare the
+actual diff with the prediction.</p>
+<p>Good-sized changes include:</p>
+<ul>
+<li>define behavior for <code>--limit 0</code>;</li>
+<li>make a malformed-line policy observable in <code>summary</code>;</li>
+<li>cover zero-duration captures explicitly;</li>
+<li>add a parser property for arbitrary input; or</li>
+<li>make one JSON compatibility rule executable as a test.</li>
+</ul>
+<p>The change is complete only when the pair can explain why unrelated behavior
+did not change.</p>
+<h2 id="6-audit-an-agent-explanation"><a class="header" href="#6-audit-an-agent-explanation">6. Audit an agent explanation</a></h2>
+<p>Now ask the agent:</p>
+<blockquote>
+<p>Explain this vertical slice as a sequence of concrete claims. For each
+claim, identify the file, symbol, and test that supports it. Mark anything
+you cannot prove from the repository as an assumption.</p>
+</blockquote>
+<p>Annotate the answer. Verify, correct, or reject every claim. Do not reward a
+fluent explanation that points at the wrong code.</p>
+<h2 id="7-teach-it-to-another-pair"><a class="header" href="#7-teach-it-to-another-pair">7. Teach it to another pair</a></h2>
+<p>The visiting pair gets five minutes to read, then presents the architecture
+back to its owners. The owners may answer questions only with a code location,
+test, command result, or explicit assumption.</p>
+<p>Finish with four statements:</p>
+<ol>
+<li>One thing we can now explain.</li>
+<li>One behavior a test genuinely protects.</li>
+<li>One part we still do not understand.</li>
+<li>One change we now believe we could make safely.</li>
+</ol>
+<h2 id="bridge-to-project-c"><a class="header" href="#bridge-to-project-c">Bridge to Project C</a></h2>
+<p>Project C changes the domain and the shape of evidence, not the ownership
+obligation:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Project A</th><th>Project C</th></tr>
+</thead>
+<tbody>
+<tr><td>Malformed-input policy</td><td>Low-confidence and dropout policy</td></tr>
+<tr><td>State while streaming a file</td><td>State carried between decision cycles</td></tr>
+<tr><td>Runtime and memory evidence</td><td>Rate, latency, and false-alarm evidence</td></tr>
+<tr><td>One deterministic fixture</td><td>Many seeded, replayable trials</td></tr>
+<tr><td>Parser and output boundaries</td><td>Sensor-channel and arbiter boundaries</td></tr>
+<tr><td>Which test protects this policy?</td><td>Which evidence supports this safety claim?</td></tr>
+</tbody>
+</table>
+</div>
+<p>Carry the claim/evidence-card format into <code>SAFETY-NOTES.md</code>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../smells/exercise.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../day1/project-a/debrief.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../../day1/project-a/spec.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../day2/welcome.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -231,11 +357,11 @@ input to the debrief.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../smells/exercise.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../day1/project-a/debrief.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../../day1/project-a/spec.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../day2/welcome.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
@@ -255,17 +381,17 @@ input to the debrief.</p>
         </script>
 
 
-        <script src="../../elasticlunr-ef4e11c1.min.js"></script>
-        <script src="../../mark-09e88c2c.min.js"></script>
-        <script src="../../searcher-09f2665d.js"></script>
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
 
-        <script src="../../clipboard-1626706a.min.js"></script>
-        <script src="../../highlight-abc7f01d.js"></script>
-        <script src="../../book-609e4cb8.js"></script>
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-609e4cb8.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../../theme/speaker-notes-shim-93ba1f2e.js"></script>
-        <script src="../../theme/speaker-notes-956dd7dd.js"></script>
+        <script src="../theme/speaker-notes-shim-93ba1f2e.js"></script>
+        <script src="../theme/speaker-notes-956dd7dd.js"></script>
 
 
 

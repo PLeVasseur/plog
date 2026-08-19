@@ -38,10 +38,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e2fa7ee4.js";
+            window.path_to_searchindex_js = "searchindex-6d0f7aa8.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-1e65b337.js"></script>
+        <script src="toc-c4540e37.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -1560,6 +1560,169 @@ owns that difference?</li>
 <p>One sentence per pair: what will you put in the skeleton next time that
 you put in a review comment today?</p>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="from-generated-code-to-owned-code"><a class="header" href="#from-generated-code-to-owned-code">From Generated Code to Owned Code</a></h1>
+<p>This optional bridge session is for a class that completed Project A but does
+not yet feel able to explain or safely change what the agent produced. It does
+not replace Project B. It gives you another way to spend a morning before
+moving on.</p>
+<p>The goal is not to understand every line. By the end, each pair should be able
+to:</p>
+<ul>
+<li>trace one input from the CLI boundary to output;</li>
+<li>predict one success and one failure before running them;</li>
+<li>connect a requirement to code and a defending test;</li>
+<li>explain one ownership, error-policy, or architecture decision;</li>
+<li>make one small change safely; and</li>
+<li>separate an agent’s explanation from claims verified in the repository.</li>
+</ul>
+<h2 id="working-agreement"><a class="header" href="#working-agreement">Working agreement</a></h2>
+<p>Work in the Project A repository you produced. Create a checkpoint before the
+session and keep the tests green between activities.</p>
+<p>For every investigation:</p>
+<ol>
+<li>Humans predict first.</li>
+<li>The agent may explain second.</li>
+<li>Every explanation claim gets a file and symbol, a test, or the label
+<strong>unverified assumption</strong>.</li>
+<li>The person who did not drive that part of Project A gives the final
+explanation.</li>
+</ol>
+<p>Do not ask the agent for a general tour of the repository. Ask a question with
+an observable boundary.</p>
+<h2 id="suggested-160-minute-session"><a class="header" href="#suggested-160-minute-session">Suggested 160-minute session</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Time</th><th>Activity</th><th>Output</th></tr>
+</thead>
+<tbody>
+<tr><td>0-10</td><td>Choose one subsystem and assign roles</td><td>A concrete ownership question</td></tr>
+<tr><td>10-30</td><td>Draw the architecture without the agent</td><td>Modules, dependencies, and ownership arrows</td></tr>
+<tr><td>30-55</td><td>Trace one valid candump line</td><td>A file-and-symbol call chain from CLI to output</td></tr>
+<tr><td>55-75</td><td>Trace one failure</td><td>The malformed-input policy and observable failure behavior</td></tr>
+<tr><td>75-85</td><td>Break</td><td></td></tr>
+<tr><td>85-110</td><td>Perform test archaeology</td><td>One claim, its test, and a mutation the test should catch</td></tr>
+<tr><td>110-135</td><td>Make one reviewed change</td><td>Test first, minimal implementation, and rationale</td></tr>
+<tr><td>135-150</td><td>Cross-pair code defense</td><td>One verified claim, one concern, and one question</td></tr>
+<tr><td>150-160</td><td>Transfer the method to Project C</td><td>A requirements-to-evidence sketch</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="1-draw-the-architecture"><a class="header" href="#1-draw-the-architecture">1. Draw the architecture</a></h2>
+<p>Draw boxes for the executable boundary, reusable domain code, parser, policy,
+aggregation, and output formatting. Add arrows for calls and important data.
+Mark where untrusted text first becomes a typed value and where data becomes
+owned.</p>
+<p>Your map must answer:</p>
+<ul>
+<li>Can a new subcommand reuse the parser without changing it?</li>
+<li>Does any frame borrow from the input buffer? If so, how long can it live?</li>
+<li>Where does the malformed-line policy live?</li>
+<li>Which module knows about CLI arguments?</li>
+<li>Which operation could grow with the size of the input file?</li>
+</ul>
+<p>The map is a hypothesis until code and tests support it.</p>
+<h2 id="2-trace-a-vertical-slice"><a class="header" href="#2-trace-a-vertical-slice">2. Trace a vertical slice</a></h2>
+<p>Use one known valid line:</p>
+<pre><code class="language-text">(1712345678.123456) can0 18FF0102#DEADBEEF11223344
+</code></pre>
+<p>Before running the program, predict the parsed fields, the command output, and
+the ownership transitions. Then trace the actual symbols in order. Record only
+the shortest chain that explains the behavior.</p>
+<p>Repeat for one malformed line from <code>medium.log</code>. This time include:</p>
+<ul>
+<li>the function that recognizes the failure;</li>
+<li>the error type or policy decision;</li>
+<li>the exit status and diagnostic boundary; and</li>
+<li>whether any output can already have escaped.</li>
+</ul>
+<h2 id="3-build-claimevidence-cards"><a class="header" href="#3-build-claimevidence-cards">3. Build claim/evidence cards</a></h2>
+<p>Complete at least three rows:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Claim</th><th>Code evidence</th><th>Test evidence</th><th>Counterexample or assumption</th></tr>
+</thead>
+<tbody>
+<tr><td>The parser cannot panic on external input</td><td></td><td></td><td></td></tr>
+<tr><td>Processing is streaming rather than whole-file</td><td></td><td></td><td></td></tr>
+<tr><td><code>filter</code> cannot publish a plausible partial result before failure</td><td></td><td></td><td></td></tr>
+<tr><td>JSON output has a deliberate compatibility policy</td><td></td><td></td><td></td></tr>
+<tr><td>A new command can reuse the domain API</td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+<p>It is acceptable for a row to expose missing evidence. That is a finding, not a
+failed exercise.</p>
+<h2 id="4-test-archaeology"><a class="header" href="#4-test-archaeology">4. Test archaeology</a></h2>
+<p>Pick one test that matters. Explain the production behavior it protects, then
+name the smallest mutation that should make it fail. Examples:</p>
+<ul>
+<li>replace a checked parse with <code>unwrap()</code>;</li>
+<li>accept an invalid CAN identifier width;</li>
+<li>collect all input lines before processing;</li>
+<li>emit a matching line before the full input is validated;</li>
+<li>divide by a zero capture duration; or</li>
+<li>silently change a JSON field name.</li>
+</ul>
+<p>Make the mutation on a disposable branch if it is safe to do so. If the test
+does not fail, improve the test before restoring the implementation.</p>
+<p>An especially useful bridge to Project C is a property test asserting that
+arbitrary external input never makes the parser panic.</p>
+<h2 id="5-make-one-small-change"><a class="header" href="#5-make-one-small-change">5. Make one small change</a></h2>
+<p>Choose a change that crosses at least two modules but fits in 25 minutes. Write
+the test first and predict which symbols will change. Afterward, compare the
+actual diff with the prediction.</p>
+<p>Good-sized changes include:</p>
+<ul>
+<li>define behavior for <code>--limit 0</code>;</li>
+<li>make a malformed-line policy observable in <code>summary</code>;</li>
+<li>cover zero-duration captures explicitly;</li>
+<li>add a parser property for arbitrary input; or</li>
+<li>make one JSON compatibility rule executable as a test.</li>
+</ul>
+<p>The change is complete only when the pair can explain why unrelated behavior
+did not change.</p>
+<h2 id="6-audit-an-agent-explanation"><a class="header" href="#6-audit-an-agent-explanation">6. Audit an agent explanation</a></h2>
+<p>Now ask the agent:</p>
+<blockquote>
+<p>Explain this vertical slice as a sequence of concrete claims. For each
+claim, identify the file, symbol, and test that supports it. Mark anything
+you cannot prove from the repository as an assumption.</p>
+</blockquote>
+<p>Annotate the answer. Verify, correct, or reject every claim. Do not reward a
+fluent explanation that points at the wrong code.</p>
+<h2 id="7-teach-it-to-another-pair"><a class="header" href="#7-teach-it-to-another-pair">7. Teach it to another pair</a></h2>
+<p>The visiting pair gets five minutes to read, then presents the architecture
+back to its owners. The owners may answer questions only with a code location,
+test, command result, or explicit assumption.</p>
+<p>Finish with four statements:</p>
+<ol>
+<li>One thing we can now explain.</li>
+<li>One behavior a test genuinely protects.</li>
+<li>One part we still do not understand.</li>
+<li>One change we now believe we could make safely.</li>
+</ol>
+<h2 id="bridge-to-project-c"><a class="header" href="#bridge-to-project-c">Bridge to Project C</a></h2>
+<p>Project C changes the domain and the shape of evidence, not the ownership
+obligation:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Project A</th><th>Project C</th></tr>
+</thead>
+<tbody>
+<tr><td>Malformed-input policy</td><td>Low-confidence and dropout policy</td></tr>
+<tr><td>State while streaming a file</td><td>State carried between decision cycles</td></tr>
+<tr><td>Runtime and memory evidence</td><td>Rate, latency, and false-alarm evidence</td></tr>
+<tr><td>One deterministic fixture</td><td>Many seeded, replayable trials</td></tr>
+<tr><td>Parser and output boundaries</td><td>Sensor-channel and arbiter boundaries</td></tr>
+<tr><td>Which test protects this policy?</td><td>Which evidence supports this safety claim?</td></tr>
+</tbody>
+</table>
+</div>
+<p>Carry the claim/evidence-card format into <code>SAFETY-NOTES.md</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="welcome-to-day-2"><a class="header" href="#welcome-to-day-2">Welcome to Day 2</a></h1>
 <p>Yesterday we caught design problems after the code was generated.
 Today we stop them before generation. Then, in the afternoon, we tackle
@@ -1596,6 +1759,15 @@ correct behavior is a distribution?</p>
 </tbody>
 </table>
 </div>
+<h2 id="optional-morning-alternative-own-project-a"><a class="header" href="#optional-morning-alternative-own-project-a">Optional morning alternative: own Project A</a></h2>
+<p>If Project A produced working code that the class does not yet feel able to
+explain or safely change, use <a href="#from-generated-code-to-owned-code">From Generated Code to Owned Code</a> instead of
+starting Project B that morning. Project B remains part of the course and can
+be delivered later; the optional session does not replace or shorten its
+material.</p>
+<p>The bridge session is 2 hours 40 minutes including a break. Students trace,
+test, change, and defend their own Project A implementations, then carry a
+claim/evidence method into Project C.</p>
 <h2 id="day-2-afternoon-schedule"><a class="header" href="#day-2-afternoon-schedule">Day 2 Afternoon schedule</a></h2>
 <p>Including a 10 minute break, this session should take about 3 hours and
 45 minutes. It contains:</p>
@@ -1614,6 +1786,12 @@ correct behavior is a distribution?</p>
 </tbody>
 </table>
 </div>
+<h3 id="compressed-three-hour-project-c-route"><a class="header" href="#compressed-three-hour-project-c-route">Compressed three-hour Project C route</a></h3>
+<p>When the whole afternoon, including break and debrief, is limited to three
+hours, use the three-hour route on the Project C welcome page. It preserves the
+functional-safety frame, arbiter design, replayable evidence, property tests,
+measurement, and a full 30-minute debrief. Statistical confidence tooling and
+protocol extensions become after-workshop work.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="warm-up-three-review-calls"><a class="header" href="#warm-up-three-review-calls">Warm-up: Three Review Calls</a></h1>
 <p>From here on we assume yesterday’s vocabulary. Three snippets. For
@@ -1821,31 +1999,43 @@ tracks this cycle and one channel reporting nothing are both normal.</li>
 one does your design believe, and what does it do while one channel
 reports nothing?</li>
 </ul>
-<p>The afternoon’s project block is 2 hours 10 minutes, split around the
-break. As a rough budget:</p>
+<h2 id="three-hour-workshop-route"><a class="header" href="#three-hour-workshop-route">Three-hour workshop route</a></h2>
+<p>The starter now provides the mechanical multi-seed metrics runner. You review
+its metric semantics, but you do not spend the afternoon writing trial loops,
+CLI parsing, or output formatting. Your work is the arbiter, its policy, its
+tests, and the evidence connecting them.</p>
+<p>The complete afternoon is three hours, including the break and debrief:</p>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>Stage</th><th>Budget</th></tr>
 </thead>
 <tbody>
-<tr><td>Skeleton, by hand (both channels)</td><td>30 minutes</td></tr>
-<tr><td>Arbiter and metrics, first working pass</td><td>45 minutes</td></tr>
-<tr><td>Measure, revise, re-measure</td><td>40 minutes</td></tr>
-<tr><td>SAFETY-NOTES</td><td>15 minutes</td></tr>
+<tr><td>Safety frame and acceptance claims</td><td>10 minutes</td></tr>
+<tr><td>Audit the prepared runner’s metric semantics</td><td>10 minutes</td></tr>
+<tr><td>Skeleton and agent-assisted first pass</td><td>25 minutes</td></tr>
+<tr><td>Deterministic test and 200-trial baseline</td><td>20 minutes</td></tr>
+<tr><td>Replay one bad seed and amend the policy</td><td>15 minutes</td></tr>
+<tr><td>Break</td><td>10 minutes</td></tr>
+<tr><td>Implement one deliberate stateful revision</td><td>30 minutes</td></tr>
+<tr><td>Add or review two properties</td><td>18 minutes</td></tr>
+<tr><td>Final metrics and compact safety case</td><td>12 minutes</td></tr>
+<tr><td>Debrief</td><td>30 minutes</td></tr>
 </tbody>
 </table>
 </div>
-<p>The statistical verdict layer is a stretch goal on top of this, not a
-row in the budget.</p>
+<p>Passing every acceptance row is still the product target, but it is not the
+workshop completion criterion. A measured failure, a replayed seed, a written
+policy amendment, and a defensible evidence gap are useful outcomes. Hiding a
+failure to finish more code is not.</p>
 <p>In this project we practice:</p>
 <ul>
 <li>The whole course so far, under domain pressure: the state machine is an
 enum (or typestate), the thresholds are newtypes, and the arbiter’s
 signature is the spec.</li>
 <li>Testing a stochastic system: property-based tests for invariants that
-must always hold, and statistical verdicts, via the provided <a href="https://github.com/mavai-org/feotest"><code>feotest</code></a>, for
-behavior that only exists in aggregate.</li>
+must always hold, measured behavior over replayable trials, and a clear
+distinction between a measured rate and a statistically supported claim.</li>
 <li>Recognizing when the agent’s tests are green but test nothing that
 matters.</li>
 </ul>
@@ -1854,6 +2044,19 @@ matters.</li>
 <p><code>guardian</code> is a toy, but we place it where its real counterpart would
 live: inside an item developed under ISO 26262. Before writing code, we
 walk the safety structure the code would sit in.</p>
+<h2 id="three-hour-path"><a class="header" href="#three-hour-path">Three-hour path</a></h2>
+<p>Keep four ideas in the live session:</p>
+<ol>
+<li>Both missed intervention and unwarranted braking are safety-relevant.</li>
+<li>The two channels buy diversity only when their failures are sufficiently
+independent.</li>
+<li>The arbiter owns the decision and must state what happens when channels
+disagree or disappear.</li>
+<li>Generated code is acceptable only inside a claim about how its failures are
+detected by human-owned boundaries and evidence.</li>
+</ol>
+<p>The detailed standard, regulation, rating, and protocol discussion later on
+this page is after-workshop reading in the compressed route.</p>
 <h2 id="what-asil-is-this"><a class="header" href="#what-asil-is-this">What ASIL is this?</a></h2>
 <p>An automotive safety integrity level (ASIL; ISO 26262-1:2018, 3.6) is
 assigned per hazardous event by a hazard analysis and risk assessment
@@ -1938,7 +2141,7 @@ confidence, TCL), is a software tool whose output you either trust
 because its failures are detected downstream or qualify separately
 (8, 11.4.5): our detection
 argument is the skeleton, the monitor, and the suite.</p>
-<h2 id="a-rating-a-regulation-and-a-standard"><a class="header" href="#a-rating-a-regulation-and-a-standard">A rating, a regulation, and a standard</a></h2>
+<h2 id="after-workshop-a-rating-a-regulation-and-a-standard"><a class="header" href="#after-workshop-a-rating-a-regulation-and-a-standard">After workshop: a rating, a regulation, and a standard</a></h2>
 <p>Three kinds of document govern a system like this, and they argue
 different things. Euro NCAP is a consumer rating: it scripts test
 scenarios (CCRs, CCRm, CCRb), grades each grid cell, and awards FCW
@@ -2009,7 +2212,8 @@ below 0.3 must not, on their own, trigger <code>Brake</code>.</p>
 <tbody>
 <tr><td>Hard-braking-lead scenarios ending in <code>Brake</code></td><td>&gt;= 99%</td></tr>
 <tr><td>Empty-road runs with any <code>Warn</code> or <code>Brake</code> (false alarm)</td><td>&lt;= 2%</td></tr>
-<tr><td>Median cycles from threshold crossing to correct decision</td><td>&lt;= 3</td></tr>
+<tr><td>Warn and Brake responder median from truth crossing</td><td>&lt;= 3 cycles</td></tr>
+<tr><td>Response coverage for each latency metric</td><td>&gt;= 95%</td></tr>
 </tbody>
 </table>
 </div>
@@ -2021,8 +2225,13 @@ lowers the corresponding rate row and contributes no latency sample.
 Zero responders reports <code>n/a</code>. Latency output states its response
 coverage (responders over total runs) alongside the median.</p>
 <h3 id="deliverables-1"><a class="header" href="#deliverables-1">Deliverables</a></h3>
-<p>The <code>guardian</code> crate; a runner binary that executes scenario suites and
-reports the metrics; and a test suite you would stake the release on.</p>
+<p>The <code>guardian</code> crate; a reviewed use of the prepared runner; one deterministic
+example test; at least two properties; measured before/after behavior; and a
+compact safety case in <code>SAFETY-NOTES.md</code>.</p>
+<p>The prepared runner owns trial loops, replay commands, noiseless truth
+crossings, response coverage, medians, and chatter diagnostics. Its metric
+semantics are reviewable course code, not an oracle. If you disagree with a
+semantic, write the claim you need and amend the harness explicitly.</p>
 <hr>
 <p>End of spec.</p>
 <h2 id="protocol-alignment-stretch"><a class="header" href="#protocol-alignment-stretch">Protocol alignment (stretch)</a></h2>
@@ -2058,12 +2267,30 @@ warning constantly. Which other acceptance row stops that?</li>
 one-dimensional, so the protocol’s lateral overlap grid has no
 meaning here, and the sim applies the lead’s deceleration as a
 constant rather than the protocol’s ramp-in tolerance.</p>
-<h2 id="scope-note"><a class="header" href="#scope-note">Scope note</a></h2>
-<p>The statistical verdict layer (the <code>feotest</code> tests) is stretch work.
-The required finish line is the property-test layer plus a passing
-1,000-trial metrics run with replayable failure seeds. If you get the
-statistical layer standing too, excellent; don’t start it before the
-metrics pass.</p>
+<h2 id="three-hour-finish-line"><a class="header" href="#three-hour-finish-line">Three-hour finish line</a></h2>
+<p>The workshop path is complete when the pair has:</p>
+<ol>
+<li>written a skeleton that makes state and channel policy visible;</li>
+<li>produced a first working arbiter and one deterministic test;</li>
+<li>measured a 200-trial baseline;</li>
+<li>replayed at least one failing or chattering seed;</li>
+<li>written a policy amendment from that trace;</li>
+<li>implemented one deliberate stateful revision;</li>
+<li>added or reviewed at least two properties;</li>
+<li>run the final metrics, preferably at 1,000 trials; and</li>
+<li>completed the claim/evidence/assumption/limitation safety case.</li>
+</ol>
+<p>A final target miss remains valid workshop evidence when it is recorded and
+explained.</p>
+<h2 id="after-workshop-extensions"><a class="header" href="#after-workshop-extensions">After-workshop extensions</a></h2>
+<ul>
+<li>Turn measured rates into formal confidence statements with <code>feotest</code> or a
+documented alternative.</li>
+<li>Build the Euro NCAP protocol grid.</li>
+<li>Add mutation testing and a Kani proof.</li>
+<li>Expand the safety sketch into a requirements-to-evidence matrix and dependent
+failure analysis.</li>
+</ul>
 <hr>
 <ol class="footnote-definition">
 <li id="footnote-ncap">
@@ -2081,6 +2308,18 @@ FCW points are awarded at TTC &gt;= 1.70 s. <a href="#fr-ncap-1">↩</a></p>
 <h1 id="validating-a-stochastic-system"><a class="header" href="#validating-a-stochastic-system">Validating a Stochastic System</a></h1>
 <p>Here’s the testing toolbox for a system with random input. Three
 layers, plus a fourth for when a property matters enough to prove.</p>
+<h2 id="three-hour-path-use-the-prepared-runner"><a class="header" href="#three-hour-path-use-the-prepared-runner">Three-hour path: use the prepared runner</a></h2>
+<p>The starter’s runner already performs the mechanical measurement work. Audit
+the three metric definitions before trusting them, then use short batches while
+iterating and a larger final batch:</p>
+<pre><code class="language-text">cargo run --release -p runner -- trace --scenario cut-in --seed 3007
+cargo run --release -p runner -- metrics --trials 200
+cargo run --release -p runner -- metrics --trials 1000
+</code></pre>
+<p>For every metric, ask what claim it supports, what it omits, and how an arbiter
+could game it. Every reported failure includes a replay command. A measured
+rate is evidence about this batch; it is not by itself a confidence statement
+about the population.</p>
 <h2 id="layer-1-example-tests"><a class="header" href="#layer-1-example-tests">Layer 1: Example tests</a></h2>
 <p><code>assert_eq!(decide(&amp;reports), Decision::Brake)</code> has a place: golden
 scenarios with noise disabled, pinning the deterministic core. But an
@@ -2106,18 +2345,22 @@ down to a minimal counterexample:</p>
 low-confidence tracks never causing <code>Brake</code> alone, a defined decision (no
 panic) for any report including NaN ranges, and an output present every
 cycle.</p>
-<h2 id="layer-3-statistical-verdicts"><a class="header" href="#layer-3-statistical-verdicts">Layer 3: Statistical verdicts</a></h2>
+<h2 id="layer-3-measured-rates-and-statistical-verdicts"><a class="header" href="#layer-3-measured-rates-and-statistical-verdicts">Layer 3: Measured rates and statistical verdicts</a></h2>
 <p>The acceptance table says at least 99% of hard-brake scenarios end in
 <code>Brake</code>. That’s not a property of any single run; it’s a claim about a
 pass rate. Testing it by running 20 times and looking at the results
 gives you flaky CI and little confidence. The next page covers treating
 each run as a trial and testing the rate itself.</p>
+<p>During the three-hour session, the prepared runner gives you measured rates,
+replay seeds, response coverage, and latency medians. Use them to compare the
+first implementation with one revision. Formal confidence bounds and
+threshold provenance are the after-workshop extension on the next page.</p>
 <p>The table’s median-latency row needs a different analysis: retain every
 responder latency, report misses separately as response coverage, compute the
 median over responders as specified, and attach a bootstrap or documented
 distribution-free interval. A Bernoulli verdict may evaluate whether a run met
 a latency threshold, but that’s a different claim from the median row.</p>
-<h2 id="layer-4-mutation-testing-and-proofs"><a class="header" href="#layer-4-mutation-testing-and-proofs">Layer 4: Mutation testing and proofs</a></h2>
+<h2 id="after-workshop-layer-4-mutation-testing-and-proofs"><a class="header" href="#after-workshop-layer-4-mutation-testing-and-proofs">After workshop: Layer 4, mutation testing and proofs</a></h2>
 <p>Two stretch tasks for pairs with time left. Both come from
 <a href="#build-your-own-guardrails">Build Your Own Guardrails</a>:</p>
 <ul>
@@ -2142,6 +2385,12 @@ full specification. Knowing that it exists is enough for today.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="feotest-statistical-verdicts"><a class="header" href="#feotest-statistical-verdicts">feotest: Statistical Verdicts</a></h1>
+<blockquote>
+<p><strong>After-workshop extension.</strong> Do not spend the three-hour Project C session
+wiring this layer. First produce replayable measurements, properties, and a
+compact safety case. Return here when you are ready to turn a measured rate
+into a confidence-supported claim.</p>
+</blockquote>
 <p><a href="https://github.com/mavai-org/feotest"><code>feotest</code></a> is the probabilistic
 testing framework that ships in the starter. The idea: treat each
 execution as a Bernoulli trial, pass or fail against a contract, and
@@ -2189,28 +2438,42 @@ the way you evaluated crates yesterday. For today it’s pinned in the
 starter’s lockfile.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="debrief-2"><a class="header" href="#debrief-2">Debrief</a></h1>
-<p>The debrief takes about 30 minutes. The course retrospective follows on
-the <a href="#course-close-and-retrospective">next page</a>.</p>
-<h2 id="the-chatter-10-minutes"><a class="header" href="#the-chatter-10-minutes">The chatter (10 minutes)</a></h2>
+<p>The debrief and compressed course close share the final 30 minutes. Stop coding
+when they begin, even when targets are still red. Use the full <a href="#course-close-and-retrospective">course
+retrospective</a> after the workshop when no additional time is
+available.</p>
+<h2 id="the-trace-and-revision-8-minutes"><a class="header" href="#the-trace-and-revision-8-minutes">The trace and revision (8 minutes)</a></h2>
 <ul>
 <li>Show the worst decision trace of the afternoon. What did you change
 to eliminate it, where does that live in the types, and what did it cost on the
 latency target?</li>
-<li>Which corner of the noise / false-alarm / latency triangle did you
-concede, and who at work should be making that call?</li>
+<li>What policy amendment came from the trace, and what changed in the measured
+result?</li>
+<li>Which corner of the noise / false-alarm / latency triangle did you concede,
+and who at work should be making that call?</li>
 </ul>
-<h2 id="the-test-suite-15-minutes"><a class="header" href="#the-test-suite-15-minutes">The test suite (15 minutes)</a></h2>
+<h2 id="the-compact-safety-case-10-minutes"><a class="header" href="#the-compact-safety-case-10-minutes">The compact safety case (10 minutes)</a></h2>
+<p>Each pair reads one row from <code>SAFETY-NOTES.md</code>:</p>
+<ul>
+<li>claim;</li>
+<li>evidence;</li>
+<li>assumption;</li>
+<li>known limitation; and</li>
+<li>next verification action.</li>
+</ul>
+<p>Ask whether the evidence actually speaks to the claim. A green command is not
+an answer unless the pair can explain what it measured.</p>
+<h2 id="the-test-suite-and-metrics-9-minutes"><a class="header" href="#the-test-suite-and-metrics-9-minutes">The test suite and metrics (9 minutes)</a></h2>
 <ul>
 <li>Each pair: count your suite by layer (example, property, statistical).
 What did the agent’s first suite look like by the same count?</li>
 <li>Show the best property of the day. What bug does it catch that no
 example test could?</li>
-<li>Your statistical verdicts: samples, threshold, confidence, and why
-those numbers. If you hit the flipping-verdict problem, what did it
-teach you about the difference between “we test it” and “we can make a
-claim about it”?</li>
+<li>Your before/after metrics: trial count, replayed seed, and remaining miss.
+Which statement is only a measured rate, and what further work would be
+required to call it a confidence-supported claim?</li>
 </ul>
-<h2 id="closing-question-5-minutes"><a class="header" href="#closing-question-5-minutes">Closing question (5 minutes)</a></h2>
+<h2 id="closing-question-3-minutes"><a class="header" href="#closing-question-3-minutes">Closing question (3 minutes)</a></h2>
 <p>The acceptance table judged <code>guardian</code> in aggregate. The processes that
 judge your real systems work the same way, and increasingly so do the
 ones that judge LLM-produced code. What changes in your team’s definition
@@ -2226,9 +2489,9 @@ added over the two days.</li>
 <li>The skeleton standard: Project B’s closing list of types, error
 conventions, and doc-contract habits every new crate should start from.
 A <code>cargo generate</code> template is the natural next step.</li>
-<li>The testing ladder: example, property, statistical, with Project C’s
-layer counts as the baseline and the sample-size question as an open
-item.</li>
+<li>The testing ladder: example, property, measured rate, and statistical claim.
+Project C’s layer counts and before/after metrics are the baseline; confidence
+and sample-size work may remain an explicit after-workshop item.</li>
 <li>A working definition of review: smell, principle, prompt, with the rule
 that a recurring prompt gets promoted into the skeleton.</li>
 </ul>

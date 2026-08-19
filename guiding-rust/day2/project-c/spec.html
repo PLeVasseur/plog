@@ -37,10 +37,10 @@
             const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../../searchindex-e2fa7ee4.js";
+            window.path_to_searchindex_js = "../../searchindex-6d0f7aa8.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../toc-1e65b337.js"></script>
+        <script src="../../toc-c4540e37.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -216,7 +216,8 @@ below 0.3 must not, on their own, trigger <code>Brake</code>.</p>
 <tbody>
 <tr><td>Hard-braking-lead scenarios ending in <code>Brake</code></td><td>&gt;= 99%</td></tr>
 <tr><td>Empty-road runs with any <code>Warn</code> or <code>Brake</code> (false alarm)</td><td>&lt;= 2%</td></tr>
-<tr><td>Median cycles from threshold crossing to correct decision</td><td>&lt;= 3</td></tr>
+<tr><td>Warn and Brake responder median from truth crossing</td><td>&lt;= 3 cycles</td></tr>
+<tr><td>Response coverage for each latency metric</td><td>&gt;= 95%</td></tr>
 </tbody>
 </table>
 </div>
@@ -228,8 +229,13 @@ lowers the corresponding rate row and contributes no latency sample.
 Zero responders reports <code>n/a</code>. Latency output states its response
 coverage (responders over total runs) alongside the median.</p>
 <h3 id="deliverables"><a class="header" href="#deliverables">Deliverables</a></h3>
-<p>The <code>guardian</code> crate; a runner binary that executes scenario suites and
-reports the metrics; and a test suite you would stake the release on.</p>
+<p>The <code>guardian</code> crate; a reviewed use of the prepared runner; one deterministic
+example test; at least two properties; measured before/after behavior; and a
+compact safety case in <code>SAFETY-NOTES.md</code>.</p>
+<p>The prepared runner owns trial loops, replay commands, noiseless truth
+crossings, response coverage, medians, and chatter diagnostics. Its metric
+semantics are reviewable course code, not an oracle. If you disagree with a
+semantic, write the claim you need and amend the harness explicitly.</p>
 <hr>
 <p>End of spec.</p>
 <h2 id="protocol-alignment-stretch"><a class="header" href="#protocol-alignment-stretch">Protocol alignment (stretch)</a></h2>
@@ -265,12 +271,30 @@ warning constantly. Which other acceptance row stops that?</li>
 one-dimensional, so the protocol’s lateral overlap grid has no
 meaning here, and the sim applies the lead’s deceleration as a
 constant rather than the protocol’s ramp-in tolerance.</p>
-<h2 id="scope-note"><a class="header" href="#scope-note">Scope note</a></h2>
-<p>The statistical verdict layer (the <code>feotest</code> tests) is stretch work.
-The required finish line is the property-test layer plus a passing
-1,000-trial metrics run with replayable failure seeds. If you get the
-statistical layer standing too, excellent; don’t start it before the
-metrics pass.</p>
+<h2 id="three-hour-finish-line"><a class="header" href="#three-hour-finish-line">Three-hour finish line</a></h2>
+<p>The workshop path is complete when the pair has:</p>
+<ol>
+<li>written a skeleton that makes state and channel policy visible;</li>
+<li>produced a first working arbiter and one deterministic test;</li>
+<li>measured a 200-trial baseline;</li>
+<li>replayed at least one failing or chattering seed;</li>
+<li>written a policy amendment from that trace;</li>
+<li>implemented one deliberate stateful revision;</li>
+<li>added or reviewed at least two properties;</li>
+<li>run the final metrics, preferably at 1,000 trials; and</li>
+<li>completed the claim/evidence/assumption/limitation safety case.</li>
+</ol>
+<p>A final target miss remains valid workshop evidence when it is recorded and
+explained.</p>
+<h2 id="after-workshop-extensions"><a class="header" href="#after-workshop-extensions">After-workshop extensions</a></h2>
+<ul>
+<li>Turn measured rates into formal confidence statements with <code>feotest</code> or a
+documented alternative.</li>
+<li>Build the Euro NCAP protocol grid.</li>
+<li>Add mutation testing and a Kani proof.</li>
+<li>Expand the safety sketch into a requirements-to-evidence matrix and dependent
+failure analysis.</li>
+</ul>
 <hr>
 <ol class="footnote-definition">
 <li id="footnote-ncap">
