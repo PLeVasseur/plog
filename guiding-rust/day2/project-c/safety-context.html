@@ -37,10 +37,10 @@
             const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../../searchindex-e2fa7ee4.js";
+            window.path_to_searchindex_js = "../../searchindex-6d0f7aa8.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../toc-1e65b337.js"></script>
+        <script src="../../toc-c4540e37.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -180,6 +180,19 @@
 <p><code>guardian</code> is a toy, but we place it where its real counterpart would
 live: inside an item developed under ISO 26262. Before writing code, we
 walk the safety structure the code would sit in.</p>
+<h2 id="three-hour-path"><a class="header" href="#three-hour-path">Three-hour path</a></h2>
+<p>Keep four ideas in the live session:</p>
+<ol>
+<li>Both missed intervention and unwarranted braking are safety-relevant.</li>
+<li>The two channels buy diversity only when their failures are sufficiently
+independent.</li>
+<li>The arbiter owns the decision and must state what happens when channels
+disagree or disappear.</li>
+<li>Generated code is acceptable only inside a claim about how its failures are
+detected by human-owned boundaries and evidence.</li>
+</ol>
+<p>The detailed standard, regulation, rating, and protocol discussion later on
+this page is after-workshop reading in the compressed route.</p>
 <h2 id="what-asil-is-this"><a class="header" href="#what-asil-is-this">What ASIL is this?</a></h2>
 <p>An automotive safety integrity level (ASIL; ISO 26262-1:2018, 3.6) is
 assigned per hazardous event by a hazard analysis and risk assessment
@@ -264,7 +277,7 @@ confidence, TCL), is a software tool whose output you either trust
 because its failures are detected downstream or qualify separately
 (8, 11.4.5): our detection
 argument is the skeleton, the monitor, and the suite.</p>
-<h2 id="a-rating-a-regulation-and-a-standard"><a class="header" href="#a-rating-a-regulation-and-a-standard">A rating, a regulation, and a standard</a></h2>
+<h2 id="after-workshop-a-rating-a-regulation-and-a-standard"><a class="header" href="#after-workshop-a-rating-a-regulation-and-a-standard">After workshop: a rating, a regulation, and a standard</a></h2>
 <p>Three kinds of document govern a system like this, and they argue
 different things. Euro NCAP is a consumer rating: it scripts test
 scenarios (CCRs, CCRm, CCRb), grades each grid cell, and awards FCW

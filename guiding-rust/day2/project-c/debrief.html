@@ -37,10 +37,10 @@
             const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../../searchindex-e2fa7ee4.js";
+            window.path_to_searchindex_js = "../../searchindex-6d0f7aa8.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../toc-1e65b337.js"></script>
+        <script src="../../toc-c4540e37.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,28 +177,42 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="debrief"><a class="header" href="#debrief">Debrief</a></h1>
-<p>The debrief takes about 30 minutes. The course retrospective follows on
-the <a href="../../close.html">next page</a>.</p>
-<h2 id="the-chatter-10-minutes"><a class="header" href="#the-chatter-10-minutes">The chatter (10 minutes)</a></h2>
+<p>The debrief and compressed course close share the final 30 minutes. Stop coding
+when they begin, even when targets are still red. Use the full <a href="../../close.html">course
+retrospective</a> after the workshop when no additional time is
+available.</p>
+<h2 id="the-trace-and-revision-8-minutes"><a class="header" href="#the-trace-and-revision-8-minutes">The trace and revision (8 minutes)</a></h2>
 <ul>
 <li>Show the worst decision trace of the afternoon. What did you change
 to eliminate it, where does that live in the types, and what did it cost on the
 latency target?</li>
-<li>Which corner of the noise / false-alarm / latency triangle did you
-concede, and who at work should be making that call?</li>
+<li>What policy amendment came from the trace, and what changed in the measured
+result?</li>
+<li>Which corner of the noise / false-alarm / latency triangle did you concede,
+and who at work should be making that call?</li>
 </ul>
-<h2 id="the-test-suite-15-minutes"><a class="header" href="#the-test-suite-15-minutes">The test suite (15 minutes)</a></h2>
+<h2 id="the-compact-safety-case-10-minutes"><a class="header" href="#the-compact-safety-case-10-minutes">The compact safety case (10 minutes)</a></h2>
+<p>Each pair reads one row from <code>SAFETY-NOTES.md</code>:</p>
+<ul>
+<li>claim;</li>
+<li>evidence;</li>
+<li>assumption;</li>
+<li>known limitation; and</li>
+<li>next verification action.</li>
+</ul>
+<p>Ask whether the evidence actually speaks to the claim. A green command is not
+an answer unless the pair can explain what it measured.</p>
+<h2 id="the-test-suite-and-metrics-9-minutes"><a class="header" href="#the-test-suite-and-metrics-9-minutes">The test suite and metrics (9 minutes)</a></h2>
 <ul>
 <li>Each pair: count your suite by layer (example, property, statistical).
 What did the agent’s first suite look like by the same count?</li>
 <li>Show the best property of the day. What bug does it catch that no
 example test could?</li>
-<li>Your statistical verdicts: samples, threshold, confidence, and why
-those numbers. If you hit the flipping-verdict problem, what did it
-teach you about the difference between “we test it” and “we can make a
-claim about it”?</li>
+<li>Your before/after metrics: trial count, replayed seed, and remaining miss.
+Which statement is only a measured rate, and what further work would be
+required to call it a confidence-supported claim?</li>
 </ul>
-<h2 id="closing-question-5-minutes"><a class="header" href="#closing-question-5-minutes">Closing question (5 minutes)</a></h2>
+<h2 id="closing-question-3-minutes"><a class="header" href="#closing-question-3-minutes">Closing question (3 minutes)</a></h2>
 <p>The acceptance table judged <code>guardian</code> in aggregate. The processes that
 judge your real systems work the same way, and increasingly so do the
 ones that judge LLM-produced code. What changes in your team’s definition

@@ -37,10 +37,10 @@
             const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../../searchindex-e2fa7ee4.js";
+            window.path_to_searchindex_js = "../../searchindex-6d0f7aa8.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../toc-1e65b337.js"></script>
+        <script src="../../toc-c4540e37.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -179,6 +179,18 @@
                         <h1 id="validating-a-stochastic-system"><a class="header" href="#validating-a-stochastic-system">Validating a Stochastic System</a></h1>
 <p>Here’s the testing toolbox for a system with random input. Three
 layers, plus a fourth for when a property matters enough to prove.</p>
+<h2 id="three-hour-path-use-the-prepared-runner"><a class="header" href="#three-hour-path-use-the-prepared-runner">Three-hour path: use the prepared runner</a></h2>
+<p>The starter’s runner already performs the mechanical measurement work. Audit
+the three metric definitions before trusting them, then use short batches while
+iterating and a larger final batch:</p>
+<pre><code class="language-text">cargo run --release -p runner -- trace --scenario cut-in --seed 3007
+cargo run --release -p runner -- metrics --trials 200
+cargo run --release -p runner -- metrics --trials 1000
+</code></pre>
+<p>For every metric, ask what claim it supports, what it omits, and how an arbiter
+could game it. Every reported failure includes a replay command. A measured
+rate is evidence about this batch; it is not by itself a confidence statement
+about the population.</p>
 <h2 id="layer-1-example-tests"><a class="header" href="#layer-1-example-tests">Layer 1: Example tests</a></h2>
 <p><code>assert_eq!(decide(&amp;reports), Decision::Brake)</code> has a place: golden
 scenarios with noise disabled, pinning the deterministic core. But an
@@ -204,18 +216,22 @@ down to a minimal counterexample:</p>
 low-confidence tracks never causing <code>Brake</code> alone, a defined decision (no
 panic) for any report including NaN ranges, and an output present every
 cycle.</p>
-<h2 id="layer-3-statistical-verdicts"><a class="header" href="#layer-3-statistical-verdicts">Layer 3: Statistical verdicts</a></h2>
+<h2 id="layer-3-measured-rates-and-statistical-verdicts"><a class="header" href="#layer-3-measured-rates-and-statistical-verdicts">Layer 3: Measured rates and statistical verdicts</a></h2>
 <p>The acceptance table says at least 99% of hard-brake scenarios end in
 <code>Brake</code>. That’s not a property of any single run; it’s a claim about a
 pass rate. Testing it by running 20 times and looking at the results
 gives you flaky CI and little confidence. The next page covers treating
 each run as a trial and testing the rate itself.</p>
+<p>During the three-hour session, the prepared runner gives you measured rates,
+replay seeds, response coverage, and latency medians. Use them to compare the
+first implementation with one revision. Formal confidence bounds and
+threshold provenance are the after-workshop extension on the next page.</p>
 <p>The table’s median-latency row needs a different analysis: retain every
 responder latency, report misses separately as response coverage, compute the
 median over responders as specified, and attach a bootstrap or documented
 distribution-free interval. A Bernoulli verdict may evaluate whether a run met
 a latency threshold, but that’s a different claim from the median row.</p>
-<h2 id="layer-4-mutation-testing-and-proofs"><a class="header" href="#layer-4-mutation-testing-and-proofs">Layer 4: Mutation testing and proofs</a></h2>
+<h2 id="after-workshop-layer-4-mutation-testing-and-proofs"><a class="header" href="#after-workshop-layer-4-mutation-testing-and-proofs">After workshop: Layer 4, mutation testing and proofs</a></h2>
 <p>Two stretch tasks for pairs with time left. Both come from
 <a href="../../day1/guardrails.html">Build Your Own Guardrails</a>:</p>
 <ul>
